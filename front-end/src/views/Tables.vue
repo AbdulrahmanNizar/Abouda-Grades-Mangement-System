@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100 text-white">
+  <div class="h-100 text-black">
     <nav class="navbar navbar-expand-lg bg-black bg-gradient text-white d-md-none d-block">
       <div class="container-fluid text-white">
         <a class="navbar-brand text-white"
@@ -39,7 +39,7 @@
       </div>
     </nav>
 
-    <div class="vh-100 w-100 d-flex flex-row justify-content-start align-items-center m-0">
+    <div class="vh-100 w-100 d-flex flex-row justify-content-center align-items-center m-0">
       <div
         class="bg-black bg-gradient shadow d-none d-md-flex flex-column justify-content-start align-items-center h-100"
         style="width: 16%"
@@ -69,7 +69,6 @@
           <router-link :to="{ path: '/' }" class="h6 mb-0 text-decoration-none w-100">
             <div
               class="w-100 text-center text-white d-flex flex-row justify-content-center align-items-center p-3 another-section"
-              style="background-color: rgb(52, 52, 52)"
             >
               <i class="bi bi-house mb-0 me-1"></i>
               <h6 class="mb-0 ms-1 d-lg-block d-none">Home</h6>
@@ -78,6 +77,7 @@
           <router-link :to="{ path: '/tables' }" class="h6 mb-0 text-decoration-none w-100">
             <div
               class="w-100 text-center text-white d-flex flex-row justify-content-center align-items-center p-3 another-section"
+              style="background-color: rgb(52, 52, 52)"
             >
               <i class="bi bi-table mb-0 me-1"></i>
               <h6 class="mb-0 ms-1 d-lg-block d-none">Tables</h6>
@@ -105,39 +105,29 @@
         id="dashboard"
       >
         <div class="w-100 d-flex flex-column justify-content-center align-items-start">
-          <h3 class="ms-5 mt-5">Statistics</h3>
-          <p class="h5 ms-5">Take A Look At Your Statistics</p>
+          <h3 class="ms-5 mt-5">Grades Tables</h3>
+          <p class="h5 ms-5">Manage Your Grades Tables</p>
           <hr class="w-100" />
         </div>
 
         <div class="w-100 mt-4 d-flex flex-column justify-content-center align-items-center">
-          <div
-            class="d-flex flex-md-row flex-column justify-content-center align-items-center w-75"
+          <router-link :to="{ path: '/create_table' }" class="btn btn-dark w-25"
+            >Create New Table</router-link
           >
-            <select class="form-select text-black ms-1 mt-1" v-model="filtration_by_subject">
-              <option value="Filter By Subject" selected disabled>Filter By Subject</option>
-              <option value="Math">Math</option>
-            </select>
-
-            <select class="form-select text-black ms-1 mt-1" v-model="filtration_by_year">
-              <option value="Filter By Year" selected disabled>Filter By Year</option>
-              <option value="2025">2025</option>
-            </select>
-
-            <select class="form-select text-black ms-1 mt-1" v-model="filtration_by_trimester">
-              <option value="Filter By Trimester" selected disabled>Filter By Trimester</option>
-              <option value="Second">Second</option>
-            </select>
-          </div>
-
-          <div class="d-flex flex-row justify-content-center align-items-center w-100">
-            <button class="btn btn-dark w-25 ms-1 mt-3" @click="reset_filtrations">Reset</button>
-          </div>
-          <hr class="w-100" />
+          <hr class="w-100 mt-4" />
         </div>
 
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-          No information was found
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+          <div
+            class="col-4 d-flex flex-column justify-content-center align-items-center p-3 shadow border rounded"
+          >
+            <h3>Year: 2025</h3>
+            <h4>Trimester: 3</h4>
+            <hr class="w-100" />
+            <router-link :to="{ path: '/table/user_id' }" class="btn btn-dark w-100"
+              >View Details</router-link
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -150,16 +140,6 @@ import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const user_id = ref<string | any>(localStorage.getItem('user_id'))
-
-const filtration_by_subject = ref<string>('Filter By Subject')
-const filtration_by_year = ref<string>('Filter By Year')
-const filtration_by_trimester = ref<string>('Filter By Trimester')
-
-const reset_filtrations = () => {
-  filtration_by_subject.value = 'Filter By Subject'
-  filtration_by_year.value = 'Filter By Year'
-  filtration_by_trimester.value = 'Filter By Trimester'
-}
 
 const logout = async (): Promise<void> => {
   try {
@@ -185,20 +165,3 @@ const logout = async (): Promise<void> => {
   }
 }
 </script>
-
-<style>
-.another-section {
-  transition: all 0.7s ease;
-}
-
-.another-section:hover {
-  background-color: rgb(52, 52, 52);
-  cursor: pointer;
-}
-
-@media only screen and (max-width: 991px) {
-  #dashboard {
-    width: 100% !important;
-  }
-}
-</style>
