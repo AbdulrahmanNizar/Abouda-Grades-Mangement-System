@@ -100,7 +100,7 @@
       </div>
 
       <div
-        class="h-100 text-black d-flex flex-column justify-content-start align-items-start"
+        class="h-100 text-black d-flex flex-column justify-content-start align-items-center"
         style="width: 84%"
         id="dashboard"
       >
@@ -110,35 +110,54 @@
         </div>
 
         <div
-          class="w-100 d-flex flex-md-row flex-column justify-content-center align-items-center p-3"
+          class="w-75 d-flex flex-md-row flex-column justify-content-center align-items-center p-3"
         >
-          <div class="col-4 d-flex flex-row justify-content-center align-items-center">
-            <select class="form-select ms-1">
-              <option value="Select A Year" selected>Select A Year</option>
-            </select>
-          </div>
-          <div class="col-4 d-flex flex-row justify-content-center align-items-center">
-            <select class="form-select ms-1">
-              <option value="Select A Year" selected>Select A Year</option>
-            </select>
-          </div>
-          <div class="col-4 d-flex flex-row justify-content-center align-items-center">
-            <select class="form-select ms-1">
-              <option value="Select A Year" selected>Select A Year</option>
-            </select>
-          </div>
+          <select class="form-select ms-1 mt-1">
+            <option value="Select A Year" selected>Select A Year</option>
+            <option v-for="year in last_five_years" :value="year">{{ year }}</option>
+          </select>
+
+          <select class="form-select ms-1 mt-1">
+            <option value="Select A Trimester" selected>Select A Trimester</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+
+          <select class="form-select ms-1 mt-1">
+            <option value="Select A Subject" selected>Select A Subject</option>
+            <option v-for="user_subject in user_info[0].user_subjects" :value="user_subject">
+              {{ user_subject }}
+            </option>
+          </select>
         </div>
+
+        <hr class="w-100" />
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { use_users_store } from '@/store/index.ts'
 
+const store = use_users_store()
 const router = useRouter()
 const user_id = ref<string | any>(localStorage.getItem('user_id'))
+const last_five_years = ref<number[]>([])
+const current_year = ref<number>(new Date().getFullYear())
+
+const user_info = computed(() => {
+  return store.user_info
+})
+
+const get_last_five_years = () => {
+  for (let i = 0; i <= 5; i++) {
+    last_five_years.value.push(current_year.value - i)
+  }
+}
 
 const logout = async (): Promise<void> => {
   try {
@@ -163,4 +182,7 @@ const logout = async (): Promise<void> => {
     console.log(err)
   }
 }
+
+get_last_five_years()
+store.get_user_info()
 </script>
