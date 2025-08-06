@@ -1,5 +1,5 @@
 import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
-import { UsersManagementService } from './users_management.service';
+import { UsersManagementService } from './users-management.service';
 import { AuthGuard } from './auth/auth.guard';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { GetUserInfoDto } from './dto/GetUserInfo.dto';

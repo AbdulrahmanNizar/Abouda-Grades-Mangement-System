@@ -5,6 +5,7 @@ import Registration from '@/views/Registration.vue'
 import Tables from '@/views/Tables.vue'
 import CreateTable from '@/views/CreateTable.vue'
 import TableDetails from '@/views/TableDetails.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -49,6 +50,11 @@ const router = createRouter({
         needs_auth_token:
           (await verifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
+    },
+    {
+      name: 'NotFound',
+      path: '/:pathName(.*)',
+      component: NotFound,
     },
   ],
 })

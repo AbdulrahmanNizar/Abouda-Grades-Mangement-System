@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GradesManagementController } from './grades_management.controller';
+import { GradesManagementController } from './grades-management.controller';
 
 describe('GradesManagementController', () => {
   let controller: GradesManagementController;
@@ -9,7 +9,9 @@ describe('GradesManagementController', () => {
       controllers: [GradesManagementController],
     }).compile();
 
-    controller = module.get<GradesManagementController>(GradesManagementController);
+    controller = module.get<GradesManagementController>(
+      GradesManagementController,
+    );
   });
 
   it('should be defined', () => {

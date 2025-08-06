@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
-import { UsersManagementService } from './users_management.service';
-import { UsersManagementController } from './users_management.controller';
+import { UsersManagementService } from './users-management.service';
+import { UsersManagementController } from './users-management.controller';
 import { MongooseModule } from '@nestjs/mongoose';
 import { userSchema } from 'src/registration/registration.model';
 import { JwtModule } from '@nestjs/jwt';

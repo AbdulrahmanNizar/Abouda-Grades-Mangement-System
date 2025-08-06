@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
-import { GradesManagementController } from './grades_management.controller';
-import { GradesManagementService } from './grades_management.service';
+import { GradesManagementController } from './grades-management.controller';
+import { GradesManagementService } from './grades-management.service';
 import { MongooseModule } from '@nestjs/mongoose';
-import { usersGradesManagementSchema } from './grades_management.model';
+import { gradesTablesManagementSchema } from './grades-management.model';
 import { JwtModule } from '@nestjs/jwt';
 import { userSchema } from 'src/registration/registration.model';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: 'usersGrades', schema: usersGradesManagementSchema },
+      { name: 'gradesTables', schema: gradesTablesManagementSchema },
+      { name: 'User', schema: userSchema },
     ]),
     JwtModule.register({
       secret: 'Abouda@Jsonwebtoken123',

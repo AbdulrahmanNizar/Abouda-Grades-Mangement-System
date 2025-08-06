@@ -3,25 +3,27 @@ import { GetGradesDto } from './dto/GetGrades.dto';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UsersGrades } from './grades_management.model';
+import { gradesTables } from './grades-management.model';
 import { CreateGradesTableDto } from './dto/CreateGradesTable.dto';
 import { UpdateUserGradesTableDto } from './dto/UpdateGradesTable.dto';
 import { DeleteGradesTableDto } from './dto/DeleteGradesTable.dto';
-import { User } from 'src/registration/registration.model';
 import { GetFilteredGradesDto } from './dto/GetFilteredGrades.dto';
+import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
+import { User } from 'src/registration/registration.model';
 
 @Injectable()
 export class GradesManagementService {
   constructor(
-    @InjectModel('usersGrades')
-    private readonly userGradesModel: Model<UsersGrades>,
+    @InjectModel('gradesTables')
+    private readonly gradesTablesModel: Model<gradesTables>,
+    @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
 
   async getGradesTable(
     requestInfo: GetGradesDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const userGradesTables = await this.userGradesModel.find({
+      const userGradesTables = await this.gradesTablesModel.find({
         userId: requestInfo.userId,
       });
 
@@ -35,6 +37,24 @@ export class GradesManagementService {
     }
   }
 
+  async getGradesTableDetails(
+    requestInfo: GetGradesTableDetailsDto,
+  ): Promise<SuccessResponseObjectDto | void> {
+    try {
+      const gradesTableDetails = await this.gradesTablesModel.find({
+        _id: requestInfo.tableId,
+      });
+
+      return {
+        successMessage: 'Got the grades table details successfully',
+        statusCode: 200,
+        data: gradesTableDetails,
+      };
+    } catch (err) {
+      throw new HttpException('Table not found', 404);
+    }
+  }
+
   async getFilteredGradesTables(
     requestInfo: GetFilteredGradesDto,
   ): Promise<SuccessResponseObjectDto | void> {
@@ -43,7 +63,7 @@ export class GradesManagementService {
         requestInfo.yearFiltration != undefined &&
         requestInfo.trimesterFiltration != undefined
       ) {
-        const userFilteredGradesTables = await this.userGradesModel.find({
+        const userFilteredGradesTables = await this.gradesTablesModel.find({
           userId: requestInfo.userId,
           userGradesYear: requestInfo.yearFiltration,
           userGradesTrim: requestInfo.trimesterFiltration,
@@ -55,7 +75,7 @@ export class GradesManagementService {
           data: userFilteredGradesTables,
         };
       } else if (requestInfo.yearFiltration != undefined) {
-        const userFilteredGradesTables = await this.userGradesModel.find({
+        const userFilteredGradesTables = await this.gradesTablesModel.find({
           userId: requestInfo.userId,
           userGradesYear: requestInfo.yearFiltration,
         });
@@ -66,7 +86,7 @@ export class GradesManagementService {
           data: userFilteredGradesTables,
         };
       } else if (requestInfo.trimesterFiltration != undefined) {
-        const userFilteredGradesTables = await this.userGradesModel.find({
+        const userFilteredGradesTables = await this.gradesTablesModel.find({
           userId: requestInfo.userId,
           userGradesTrim: requestInfo.trimesterFiltration,
         });
@@ -86,7 +106,7 @@ export class GradesManagementService {
     requestInfo: CreateGradesTableDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const checkingTheExistenseOfTheTable = await this.userGradesModel.find({
+      const checkingTheExistenseOfTheTable = await this.gradesTablesModel.find({
         userGradesYear: requestInfo.userGradesYear,
         userGradesTrim: requestInfo.userGradesTrim,
       });
@@ -94,6 +114,8 @@ export class GradesManagementService {
       if (checkingTheExistenseOfTheTable.length > 0) {
         throw new HttpException('The grades table is already exist', 400);
       } else {
+        const userInDB = await this.userModel.find({ _id: requestInfo.userId });
+
         let userFullGrade: number = 0;
 
         for (let i = 0; i < requestInfo.userGrades.length; i++) {
@@ -103,8 +125,9 @@ export class GradesManagementService {
         const userGradesAverage: number =
           userFullGrade / requestInfo.userGrades.length;
 
-        const newGradesTable = new this.userGradesModel({
+        const newGradesTable = new this.gradesTablesModel({
           userId: requestInfo.userId,
+          userSubjects: userInDB[0].userSubjects,
           userGradesYear: requestInfo.userGradesYear,
           userGradesTrim: requestInfo.userGradesTrim,
           userGradesTable: requestInfo.userGrades,
@@ -126,15 +149,16 @@ export class GradesManagementService {
     requestInfo: UpdateUserGradesTableDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const grades_table = await this.userGradesModel.find({
+      const grades_table = await this.gradesTablesModel.find({
         _id: requestInfo.tableId,
       });
 
       if (grades_table[0].userId == requestInfo.userId) {
-        const checkingTheExistenseOfTheTable = await this.userGradesModel.find({
-          userGradesYear: requestInfo.newUserGradesTableYear,
-          userGradesTrim: requestInfo.newUserGradesTableTrim,
-        });
+        const checkingTheExistenseOfTheTable =
+          await this.gradesTablesModel.find({
+            userGradesYear: requestInfo.newUserGradesTableYear,
+            userGradesTrim: requestInfo.newUserGradesTableTrim,
+          });
 
         if (checkingTheExistenseOfTheTable.length > 0) {
           throw new HttpException('This table is already exist', 400);
@@ -148,7 +172,7 @@ export class GradesManagementService {
           const userGradesAverage: number =
             userFullGrade / requestInfo.newUserGradesTable.length;
 
-          await this.userGradesModel.updateOne(
+          await this.gradesTablesModel.updateOne(
             { _id: requestInfo.tableId },
             {
               $set: {
@@ -180,12 +204,12 @@ export class GradesManagementService {
     requestInfo: DeleteGradesTableDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const gradesTable = await this.userGradesModel.find({
+      const gradesTable = await this.gradesTablesModel.find({
         _id: requestInfo.tableId,
       });
 
       if (gradesTable[0].userId == requestInfo.userId) {
-        await this.userGradesModel.deleteOne({ _id: requestInfo.tableId });
+        await this.gradesTablesModel.deleteOne({ _id: requestInfo.tableId });
         return {
           successMessage: 'Grades table deleted successfully',
           statusCode: 200,

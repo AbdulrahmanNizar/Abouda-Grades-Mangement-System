@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersManagementController } from './users_management.controller';
+import { UsersManagementController } from './users-management.controller';
 
 describe('UsersManagementController', () => {
   let controller: UsersManagementController;
@@ -9,7 +9,9 @@ describe('UsersManagementController', () => {
       controllers: [UsersManagementController],
     }).compile();
 
-    controller = module.get<UsersManagementController>(UsersManagementController);
+    controller = module.get<UsersManagementController>(
+      UsersManagementController,
+    );
   });
 
   it('should be defined', () => {

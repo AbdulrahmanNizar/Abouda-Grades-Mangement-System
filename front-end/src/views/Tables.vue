@@ -59,7 +59,7 @@
             class="img-fluid"
             style="width: 41%; height: 97%; border-radius: 50%"
           />
-          <h6 class="text-center text-white mt-2">{{ user_info[0].username }}</h6>
+          <h6 class="text-center text-white mt-2">{{ userInfo[0].username }}</h6>
         </div>
 
         <div
@@ -160,7 +160,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store'
-import GradesTable from '@/components/GradesTable.vue'
+import GradesTable from '@/components/GradesTableCard.vue'
 
 const store = useUserStore()
 const router = useRouter()
@@ -172,7 +172,7 @@ const currentYear = ref<number>(new Date().getFullYear())
 const gradesTablesYear = ref<string>('Filter By Year')
 const gradesTablesTrimester = ref<string>('Filter By Trimester')
 
-const user_info = computed(() => {
+const userInfo = computed(() => {
   return store.userInfo
 })
 

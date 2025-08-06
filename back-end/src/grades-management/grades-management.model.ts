@@ -1,8 +1,9 @@
 import * as mongoose from 'mongoose';
 
-export const usersGradesManagementSchema = new mongoose.Schema(
+export const gradesTablesManagementSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
+    userSubjects: { type: Object, required: true },
     userGradesYear: { type: String, required: true },
     userGradesTrim: { type: String, required: true },
     userGradesTable: { type: Object, required: true },
@@ -11,8 +12,9 @@ export const usersGradesManagementSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-export interface UsersGrades {
+export interface gradesTables {
   userId: string;
+  userSubjects: object[];
   userGradesYear: string;
   userGradesTrim: string;
   userGradesTable: object[];

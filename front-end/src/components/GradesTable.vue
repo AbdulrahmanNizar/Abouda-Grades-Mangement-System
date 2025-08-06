@@ -1,28 +1,32 @@
 <template>
-  <div
-    class="d-flex flex-column justify-content-center align-items-center p-3 border rounded me-2 ms-2 mt-2 col-6"
-    style="width: 30%"
-    id="gradesTable"
-    v-motion-pop-visible
-  >
-    <h5>Year: {{ props.gradesTable.userGradesYear }}</h5>
-    <h5>Term: {{ props.gradesTable.userGradesTrim }}</h5>
-    <h5>Grade: {{ Math.round(props.gradesTable.userGradesAverage) }}%</h5>
-    <hr class="w-100" />
-    <router-link :to="{ path: '/table/' + props.gradesTable._id }" class="btn btn-dark w-100"
-      >View Details</router-link
-    >
+  <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+    <table class="table table-hover w-50">
+      <thead>
+        <tr>
+          <th scope="col">Subject</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr scope="row" v-for="subject in props.gradesTableDetails[0].userSubjects">
+          <td>{{ subject }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <table class="table table-hover w-50">
+      <thead>
+        <tr>
+          <th scope="col">Grade</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr scope="row" v-for="grade in props.gradesTableDetails[0].userGradesTable">
+          <td>{{ grade }}%</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script setup lang="ts">
-const props = defineProps(['gradesTable'])
+const props = defineProps(['gradesTableDetails'])
 </script>
-
-<style>
-@media only screen and (max-width: 991px) {
-  #gradesTable {
-    width: 80% !important;
-  }
-}
-</style>
