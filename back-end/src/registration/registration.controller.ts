@@ -1,0 +1,46 @@
+import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import { RegistrationService } from './registration.service';
+import { SignUpUserDto } from './dto/SignUp.dto';
+import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
+import { LoginUserDto } from './dto/Login.dto';
+import { LogoutUserDto } from './dto/Logout.dto';
+import { VerifyTokenDto } from './dto/VerifyToken.dto';
+
+@Controller('registration')
+export class RegistrationController {
+  constructor(private readonly registrationService: RegistrationService) {}
+
+  @Post('/signup')
+  async signup(
+    @Body() createUserDto: SignUpUserDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res.status(201).json(await this.registrationService.signup(createUserDto));
+  }
+
+  @Post('/login')
+  async login(
+    @Body() loginUserDto: LoginUserDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res.status(200).json(await this.registrationService.login(loginUserDto));
+  }
+
+  @Get('/logout/:userId')
+  async logout(
+    @Param() logoutUserDto: LogoutUserDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res.status(200).json(await this.registrationService.logout(logoutUserDto));
+  }
+
+  @Post('/verifyToken')
+  async verifyToken(
+    @Body() verifyTokenDto: VerifyTokenDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res
+      .status(200)
+      .json(await this.registrationService.verifyToken(verifyTokenDto));
+  }
+}
