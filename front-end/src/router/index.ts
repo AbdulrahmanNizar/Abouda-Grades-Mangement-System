@@ -6,6 +6,7 @@ import Tables from '@/views/Tables.vue'
 import CreateTable from '@/views/CreateTable.vue'
 import TableDetails from '@/views/TableDetails.vue'
 import NotFound from '@/views/NotFound.vue'
+import Account from '@/views/Account.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -46,6 +47,15 @@ const router = createRouter({
       name: 'TableDetails',
       path: '/table/:tableId',
       component: TableDetails,
+      meta: {
+        needs_auth_token:
+          (await verifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
+      },
+    },
+    {
+      name: 'Account',
+      path: '/account',
+      component: Account,
       meta: {
         needs_auth_token:
           (await verifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,

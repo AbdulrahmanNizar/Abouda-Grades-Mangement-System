@@ -77,7 +77,6 @@
           <router-link :to="{ path: '/tables' }" class="h6 mb-0 text-decoration-none w-100">
             <div
               class="w-100 text-center text-white d-flex flex-row justify-content-center align-items-center p-3 another-section"
-              style="background-color: rgb(52, 52, 52)"
             >
               <i class="bi bi-table mb-0 me-1"></i>
               <h6 class="mb-0 ms-1 d-lg-block d-none">Tables</h6>
@@ -86,6 +85,7 @@
           <router-link :to="{ path: '/account' }" class="h6 mb-0 text-decoration-none w-100"
             ><div
               class="w-100 text-center text-white d-flex flex-row justify-content-center align-items-center p-3 another-section"
+              style="background-color: rgb(52, 52, 52)"
             >
               <i class="bi bi-person-circle mb-0 me-1"></i>
               <h6 class="mb-0 ms-1 d-lg-block d-none">Account</h6>
@@ -103,78 +103,23 @@
         class="h-100 text-black d-flex flex-column justify-content-start align-items-start"
         style="width: 84%"
         id="dashboard"
-      >
-        <div class="w-100 d-flex flex-column justify-content-center align-items-start">
-          <h3 class="ms-5 mt-5">Grades Table</h3>
-          <p class="h5 ms-5">Take a look at your grades</p>
-          <hr class="w-100" />
-        </div>
-
-        <div class="w-100 d-flex flex-column justify-content-center align-items-center">
-          <GradesTable :gradesTableDetails="userGradesTableDetails" />
-
-          <div
-            class="shadow rounded p-5 d-flex flex-row justify-content-center align-items-center w-25"
-            v-motion-fade
-            v-if="showGradesTableNotFoundMessage"
-          >
-            <h2>{{ gradesTableNotFoundMessage }}</h2>
-          </div>
-
-          <hr class="w-100" />
-
-          <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-            <router-link :to="{ path: '/tables' }" class="btn btn-dark w-25">Go Back</router-link>
-          </div>
-        </div>
-      </div>
+      ></div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/store'
-import GradesTable from '@/components/GradesTable.vue'
+import { useRouter } from 'vue-router'
 
-const router = useRouter()
-const route = useRoute()
 const store = useUserStore()
-const tableId = route.params.tableId
+const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
-const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
-const userGradesTableDetails = ref<string[] | object[]>([])
-const showGradesTableNotFoundMessage = ref<boolean>(false)
-const gradesTableNotFoundMessage = ref<string>('')
 
 const userInfo = computed(() => {
   return store.userInfo
 })
-
-const getGradesTableDetails = async (): Promise<void> => {
-  try {
-    const requestOptions: any = {
-      method: 'GET',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
-    }
-
-    const response = await fetch(
-      'http://127.0.0.1:3000/grades-management/getGradesTableDetails/' + tableId,
-      requestOptions,
-    )
-    const data = await response.json()
-    if (data.statusCode >= 200 && data.statusCode < 300) {
-      userGradesTableDetails.value = data.data
-    } else {
-      gradesTableNotFoundMessage.value = data.message
-      showGradesTableNotFoundMessage.value = true
-    }
-  } catch (err) {
-    console.log(err)
-  }
-}
 
 const logout = async (): Promise<void> => {
   try {
@@ -201,5 +146,4 @@ const logout = async (): Promise<void> => {
 }
 
 store.getUserInfo()
-getGradesTableDetails()
 </script>
