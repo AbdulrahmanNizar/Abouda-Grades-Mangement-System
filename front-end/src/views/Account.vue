@@ -176,7 +176,19 @@
               aria-label="Close"
             ></button>
           </div>
-          <div class="modal-body d-flex flex-row justify-content-center align-items-center w-100">
+          <div
+            class="modal-body d-flex flex-column justify-content-center align-items-center w-100"
+          >
+            <transition name="bounce">
+              <div
+                class="alert alert-danger w-100 text-center"
+                role="alert"
+                v-if="showCreateSubjectError"
+              >
+                {{ createSubjectError }}
+              </div>
+            </transition>
+
             <div class="form-floating w-100">
               <input
                 type="text"
@@ -209,6 +221,10 @@ const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const showUserSubjects = ref<boolean>(false)
 const newSubject = ref<string>('')
+const showCreateSubjectError = ref<boolean>(false)
+const createSubjectError = ref<string>('')
+const showDeleteSubjectError = ref<boolean>(false)
+const deleteSubjectError = ref<string>('')
 
 const userInfo = computed(() => {
   return store.userInfo
@@ -220,25 +236,33 @@ const showUserSubjectsList = () => {
 
 const createSubject = async (): Promise<void> => {
   try {
-    const requestOptions: any = {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
-      body: JSON.stringify({
-        userId: userId.value,
-        newSubject: newSubject.value,
-      }),
-    }
+    if (newSubject.value != '') {
+      const requestOptions: any = {
+        method: 'POST',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+        body: JSON.stringify({
+          userId: userId.value,
+          newSubject: newSubject.value,
+        }),
+      }
 
-    const response = await fetch(
-      'http://127.0.0.1:3000/subjects-management/createSubject',
-      requestOptions,
-    )
-    const data = await response.json()
-    if (data.statusCode >= 200 && data.statusCode < 300) {
-      store.getUserInfo()
+      const response = await fetch(
+        'http://127.0.0.1:3000/subjects-management/createSubject',
+        requestOptions,
+      )
+      const data = await response.json()
+      if (data.statusCode >= 200 && data.statusCode < 300) {
+        window.location.reload()
+      } else {
+        createSubjectError.value = data.message
+        showCreateSubjectError.value = true
+        setTimeout(() => (showCreateSubjectError.value = false), 3000)
+      }
     } else {
-      console.log(data.message)
+      createSubjectError.value = 'Please fill the field'
+      showCreateSubjectError.value = true
+      setTimeout(() => (showCreateSubjectError.value = false), 3000)
     }
   } catch (err) {
     console.log(err)
@@ -248,7 +272,7 @@ const createSubject = async (): Promise<void> => {
 const deleteSubject = async (subject: string): Promise<void> => {
   try {
     const requestOptions: any = {
-      method: 'POST',
+      method: 'DELETE',
       mode: 'cors',
       headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
       body: JSON.stringify({
@@ -263,9 +287,11 @@ const deleteSubject = async (subject: string): Promise<void> => {
     )
     const data = await response.json()
     if (data.statusCode >= 200 && data.statusCode < 300) {
-      store.getUserInfo()
+      window.location.reload()
     } else {
-      console.log(data.message)
+      deleteSubjectError.value = data.message
+      showDeleteSubjectError.value = true
+      setTimeout(() => (showDeleteSubjectError.value = false), 3000)
     }
   } catch (err) {
     console.log(err)
