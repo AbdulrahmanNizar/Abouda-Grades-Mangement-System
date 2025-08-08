@@ -42,7 +42,7 @@ interface userInfoInterface {
   id: string
   username: string
   email: string
-  userSubjects: object[]
+  userSubjects: string[]
 }
 
 interface requestOptionsInterface {

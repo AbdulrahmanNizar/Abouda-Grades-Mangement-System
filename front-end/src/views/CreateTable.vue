@@ -354,7 +354,7 @@ store.getUserInfo()
 getLastFiveYears()
 </script>
 
-<style>
+<style scoped>
 .bounce-enter-active {
   animation: bounce-in 0.5s;
 }
@@ -364,9 +364,6 @@ getLastFiveYears()
 @keyframes bounce-in {
   0% {
     transform: scale(0);
-  }
-  50% {
-    transform: scale(1.05);
   }
   100% {
     transform: scale(1);

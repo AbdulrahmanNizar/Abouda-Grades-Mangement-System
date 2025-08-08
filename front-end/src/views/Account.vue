@@ -100,26 +100,126 @@
       </div>
 
       <div
-        class="h-100 text-black d-flex flex-column justify-content-start align-items-start"
+        class="h-100 overflow-y-auto text-black d-flex flex-column justify-content-start align-items-start"
         style="width: 84%"
         id="dashboard"
-      ></div>
+      >
+        <div class="w-100 d-flex flex-column justify-content-center align-items-start">
+          <h3 class="ms-5 mt-5">{{ userInfo[0].username }}</h3>
+          <p class="h5 ms-5">{{ userInfo[0].email }}</p>
+          <hr class="w-100" />
+        </div>
+
+        <div class="w-100 d-flex flex-column justify-content-start align-items-start">
+          <button
+            class="btn btn-dark w-25 ms-5"
+            v-if="showUserSubjects == false"
+            @click="showUserSubjectsList"
+          >
+            Show Subjects List
+          </button>
+          <button
+            class="btn btn-dark w-25 ms-5"
+            v-else="showUserSubjects"
+            @click="showUserSubjectsList"
+          >
+            Close Subjects List
+          </button>
+          <button
+            class="btn btn-dark w-25 ms-5 mt-1"
+            data-bs-toggle="modal"
+            data-bs-target="#addNewSubjectModal"
+          >
+            Add New Subject
+          </button>
+          <hr class="w-100" />
+        </div>
+
+        <transition name="bounce" class="w-100">
+          <div
+            class="w-100 d-flex flex-column justify-content-start align-items-center p-3"
+            v-if="showUserSubjects"
+          >
+            <ul class="list-group mx-5 border rounded shadow p-2 w-50" id="subjectsList">
+              <li
+                class="list-group-item d-flex flex-row justify-content-between align-items-center"
+                v-for="subject in userInfo[0].userSubjects"
+              >
+                <h5>{{ subject }}</h5>
+                <div class="d-flex flex-row justify-content-center align-items-center">
+                  <button class="btn btn-danger" @click="deleteSubject(subject)">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </transition>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="addNewSubjectModal"
+      tabindex="-1"
+      aria-labelledby="addNewSubjectModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addNewSubjectModalLabel">Add New Subject</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body d-flex flex-row justify-content-center align-items-center w-100">
+            <div class="form-floating w-100">
+              <input
+                type="text"
+                class="form-control"
+                placeholder="Subject"
+                id="addNewSubjectInput"
+                v-model="newSubject"
+              />
+              <label for="addNewSubjectInput">Subject</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-dark" @click="createSubject">Add</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useUserStore } from '@/store'
 import { useRouter } from 'vue-router'
+import { useUserStore } from '@/store'
 
 const store = useUserStore()
 const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
+const showUserSubjects = ref<boolean>(false)
+const newSubject = ref<string>('')
 
 const userInfo = computed(() => {
   return store.userInfo
 })
+
+const showUserSubjectsList = () => {
+  showUserSubjects.value = !showUserSubjects.value
+}
+
+const createSubject = async (): Promise<void> => {}
+
+const deleteSubject = async (subject: string): Promise<void> => {}
 
 const logout = async (): Promise<void> => {
   try {
@@ -147,3 +247,26 @@ const logout = async (): Promise<void> => {
 
 store.getUserInfo()
 </script>
+
+<style scoped>
+.bounce-enter-active {
+  animation: bounce-in 0.5s;
+}
+.bounce-leave-active {
+  animation: bounce-in 0.5s reverse;
+}
+@keyframes bounce-in {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@media only screen and (max-width: 991px) {
+  #subjectsList {
+    width: 100% !important;
+  }
+}
+</style>
