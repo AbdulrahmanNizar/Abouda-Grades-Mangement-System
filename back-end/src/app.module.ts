@@ -4,9 +4,8 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RegistrationModule } from './registration/registration.module';
 import { GradesManagementModule } from './grades-management/grades-management.module';
-import { UsersManagementController } from './users-management/users-management.controller';
-import { UsersManagementService } from './users-management/users-management.service';
 import { UsersManagementModule } from './users-management/users-management.module';
+import { SubjectsManagementModule } from './subjects-management/subjects-management.module';
 
 @Module({
   imports: [
@@ -14,6 +13,7 @@ import { UsersManagementModule } from './users-management/users-management.modul
     RegistrationModule,
     GradesManagementModule,
     UsersManagementModule,
+    SubjectsManagementModule,
   ],
   controllers: [AppController],
   providers: [AppService],
