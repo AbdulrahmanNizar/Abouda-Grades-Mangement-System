@@ -206,6 +206,7 @@ import { useUserStore } from '@/store'
 const store = useUserStore()
 const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
+const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const showUserSubjects = ref<boolean>(false)
 const newSubject = ref<string>('')
 
@@ -217,9 +218,59 @@ const showUserSubjectsList = () => {
   showUserSubjects.value = !showUserSubjects.value
 }
 
-const createSubject = async (): Promise<void> => {}
+const createSubject = async (): Promise<void> => {
+  try {
+    const requestOptions: any = {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+      body: JSON.stringify({
+        userId: userId.value,
+        newSubject: newSubject.value,
+      }),
+    }
 
-const deleteSubject = async (subject: string): Promise<void> => {}
+    const response = await fetch(
+      'http://127.0.0.1:3000/subjects-management/createSubject',
+      requestOptions,
+    )
+    const data = await response.json()
+    if (data.statusCode >= 200 && data.statusCode < 300) {
+      store.getUserInfo()
+    } else {
+      console.log(data.message)
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const deleteSubject = async (subject: string): Promise<void> => {
+  try {
+    const requestOptions: any = {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+      body: JSON.stringify({
+        userId: userId.value,
+        subject: subject,
+      }),
+    }
+
+    const response = await fetch(
+      'http://127.0.0.1:3000/subjects-management/deleteSubject',
+      requestOptions,
+    )
+    const data = await response.json()
+    if (data.statusCode >= 200 && data.statusCode < 300) {
+      store.getUserInfo()
+    } else {
+      console.log(data.message)
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 const logout = async (): Promise<void> => {
   try {
