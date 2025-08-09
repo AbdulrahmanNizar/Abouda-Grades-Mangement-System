@@ -197,10 +197,10 @@ const getLastFiveYears = (): void => {
 const resetFiltrations = () => {
   gradesTablesYear.value = 'Filter By Year'
   gradesTablesTrimester.value = 'Filter By Trimester'
-  getUserGradesTables()
+  getTables()
 }
 
-const getUserGradesTables = async (): Promise<void> => {
+const getTables = async (): Promise<void> => {
   try {
     const requestOptions: any = {
       method: 'GET',
@@ -267,7 +267,7 @@ watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promis
 watch(
   gradesTablesTrimester,
   async (newGradesTablesTrimester, oldGradesTablesTrimester): Promise<void> => {
-    if (gradesTablesYear.value != 'Filter By Trimester') {
+    if (gradesTablesYear.value != 'Filter By Year') {
       const requestOptions: any = {
         method: 'POST',
         mode: 'cors',
@@ -287,7 +287,7 @@ watch(
       if (data.statusCode >= 200 && data.statusCode < 300) {
         userGradesTables.value = data.data
       }
-    } else if (gradesTablesYear.value == 'Filter By Trimester') {
+    } else if (gradesTablesYear.value == 'Filter By Year') {
       const requestOptions: any = {
         method: 'POST',
         mode: 'cors',
@@ -336,5 +336,5 @@ const logout = async (): Promise<void> => {
 
 store.getUserInfo()
 getLastFiveYears()
-getUserGradesTables()
+getTables()
 </script>
