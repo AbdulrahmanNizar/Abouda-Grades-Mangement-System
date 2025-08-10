@@ -112,6 +112,13 @@
 
         <div class="w-100 d-flex flex-column justify-content-start align-items-start">
           <button
+            class="btn btn-dark w-25 ms-5 mb-1"
+            data-bs-toggle="modal"
+            data-bs-target="#addNewSubjectModal"
+          >
+            Add New Subject
+          </button>
+          <button
             class="btn btn-dark w-25 ms-5"
             v-if="showUserSubjects == false"
             @click="showUserSubjectsList"
@@ -124,13 +131,6 @@
             @click="showUserSubjectsList"
           >
             Close Subjects List
-          </button>
-          <button
-            class="btn btn-dark w-25 ms-5 mt-1"
-            data-bs-toggle="modal"
-            data-bs-target="#addNewSubjectModal"
-          >
-            Add New Subject
           </button>
           <hr class="w-100" />
         </div>
@@ -215,7 +215,7 @@ import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store'
 
-const store = useUserStore()
+const userStore = useUserStore()
 const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
@@ -227,7 +227,7 @@ const showDeleteSubjectError = ref<boolean>(false)
 const deleteSubjectError = ref<string>('')
 
 const userInfo = computed(() => {
-  return store.userInfo
+  return userStore.userInfo
 })
 
 const showUserSubjectsList = () => {
@@ -322,7 +322,7 @@ const logout = async (): Promise<void> => {
   }
 }
 
-store.getUserInfo()
+userStore.getUserInfo()
 </script>
 
 <style scoped>

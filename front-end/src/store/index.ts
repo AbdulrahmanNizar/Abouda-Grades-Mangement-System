@@ -5,8 +5,8 @@ export const useUserStore = defineStore('users', {
   state: () => {
     return {
       router: useRouter(),
-      jwtToken: localStorage.getItem('jwtToken'),
-      userId: localStorage.getItem('userId'),
+      jwtToken: <string | null>localStorage.getItem('jwtToken'),
+      userId: <string | null>localStorage.getItem('userId'),
       userInfo: [] as userInfoInterface[],
     }
   },
@@ -38,6 +38,39 @@ export const useUserStore = defineStore('users', {
   },
 })
 
+export const useGradesTablesStore = defineStore('gradesTables', {
+  state: () => {
+    return {
+      userId: <string | null>localStorage.getItem('userId'),
+      jwtToken: <string | null>localStorage.getItem('jwtToken'),
+      userGradesTablesYears: [] as userGradesTablesYearsInterface[],
+    }
+  },
+
+  actions: {
+    async getTablesYears(): Promise<void> {
+      try {
+        const requestOptions: any = {
+          method: 'GET',
+          mode: 'cors',
+          headers: { 'Content-Type': 'application/json', jwt_token: this.jwtToken },
+        }
+
+        const response = await fetch(
+          'http://127.0.0.1:3000/grades-management/getTablesYears/' + this.userId,
+          requestOptions,
+        )
+        const data = await response.json()
+        if (data.statusCode >= 200 && data.statusCode < 300) {
+          this.userGradesTablesYears = data.data
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+  },
+})
+
 interface userInfoInterface {
   id: string
   username: string
@@ -50,4 +83,8 @@ interface requestOptionsInterface {
   mode: string | any
   headers: object | any
   body?: string | any
+}
+
+interface userGradesTablesYearsInterface {
+  year: string
 }

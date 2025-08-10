@@ -123,7 +123,7 @@
           >
             <select class="form-select text-black ms-1 mt-1" v-model="gradesTablesYear">
               <option value="Filter By Year" selected disabled>Filter By Year</option>
-              <option v-for="year in lastFiveYears" :value="year">{{ year }}</option>
+              <option v-for="year in userGradesTablesYears" :value="year">{{ year }}</option>
             </select>
 
             <select class="form-select text-black ms-1 mt-1" v-model="gradesTablesTrimester">
@@ -159,21 +159,24 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/store'
+import { useUserStore, useGradesTablesStore } from '@/store'
 import GradesTable from '@/components/GradesTableCard.vue'
 
-const store = useUserStore()
+const userStore = useUserStore()
+const gradesTablesStore = useGradesTablesStore()
 const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const userGradesTables = ref<string[] | object[]>([])
-const lastFiveYears = ref<number[]>([])
-const currentYear = ref<number>(new Date().getFullYear())
 const gradesTablesYear = ref<string>('Filter By Year')
 const gradesTablesTrimester = ref<string>('Filter By Trimester')
 
 const userInfo = computed(() => {
-  return store.userInfo
+  return userStore.userInfo
+})
+
+const userGradesTablesYears = computed(() => {
+  return gradesTablesStore.userGradesTablesYears
 })
 
 const showNotFoundGradesTablesMessage = computed((): boolean => {
@@ -188,13 +191,7 @@ const showNotFoundGradesTablesMessage = computed((): boolean => {
   }
 })
 
-const getLastFiveYears = (): void => {
-  for (let i = 0; i <= 5; i++) {
-    lastFiveYears.value.push(currentYear.value - i)
-  }
-}
-
-const resetFiltrations = () => {
+const resetFiltrations = (): void => {
   gradesTablesYear.value = 'Filter By Year'
   gradesTablesTrimester.value = 'Filter By Trimester'
   getTables()
@@ -222,7 +219,10 @@ const getTables = async (): Promise<void> => {
 }
 
 watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promise<void> => {
-  if (gradesTablesTrimester.value != 'Filter By Trimester') {
+  if (
+    gradesTablesTrimester.value != 'Filter By Trimester' &&
+    newGradesTablesYear != 'Filter By Year'
+  ) {
     const requestOptions: any = {
       method: 'POST',
       mode: 'cors',
@@ -242,7 +242,10 @@ watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promis
     if (data.statusCode >= 200 && data.statusCode < 300) {
       userGradesTables.value = data.data
     }
-  } else if (gradesTablesTrimester.value == 'Filter By Trimester') {
+  } else if (
+    gradesTablesTrimester.value == 'Filter By Trimester' &&
+    newGradesTablesYear != 'Filter By Year'
+  ) {
     const requestOptions: any = {
       method: 'POST',
       mode: 'cors',
@@ -267,7 +270,10 @@ watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promis
 watch(
   gradesTablesTrimester,
   async (newGradesTablesTrimester, oldGradesTablesTrimester): Promise<void> => {
-    if (gradesTablesYear.value != 'Filter By Year') {
+    if (
+      gradesTablesYear.value != 'Filter By Year' &&
+      newGradesTablesTrimester != 'Filter By Trimester'
+    ) {
       const requestOptions: any = {
         method: 'POST',
         mode: 'cors',
@@ -287,7 +293,10 @@ watch(
       if (data.statusCode >= 200 && data.statusCode < 300) {
         userGradesTables.value = data.data
       }
-    } else if (gradesTablesYear.value == 'Filter By Year') {
+    } else if (
+      gradesTablesYear.value == 'Filter By Year' &&
+      newGradesTablesTrimester != 'Filter By Trimester'
+    ) {
       const requestOptions: any = {
         method: 'POST',
         mode: 'cors',
@@ -334,7 +343,7 @@ const logout = async (): Promise<void> => {
   }
 }
 
-store.getUserInfo()
-getLastFiveYears()
+userStore.getUserInfo()
+gradesTablesStore.getTablesYears()
 getTables()
 </script>

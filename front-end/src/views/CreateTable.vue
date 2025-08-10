@@ -229,7 +229,7 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/index.ts'
 
-const store = useUserStore()
+const userStore = useUserStore()
 const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
@@ -246,7 +246,7 @@ const showSuccessModel = ref<boolean>(false)
 const errorForCreationOperation = ref<string>('')
 
 const userInfo: any = computed(() => {
-  return store.userInfo
+  return userStore.userInfo
 })
 
 const changeTheNoteColorToRed = computed(() => {
@@ -350,7 +350,7 @@ const logout = async (): Promise<void> => {
   }
 }
 
-store.getUserInfo()
+userStore.getUserInfo()
 getLastFiveYears()
 </script>
 

@@ -140,7 +140,7 @@ import GradesTable from '@/components/GradesTable.vue'
 
 const router = useRouter()
 const route = useRoute()
-const store = useUserStore()
+const userStore = useUserStore()
 const tableId = route.params.tableId
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
@@ -149,7 +149,7 @@ const showGradesTableNotFoundMessage = ref<boolean>(false)
 const gradesTableNotFoundMessage = ref<string>('')
 
 const userInfo = computed(() => {
-  return store.userInfo
+  return userStore.userInfo
 })
 
 const getGradesTableDetails = async (): Promise<void> => {
@@ -200,6 +200,6 @@ const logout = async (): Promise<void> => {
   }
 }
 
-store.getUserInfo()
+userStore.getUserInfo()
 getGradesTableDetails()
 </script>

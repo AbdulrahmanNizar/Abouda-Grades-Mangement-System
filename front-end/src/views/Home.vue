@@ -100,7 +100,7 @@
       </div>
 
       <div
-        class="h-100 text-black d-flex flex-column justify-content-start align-items-start"
+        class="h-100 overflow-y-auto text-black d-flex flex-column justify-content-start align-items-start"
         style="width: 84%"
         id="dashboard"
       >
@@ -112,25 +112,11 @@
 
         <div class="w-100 mt-4 d-flex flex-column justify-content-center align-items-center">
           <div
-            class="d-flex flex-md-row flex-column justify-content-center align-items-center w-75"
+            class="d-flex flex-md-row flex-column justify-content-center align-items-center w-50"
           >
-            <select class="form-select text-black ms-1 mt-1" v-model="filtrationBySubject">
-              <option value="Filter By Subject" selected disabled>Filter By Subject</option>
-              <option v-for="subject in userInfo[0].userSubjects" :value="subject">
-                {{ subject }}
-              </option>
-            </select>
-
             <select class="form-select text-black ms-1 mt-1" v-model="filtrationByYear">
               <option value="Filter By Year" selected disabled>Filter By Year</option>
               <option v-for="year in lastFiveYears" :value="year">{{ year }}</option>
-            </select>
-
-            <select class="form-select text-black ms-1 mt-1" v-model="filtrationByTrimester">
-              <option value="Filter By Trimester" selected disabled>Filter By Trimester</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
             </select>
           </div>
 
@@ -141,7 +127,7 @@
         </div>
 
         <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-          No information was found
+          <StatisticsChart />
         </div>
       </div>
     </div>
@@ -152,19 +138,17 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store'
+import StatisticsChart from '@/components/StatisticsChart.vue'
 
 const router = useRouter()
-const store = useUserStore()
+const userStore = useUserStore()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const lastFiveYears = ref<number[]>([])
 const currentYear = ref<number>(new Date().getFullYear())
-
-const filtrationBySubject = ref<string>('Filter By Subject')
 const filtrationByYear = ref<string>('Filter By Year')
-const filtrationByTrimester = ref<string>('Filter By Trimester')
 
 const userInfo = computed(() => {
-  return store.userInfo
+  return userStore.userInfo
 })
 
 const getLastFiveYears = () => {
@@ -174,9 +158,7 @@ const getLastFiveYears = () => {
 }
 
 const resetFiltrations = () => {
-  filtrationBySubject.value = 'Filter By Subject'
   filtrationByYear.value = 'Filter By Year'
-  filtrationByTrimester.value = 'Filter By Trimester'
 }
 
 const logout = async (): Promise<void> => {
@@ -203,8 +185,8 @@ const logout = async (): Promise<void> => {
   }
 }
 
+userStore.getUserInfo()
 getLastFiveYears()
-store.getUserInfo()
 </script>
 
 <style>
