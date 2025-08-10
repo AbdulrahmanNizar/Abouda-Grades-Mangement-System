@@ -11,13 +11,14 @@ import {
 } from '@nestjs/common';
 import { GradesManagementService } from './grades-management.service';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
-import { GetGradesDto } from './dto/GetGrades.dto';
+import { GetGradesDto } from './dto/GetGradesTables.dto';
 import { CreateGradesTableDto } from './dto/CreateGradesTable.dto';
 import { UpdateUserGradesTableDto } from './dto/UpdateGradesTable.dto';
 import { DeleteGradesTableDto } from './dto/DeleteGradesTable.dto';
 import { AuthGuard } from './auth/auth.guard';
-import { GetFilteredGradesDto } from './dto/GetFilteredGrades.dto';
+import { GetFilteredGradesDto } from './dto/GetFilteredGradesTables.dto';
 import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
+import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
 
 @Controller('grades-management')
 export class GradesManagementController {
@@ -34,6 +35,21 @@ export class GradesManagementController {
     res
       .status(200)
       .json(await this.gradesManagementService.getGradesTable(getGradesDto));
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('/getGradesTablesYears/:userId')
+  async getGradesTablesYears(
+    @Param() getGradesTablesYearsDto: GetGradesTablesYearsDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res
+      .status(200)
+      .json(
+        await this.gradesManagementService.getGradesTablesYears(
+          getGradesTablesYearsDto,
+        ),
+      );
   }
 
   @UseGuards(AuthGuard)

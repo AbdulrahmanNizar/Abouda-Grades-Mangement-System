@@ -1,5 +1,5 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { GetGradesDto } from './dto/GetGrades.dto';
+import { GetGradesDto } from './dto/GetGradesTables.dto';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -7,9 +7,10 @@ import { gradesTables } from './grades-management.model';
 import { CreateGradesTableDto } from './dto/CreateGradesTable.dto';
 import { UpdateUserGradesTableDto } from './dto/UpdateGradesTable.dto';
 import { DeleteGradesTableDto } from './dto/DeleteGradesTable.dto';
-import { GetFilteredGradesDto } from './dto/GetFilteredGrades.dto';
+import { GetFilteredGradesDto } from './dto/GetFilteredGradesTables.dto';
 import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
 import { User } from 'src/registration/registration.model';
+import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
 
 @Injectable()
 export class GradesManagementService {
@@ -32,6 +33,33 @@ export class GradesManagementService {
         statusCode: 200,
         data: { userGradesTables: userGradesTables },
       };
+    } catch (err) {
+      throw new HttpException(err, err.status);
+    }
+  }
+
+  async getGradesTablesYears(
+    requestInfo: GetGradesTablesYearsDto,
+  ): Promise<SuccessResponseObjectDto | void> {
+    try {
+      const gradesTables = await this.gradesTablesModel.find({
+        userId: requestInfo.userId,
+      });
+      const gradesTablesYears: string[] = [];
+
+      if (gradesTables.length > 0) {
+        for (let i = 0; i < gradesTables.length; i++) {
+          gradesTablesYears.push(gradesTables[i].userGradesYear);
+        }
+
+        return {
+          successMessage: 'Got the grades tables years successfully',
+          statusCode: 200,
+          data: gradesTablesYears,
+        };
+      } else {
+        throw new HttpException('No tables were found', 404);
+      }
     } catch (err) {
       throw new HttpException(err, err.status);
     }
@@ -192,7 +220,7 @@ export class GradesManagementService {
       } else {
         throw new HttpException(
           "You don't have the permissions to do this action",
-          403,
+          401,
         );
       }
     } catch (err) {
@@ -217,7 +245,7 @@ export class GradesManagementService {
       } else {
         throw new HttpException(
           "You don't have the permissions to do this action",
-          403,
+          401,
         );
       }
     } catch (err) {
