@@ -57,7 +57,7 @@ export const useGradesTablesStore = defineStore('gradesTables', {
         }
 
         const response = await fetch(
-          'http://127.0.0.1:3000/grades-management/getTablesYears/' + this.userId,
+          'http://127.0.0.1:3000/grades-management/getGradesTablesYears/' + this.userId,
           requestOptions,
         )
         const data = await response.json()
