@@ -110,24 +110,10 @@
           <hr class="w-100" />
         </div>
 
-        <div class="w-100 mt-4 d-flex flex-column justify-content-center align-items-center">
-          <div
-            class="d-flex flex-md-row flex-column justify-content-center align-items-center w-50"
-          >
-            <select class="form-select text-black ms-1 mt-1" v-model="filtrationByYear">
-              <option value="Filter By Year" selected disabled>Filter By Year</option>
-              <option v-for="year in lastFiveYears" :value="year">{{ year }}</option>
-            </select>
-          </div>
-
-          <div class="d-flex flex-row justify-content-center align-items-center w-100">
-            <button class="btn btn-dark w-25 ms-1 mt-3" @click="resetFiltrations">Reset</button>
-          </div>
-          <hr class="w-100" />
-        </div>
-
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-          <StatisticsChart />
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-1">
+          <Suspense>
+            <StatisticsChart />
+          </Suspense>
         </div>
       </div>
     </div>
@@ -140,26 +126,13 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store'
 import StatisticsChart from '@/components/StatisticsChart.vue'
 
-const router = useRouter()
 const userStore = useUserStore()
+const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
-const lastFiveYears = ref<number[]>([])
-const currentYear = ref<number>(new Date().getFullYear())
-const filtrationByYear = ref<string>('Filter By Year')
 
 const userInfo = computed(() => {
   return userStore.userInfo
 })
-
-const getLastFiveYears = () => {
-  for (let i = 0; i <= 5; i++) {
-    lastFiveYears.value.push(currentYear.value - i)
-  }
-}
-
-const resetFiltrations = () => {
-  filtrationByYear.value = 'Filter By Year'
-}
 
 const logout = async (): Promise<void> => {
   try {
@@ -186,7 +159,6 @@ const logout = async (): Promise<void> => {
 }
 
 userStore.getUserInfo()
-getLastFiveYears()
 </script>
 
 <style>
