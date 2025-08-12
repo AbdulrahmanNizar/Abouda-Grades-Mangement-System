@@ -11,7 +11,7 @@ import { GetFilteredGradesDto } from './dto/GetFilteredGradesTables.dto';
 import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
 import { User } from 'src/registration/registration.model';
 import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
-import { GetCurrentYearGradesDto } from './dto/GetCurrentYearGrades.dto';
+import { GetGradesByYearDto } from './dto/GetGradesByYear.dto';
 
 @Injectable()
 export class GradesManagementService {
@@ -50,7 +50,11 @@ export class GradesManagementService {
 
       if (gradesTables.length > 0) {
         for (let i = 0; i < gradesTables.length; i++) {
-          gradesTablesYears.push(gradesTables[i].userGradesYear);
+          if (
+            !gradesTablesYears.includes(gradesTables[i].userGradesTableYear)
+          ) {
+            gradesTablesYears.push(gradesTables[i].userGradesTableYear);
+          }
         }
 
         return {
@@ -84,25 +88,30 @@ export class GradesManagementService {
     }
   }
 
-  async getCurrentYearGrades(
-    requestInfo: GetCurrentYearGradesDto,
+  async getGradesByYear(
+    requestInfo: GetGradesByYearDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
       const userGradesTables = await this.gradesTablesModel.find({
         userId: requestInfo.userId,
-        userGradesYear: requestInfo.year,
+        userGradesTableYear: requestInfo.year,
       });
-      const currentYearGrades: number[] = [];
+      const yearGrades: number[] = [];
 
       if (userGradesTables.length > 0) {
+        userGradesTables.sort(
+          (a, b) =>
+            Number(a.userGradesTableTrim) - Number(b.userGradesTableTrim),
+        );
+
         for (let i = 0; i < userGradesTables.length; i++) {
-          currentYearGrades.push(userGradesTables[i].userGradesAverage);
+          yearGrades.push(userGradesTables[i].userGradesAverage);
         }
 
         return {
           successMessage: 'Got the current year grades',
           statusCode: 200,
-          data: currentYearGrades,
+          data: yearGrades,
         };
       } else {
         throw new HttpException('No tables were found', 404);
@@ -122,8 +131,8 @@ export class GradesManagementService {
       ) {
         const userFilteredGradesTables = await this.gradesTablesModel.find({
           userId: requestInfo.userId,
-          userGradesYear: requestInfo.yearFiltration,
-          userGradesTrim: requestInfo.trimesterFiltration,
+          userGradesTableYear: requestInfo.yearFiltration,
+          userGradesTableTrim: requestInfo.trimesterFiltration,
         });
 
         return {
@@ -134,7 +143,7 @@ export class GradesManagementService {
       } else if (requestInfo.yearFiltration != undefined) {
         const userFilteredGradesTables = await this.gradesTablesModel.find({
           userId: requestInfo.userId,
-          userGradesYear: requestInfo.yearFiltration,
+          userGradesTableYear: requestInfo.yearFiltration,
         });
 
         return {
@@ -145,7 +154,7 @@ export class GradesManagementService {
       } else if (requestInfo.trimesterFiltration != undefined) {
         const userFilteredGradesTables = await this.gradesTablesModel.find({
           userId: requestInfo.userId,
-          userGradesTrim: requestInfo.trimesterFiltration,
+          userGradesTableTrim: requestInfo.trimesterFiltration,
         });
 
         return {
@@ -164,8 +173,8 @@ export class GradesManagementService {
   ): Promise<SuccessResponseObjectDto | void> {
     try {
       const checkingTheExistenseOfTheTable = await this.gradesTablesModel.find({
-        userGradesYear: requestInfo.userGradesYear,
-        userGradesTrim: requestInfo.userGradesTrim,
+        userGradesTableYear: requestInfo.userGradesTableYear,
+        userGradesTableTrim: requestInfo.userGradesTableTrim,
       });
 
       if (checkingTheExistenseOfTheTable.length > 0) {
@@ -175,20 +184,20 @@ export class GradesManagementService {
 
         let userFullGrade: number = 0;
 
-        for (let i = 0; i < requestInfo.userGrades.length; i++) {
-          userFullGrade += requestInfo.userGrades[i];
+        for (let i = 0; i < requestInfo.userGradesTable.length; i++) {
+          userFullGrade += requestInfo.userGradesTable[i];
         }
 
         const userGradesAverage: number =
-          userFullGrade / requestInfo.userGrades.length;
+          userFullGrade / requestInfo.userGradesTable.length;
 
         const newGradesTable = new this.gradesTablesModel({
           userId: requestInfo.userId,
           userSubjects: userInDB[0].userSubjects,
-          userGradesYear: requestInfo.userGradesYear,
-          userGradesTrim: requestInfo.userGradesTrim,
-          userGradesTable: requestInfo.userGrades,
-          userGradesAverage: userGradesAverage,
+          userGradesTableYear: requestInfo.userGradesTableYear,
+          userGradesTableTrim: requestInfo.userGradesTableTrim,
+          userGradesTable: requestInfo.userGradesTable,
+          userGradesAverage: userGradesAverage.toFixed(2),
         });
         await newGradesTable.save();
 
@@ -213,8 +222,8 @@ export class GradesManagementService {
       if (grades_table[0].userId == requestInfo.userId) {
         const checkingTheExistenseOfTheTable =
           await this.gradesTablesModel.find({
-            userGradesYear: requestInfo.newUserGradesTableYear,
-            userGradesTrim: requestInfo.newUserGradesTableTrim,
+            userGradesTableYear: requestInfo.newUserGradesTableYear,
+            userGradesTableTrim: requestInfo.newUserGradesTableTrim,
           });
 
         if (checkingTheExistenseOfTheTable.length > 0) {
@@ -233,10 +242,10 @@ export class GradesManagementService {
             { _id: requestInfo.tableId },
             {
               $set: {
-                userGradesYear: requestInfo.newUserGradesTableYear,
-                userGradesTrim: requestInfo.newUserGradesTableTrim,
+                userGradesTableYear: requestInfo.newUserGradesTableYear,
+                userGradesTableTrim: requestInfo.newUserGradesTableTrim,
                 userGradesTable: requestInfo.newUserGradesTable,
-                userGradesAverage: userGradesAverage,
+                userGradesAverage: userGradesAverage.toFixed(2),
               },
             },
           );

@@ -19,7 +19,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { GetFilteredGradesDto } from './dto/GetFilteredGradesTables.dto';
 import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
 import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
-import { GetCurrentYearGradesDto } from './dto/GetCurrentYearGrades.dto';
+import { GetGradesByYearDto } from './dto/GetGradesByYear.dto';
 
 @Controller('grades-management')
 export class GradesManagementController {
@@ -69,17 +69,15 @@ export class GradesManagementController {
   }
 
   @UseGuards(AuthGuard)
-  @Post('/getCurrentYearGrades')
+  @Post('/getGradesByYear')
   async getCurrentYearGrades(
-    @Body() getCurrentYearGradesDto: GetCurrentYearGradesDto,
+    @Body() getGradesByYearDto: GetGradesByYearDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res
       .status(200)
       .json(
-        await this.gradesManagementService.getCurrentYearGrades(
-          getCurrentYearGradesDto,
-        ),
+        await this.gradesManagementService.getGradesByYear(getGradesByYearDto),
       );
   }
 

@@ -1,6 +1,6 @@
 export class CreateGradesTableDto {
   readonly userId: string;
-  readonly userGradesYear: string;
-  readonly userGradesTrim: string;
-  readonly userGrades: number[];
+  readonly userGradesTableYear: string;
+  readonly userGradesTableTrim: string;
+  readonly userGradesTable: number[];
 }

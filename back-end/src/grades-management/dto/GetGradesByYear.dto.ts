@@ -1,4 +1,4 @@
-export class GetCurrentYearGradesDto {
+export class GetGradesByYearDto {
   readonly userId: string;
   readonly year: string;
 }
