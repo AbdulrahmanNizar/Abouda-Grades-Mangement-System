@@ -11,6 +11,7 @@ import { GetFilteredGradesDto } from './dto/GetFilteredGradesTables.dto';
 import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
 import { User } from 'src/registration/registration.model';
 import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
+import { GetCurrentYearGradesDto } from './dto/GetCurrentYearGrades.dto';
 
 @Injectable()
 export class GradesManagementService {
@@ -80,6 +81,34 @@ export class GradesManagementService {
       };
     } catch (err) {
       throw new HttpException('Table not found', 404);
+    }
+  }
+
+  async getCurrentYearGrades(
+    requestInfo: GetCurrentYearGradesDto,
+  ): Promise<SuccessResponseObjectDto | void> {
+    try {
+      const userGradesTables = await this.gradesTablesModel.find({
+        userId: requestInfo.userId,
+        userGradesYear: requestInfo.year,
+      });
+      const currentYearGrades: number[] = [];
+
+      if (userGradesTables.length > 0) {
+        for (let i = 0; i < userGradesTables.length; i++) {
+          currentYearGrades.push(userGradesTables[i].userGradesAverage);
+        }
+
+        return {
+          successMessage: 'Got the current year grades',
+          statusCode: 200,
+          data: currentYearGrades,
+        };
+      } else {
+        throw new HttpException('No tables were found', 404);
+      }
+    } catch (err) {
+      throw new HttpException(err, err.status);
     }
   }
 

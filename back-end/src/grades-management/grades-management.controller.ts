@@ -19,6 +19,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { GetFilteredGradesDto } from './dto/GetFilteredGradesTables.dto';
 import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
 import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
+import { GetCurrentYearGradesDto } from './dto/GetCurrentYearGrades.dto';
 
 @Controller('grades-management')
 export class GradesManagementController {
@@ -68,16 +69,31 @@ export class GradesManagementController {
   }
 
   @UseGuards(AuthGuard)
+  @Post('/getCurrentYearGrades')
+  async getCurrentYearGrades(
+    @Body() getCurrentYearGradesDto: GetCurrentYearGradesDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res
+      .status(200)
+      .json(
+        await this.gradesManagementService.getCurrentYearGrades(
+          getCurrentYearGradesDto,
+        ),
+      );
+  }
+
+  @UseGuards(AuthGuard)
   @Post('/getFilteredGradesTables')
   async getFilteredGradesTables(
-    @Body() getFilteredGrades: GetFilteredGradesDto,
+    @Body() getFilteredGradesDto: GetFilteredGradesDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res
       .status(200)
       .json(
         await this.gradesManagementService.getFilteredGradesTables(
-          getFilteredGrades,
+          getFilteredGradesDto,
         ),
       );
   }
@@ -85,39 +101,45 @@ export class GradesManagementController {
   @UseGuards(AuthGuard)
   @Post('/createGradesTable')
   async createGradesTable(
-    @Body() createGradesTable: CreateGradesTableDto,
+    @Body() createGradesTableDto: CreateGradesTableDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res
       .status(201)
       .json(
-        await this.gradesManagementService.createGradesTable(createGradesTable),
+        await this.gradesManagementService.createGradesTable(
+          createGradesTableDto,
+        ),
       );
   }
 
   @UseGuards(AuthGuard)
   @Patch('/updateGradesTable')
   async update_grades_table(
-    @Body() updateGradesTable: UpdateUserGradesTableDto,
+    @Body() updateGradesTableDto: UpdateUserGradesTableDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res
       .status(200)
       .json(
-        await this.gradesManagementService.updateGradesTable(updateGradesTable),
+        await this.gradesManagementService.updateGradesTable(
+          updateGradesTableDto,
+        ),
       );
   }
 
   @UseGuards(AuthGuard)
   @Delete('/deleteGradesTable')
   async delete_grades_table(
-    @Body() deleteGradesTable: DeleteGradesTableDto,
+    @Body() deleteGradesTableDto: DeleteGradesTableDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res
       .status(200)
       .json(
-        await this.gradesManagementService.deleteGradesTable(deleteGradesTable),
+        await this.gradesManagementService.deleteGradesTable(
+          deleteGradesTableDto,
+        ),
       );
   }
 }
