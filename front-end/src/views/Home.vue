@@ -106,13 +106,13 @@
       >
         <div class="w-100 d-flex flex-column justify-content-center align-items-start">
           <h3 class="ms-5 mt-5">Statistics</h3>
-          <p class="h5 ms-5">Take A Look At Your Statistics</p>
+          <p class="h5 ms-5">Take A Look At Your Last Year Statistics</p>
           <hr class="w-100" />
         </div>
 
         <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-1">
           <Suspense>
-            <StatisticsChart />
+            <StatisticsGraph />
           </Suspense>
         </div>
       </div>
@@ -124,7 +124,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store'
-import StatisticsChart from '@/components/StatisticsChart.vue'
+import StatisticsGraph from '@/components/StatisticsGraph.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
