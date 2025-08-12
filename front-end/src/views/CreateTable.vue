@@ -158,7 +158,7 @@
 
         <div class="w-100 d-flex flex-row justify-content-center align-items-center">
           <button
-            class="btn btn-dark w-25"
+            class="btn btn-dark w-50"
             @click="setGradeForNextSubject"
             v-if="userInfo[0].userSubjects[currentUserSubjectGrade + 1] != undefined"
           >
@@ -166,7 +166,7 @@
             <i class="bi bi-arrow-right"></i>
           </button>
           <button
-            class="btn btn-dark w-25"
+            class="btn btn-dark w-50"
             :disabled="disableSubjectGradeInputAndButton"
             @click="setUserGrades"
             v-if="userInfo[0].userSubjects[currentUserSubjectGrade + 1] == undefined"
@@ -187,11 +187,12 @@
 
         <transition name="bounce">
           <div
-            class="w-75 d-flex flex-row justify-content-center align-items-center mt-5"
+            class="d-flex flex-row justify-content-center align-items-center mt-5 operationResultModal"
+            style="width: 50%"
             v-if="showErrorModel"
           >
             <div
-              class="w-50 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+              class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
             >
               <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
                 <h5 class="text-center">Operation Failed ❌</h5>
@@ -207,11 +208,12 @@
         </transition>
 
         <div
-          class="w-100 d-flex flex-row justify-content-center align-items-center mt-5"
+          class="d-flex flex-row justify-content-center align-items-center mt-5 p-3 operationResultModal"
+          style="width: 50%"
           v-if="showSuccessModel"
         >
           <div
-            class="w-25 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+            class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
             v-motion-pop-visible
           >
             <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
@@ -297,9 +299,9 @@ const createTable = async (): Promise<void> => {
         headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
         body: JSON.stringify({
           userId: userId.value,
-          userGradesYear: gradesTableYear.value,
-          userGradesTrim: gradesTableTrimester.value,
-          userGrades: gradesTable.value,
+          userGradesTableYear: gradesTableYear.value,
+          userGradesTableTrim: gradesTableTrimester.value,
+          userGradesTable: gradesTable.value,
         }),
       }
 
@@ -355,6 +357,12 @@ getLastFiveYears()
 </script>
 
 <style>
+@media only screen and (max-width: 991px) {
+  .operationResultModal {
+    width: 100% !important;
+  }
+}
+
 .bounce-enter-active {
   animation: bounce-in 0.5s;
 }

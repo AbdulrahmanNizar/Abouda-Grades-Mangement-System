@@ -106,7 +106,10 @@
       >
         <div class="w-100 d-flex flex-column justify-content-center align-items-start">
           <h3 class="ms-5 mt-5">Statistics</h3>
-          <p class="h5 ms-5">Take A Look At Your Last Year Statistics</p>
+          <p class="h5 ms-5">
+            Take A Look At Your <br class="d-md-none d-block" />
+            Last Year Statistics
+          </p>
           <hr class="w-100" />
         </div>
 

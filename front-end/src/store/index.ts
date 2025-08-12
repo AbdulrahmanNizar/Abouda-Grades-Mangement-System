@@ -7,7 +7,7 @@ export const useUserStore = defineStore('users', {
       router: useRouter(),
       jwtToken: <string | null>localStorage.getItem('jwtToken'),
       userId: <string | null>localStorage.getItem('userId'),
-      userInfo: [] as userInfoInterface[],
+      userInfo: <userInfoInterface[]>[],
     }
   },
 
@@ -43,7 +43,7 @@ export const useGradesTablesStore = defineStore('gradesTables', {
     return {
       userId: <string | null>localStorage.getItem('userId'),
       jwtToken: <string | null>localStorage.getItem('jwtToken'),
-      userGradesTablesYears: [] as userGradesTablesYearsInterface[],
+      userGradesTablesYears: <userGradesTablesYearsInterface[]>[],
     }
   },
 

@@ -61,7 +61,7 @@ const getGradesByYear = async (): Promise<void> => {
     }
 
     const response = await fetch(
-      'http://127.0.0.1:3000/grades-management/getCurrentYearGrades',
+      'http://127.0.0.1:3000/grades-management/getGradesByYear',
       requestOptions,
     )
     const data = await response.json()
@@ -71,7 +71,7 @@ const getGradesByYear = async (): Promise<void> => {
         labels.value = ['First', 'Second', 'Third']
         createGraph(yearGrades.value, labels.value)
       } else {
-        errorForNotCompletedYear.value = 'No data was found'
+        errorForNotCompletedYear.value = "The data isn't enough"
         showErrorForNotCompletedYear.value = true
       }
     } else {
