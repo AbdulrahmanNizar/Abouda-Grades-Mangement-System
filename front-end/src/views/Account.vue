@@ -110,51 +110,9 @@
           <hr class="w-100" />
         </div>
 
-        <div class="w-100 d-flex flex-column justify-content-start align-items-start">
-          <button
-            class="btn btn-dark w-25 ms-5 mb-1"
-            data-bs-toggle="modal"
-            data-bs-target="#addNewSubjectModal"
-          >
-            Add New Subject
-          </button>
-          <button
-            class="btn btn-dark w-25 ms-5"
-            v-if="showUserSubjects == false"
-            @click="showUserSubjectsList"
-          >
-            Show Subjects List
-          </button>
-          <button
-            class="btn btn-dark w-25 ms-5"
-            v-else="showUserSubjects"
-            @click="showUserSubjectsList"
-          >
-            Close Subjects List
-          </button>
-          <hr class="w-100" />
+        <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+          <SubjectsSection :subjects="userInfo[0].userSubjects" />
         </div>
-
-        <transition name="bounce" class="w-100">
-          <div
-            class="w-100 d-flex flex-column justify-content-start align-items-center p-3"
-            v-if="showUserSubjects"
-          >
-            <ul class="list-group mx-5 border rounded shadow p-2 w-50" id="subjectsList">
-              <li
-                class="list-group-item d-flex flex-row justify-content-between align-items-center"
-                v-for="subject in userInfo[0].userSubjects"
-              >
-                <h5>{{ subject }}</h5>
-                <div class="d-flex flex-row justify-content-center align-items-center">
-                  <button class="btn btn-danger" @click="deleteSubject(subject)">
-                    <i class="bi bi-trash"></i>
-                  </button>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </transition>
       </div>
     </div>
 
@@ -214,33 +172,27 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store'
+import SubjectsSection from '@/components/SubjectsSection.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
-const showUserSubjects = ref<boolean>(false)
 const newSubject = ref<string>('')
 const showCreateSubjectError = ref<boolean>(false)
 const createSubjectError = ref<string>('')
-const showDeleteSubjectError = ref<boolean>(false)
-const deleteSubjectError = ref<string>('')
 
 const userInfo = computed(() => {
   return userStore.userInfo
 })
 
-const showUserSubjectsList = () => {
-  showUserSubjects.value = !showUserSubjects.value
-}
-
 const createSubject = async (): Promise<void> => {
   try {
     if (newSubject.value != '') {
-      const requestOptions: any = {
+      const requestOptions: RequestInit = {
         method: 'POST',
         mode: 'cors',
-        headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+        headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
         body: JSON.stringify({
           userId: userId.value,
           newSubject: newSubject.value,
@@ -269,38 +221,9 @@ const createSubject = async (): Promise<void> => {
   }
 }
 
-const deleteSubject = async (subject: string): Promise<void> => {
-  try {
-    const requestOptions: any = {
-      method: 'DELETE',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
-      body: JSON.stringify({
-        userId: userId.value,
-        subject: subject,
-      }),
-    }
-
-    const response = await fetch(
-      'http://127.0.0.1:3000/subjects-management/deleteSubject',
-      requestOptions,
-    )
-    const data = await response.json()
-    if (data.statusCode >= 200 && data.statusCode < 300) {
-      window.location.reload()
-    } else {
-      deleteSubjectError.value = data.message
-      showDeleteSubjectError.value = true
-      setTimeout(() => (showDeleteSubjectError.value = false), 3000)
-    }
-  } catch (err) {
-    console.log(err)
-  }
-}
-
 const logout = async (): Promise<void> => {
   try {
-    const requestInfo: any = {
+    const requestOptions: RequestInit = {
       method: 'GET',
       mode: 'cors',
       headers: { 'Content-Type': 'application/json' },
@@ -308,7 +231,7 @@ const logout = async (): Promise<void> => {
 
     const response = await fetch(
       'http://127.0.0.1:3000/registration/logout/' + userId.value,
-      requestInfo,
+      requestOptions,
     )
     const data = await response.json()
 

@@ -293,10 +293,10 @@ const createTable = async (): Promise<void> => {
       gradesTableYear.value != 'Select A Year' &&
       gradesTableTrimester.value != 'Select A Trimester'
     ) {
-      const requestOptions: any = {
+      const requestOptions: RequestInit = {
         method: 'POST',
         mode: 'cors',
-        headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+        headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
         body: JSON.stringify({
           userId: userId.value,
           userGradesTableYear: gradesTableYear.value,
@@ -330,7 +330,7 @@ const createTable = async (): Promise<void> => {
 
 const logout = async (): Promise<void> => {
   try {
-    const requestOptions: any = {
+    const requestOptions: RequestInit = {
       method: 'GET',
       mode: 'cors',
       headers: { 'Content-Type': 'application/json' },

@@ -14,18 +14,18 @@ export const useUserStore = defineStore('users', {
   actions: {
     async getUserInfo(): Promise<void> {
       try {
-        const requestInfo: requestOptionsInterface = {
+        const requestOptions: RequestInit = {
           method: 'POST',
           mode: 'cors',
-          headers: { 'Content-Type': 'application/json', jwt_token: this.jwtToken },
-          body: JSON.stringify({
+          headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: this.jwtToken },
+          body: <BodyInit>JSON.stringify({
             userId: this.userId,
           }),
         }
 
         const response = await fetch(
           'http://127.0.0.1:3000/users-management/getUserInfo',
-          requestInfo,
+          requestOptions,
         )
         const data = await response.json()
         if (data.statusCode >= 200 && data.statusCode < 300) {
@@ -44,24 +44,27 @@ export const useGradesTablesStore = defineStore('gradesTables', {
       userId: <string | null>localStorage.getItem('userId'),
       jwtToken: <string | null>localStorage.getItem('jwtToken'),
       userGradesTablesYears: <userGradesTablesYearsInterface[]>[],
+      loading: <boolean>false,
     }
   },
 
   actions: {
     async getTablesYears(): Promise<void> {
       try {
-        const requestOptions: any = {
+        const requestOptions: RequestInit = {
           method: 'GET',
           mode: 'cors',
-          headers: { 'Content-Type': 'application/json', jwt_token: this.jwtToken },
+          headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: this.jwtToken },
         }
 
+        this.loading = true
         const response = await fetch(
           'http://127.0.0.1:3000/grades-management/getGradesTablesYears/' + this.userId,
           requestOptions,
         )
         const data = await response.json()
         if (data.statusCode >= 200 && data.statusCode < 300) {
+          this.loading = false
           this.userGradesTablesYears = data.data
         }
       } catch (err) {
@@ -76,13 +79,6 @@ interface userInfoInterface {
   username: string
   email: string
   userSubjects: string[]
-}
-
-interface requestOptionsInterface {
-  method: string | any
-  mode: string | any
-  headers: object | any
-  body?: string | any
 }
 
 interface userGradesTablesYearsInterface {

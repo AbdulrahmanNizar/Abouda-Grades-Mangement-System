@@ -7,10 +7,10 @@
 
   <div class="w-100 mt-4 d-flex flex-column justify-content-center align-items-center">
     <div class="w-100 d-flex flex-column justify-content-center align-items-center">
-      <router-link :to="{ path: '/createTable' }" class="btn btn-dark w-25"
+      <router-link :to="{ path: '/createTable' }" class="btn btn-dark w-50"
         >Create New Table</router-link
       >
-      <button class="btn btn-dark w-25 mt-1" @click="resetFiltrations">Reset</button>
+      <button class="btn btn-dark w-50 mt-1" @click="resetFiltrations">Reset</button>
     </div>
 
     <div class="d-flex flex-md-row flex-column justify-content-center align-items-center w-75 mt-2">
@@ -35,7 +35,7 @@
     id="tables"
   >
     <div
-      class="d-flex flex-column justify-content-center align-items-center p-3 border rounded me-2 ms-2 mt-2 col-6"
+      class="d-flex flex-column justify-content-center align-items-center p-3 border rounded me-2 ms-2 mt-2"
       style="width: 30%"
       id="gradesTable"
       v-motion-pop-visible
@@ -110,10 +110,10 @@ const resetFiltrations = (): void => {
 
 const getTables = async (): Promise<void> => {
   try {
-    const requestOptions: any = {
+    const requestOptions: RequestInit = {
       method: 'GET',
       mode: 'cors',
-      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
     }
 
     const response = await fetch(
@@ -134,10 +134,10 @@ watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promis
     gradesTablesTrimester.value != 'Filter By Trimester' &&
     newGradesTablesYear != 'Filter By Year'
   ) {
-    const requestOptions: any = {
+    const requestOptions: RequestInit = {
       method: 'POST',
       mode: 'cors',
-      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
       body: JSON.stringify({
         userId: userId.value,
         yearFiltration: newGradesTablesYear,
@@ -157,10 +157,10 @@ watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promis
     gradesTablesTrimester.value == 'Filter By Trimester' &&
     newGradesTablesYear != 'Filter By Year'
   ) {
-    const requestOptions: any = {
+    const requestOptions: RequestInit = {
       method: 'POST',
       mode: 'cors',
-      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
       body: JSON.stringify({
         userId: userId.value,
         yearFiltration: newGradesTablesYear,
@@ -185,10 +185,10 @@ watch(
       gradesTablesYear.value != 'Filter By Year' &&
       newGradesTablesTrimester != 'Filter By Trimester'
     ) {
-      const requestOptions: any = {
+      const requestOptions: RequestInit = {
         method: 'POST',
         mode: 'cors',
-        headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+        headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
         body: JSON.stringify({
           userId: userId.value,
           yearFiltration: gradesTablesYear.value,
@@ -208,10 +208,10 @@ watch(
       gradesTablesYear.value == 'Filter By Year' &&
       newGradesTablesTrimester != 'Filter By Trimester'
     ) {
-      const requestOptions: any = {
+      const requestOptions: RequestInit = {
         method: 'POST',
         mode: 'cors',
-        headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+        headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
         body: JSON.stringify({
           userId: userId.value,
           trimesterFiltration: newGradesTablesTrimester,
@@ -232,10 +232,10 @@ watch(
 
 const deleteTable = async (gradesTableId: string): Promise<void> => {
   try {
-    const requestOptions: any = {
+    const requestOptions: RequestInit = {
       method: 'DELETE',
       mode: 'cors',
-      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
       body: JSON.stringify({
         userId: userId.value,
         tableId: gradesTableId,

@@ -3,7 +3,7 @@ export const verifyAuthToken = async (authToken: string | any): Promise<string |
     if (authToken == '' || authToken == null) {
       return 'rejected'
     } else {
-      const requestInfo: any = {
+      const requestOptions: RequestInit = {
         method: 'POST',
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
@@ -12,7 +12,7 @@ export const verifyAuthToken = async (authToken: string | any): Promise<string |
         }),
       }
 
-      const response = await fetch('http://127.0.0.1:3000/registration/verifyToken', requestInfo)
+      const response = await fetch('http://127.0.0.1:3000/registration/verifyToken', requestOptions)
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
         return 'accepted'

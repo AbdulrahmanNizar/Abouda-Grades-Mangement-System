@@ -139,7 +139,7 @@ const userInfo = computed(() => {
 
 const logout = async (): Promise<void> => {
   try {
-    const requestInfo: any = {
+    const requestOptions: RequestInit = {
       method: 'GET',
       mode: 'cors',
       headers: { 'Content-Type': 'application/json' },
@@ -147,7 +147,7 @@ const logout = async (): Promise<void> => {
 
     const response = await fetch(
       'http://127.0.0.1:3000/registration/logout/' + userId.value,
-      requestInfo,
+      requestOptions,
     )
     const data = await response.json()
 

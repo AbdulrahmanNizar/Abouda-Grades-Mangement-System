@@ -2,6 +2,7 @@
   <div class="w-75 d-flex flex-column justify-content-center align-items-center">
     <div
       class="w-100 d-flex flex-md-row flex-column flex-wrap justify-content-center align-items-center mb-2"
+      v-if="showErrorForNotCompletedYear == false"
     >
       <div
         class="d-flex flex-column justify-content-center align-items-center p-3 border rounded me-2 ms-2 mt-2 col-6"
@@ -14,18 +15,22 @@
       </div>
     </div>
 
-    <canvas ref="statisticsGraph"></canvas>
+    <canvas ref="statisticsGraph" v-if="showErrorForNotCompletedYear == false"></canvas>
 
     <div
-      class="w-75 d-flex flex-row justify-content-center align-items-center mt-5"
+      class="d-flex flex-row justify-content-center align-items-center mt-5"
+      id="errorForNotCompletedYearModal"
+      style="width: 75%"
       v-motion-pop-visible
       v-if="showErrorForNotCompletedYear"
     >
       <div
-        class="w-75 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
       >
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+        <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-2">
           <h5 class="text-center">{{ errorForNotCompletedYear }}</h5>
+          <hr class="w-100" />
+          <h6 class="text-center">The year isn't completed</h6>
         </div>
       </div>
     </div>
@@ -50,10 +55,10 @@ let graphConfig: any
 
 const getGradesByYear = async (): Promise<void> => {
   try {
-    const requestOptions: any = {
+    const requestOptions: RequestInit = {
       method: 'POST',
       mode: 'cors',
-      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
       body: JSON.stringify({
         userId: userId.value,
         year: currentYear.value.toString(),
@@ -89,8 +94,8 @@ const createGraph = (data: number[], labels: string[]) => {
     datasets: [
       {
         label: 'Grade',
-        backgroundColor: 'rgba(0,0,0,0.8)',
-        borderColor: 'rgba(0,0,0,0.8)',
+        backgroundColor: 'rgba(0,0,0)',
+        borderColor: 'rgba(0,0,0)',
         data: data,
       },
     ],
@@ -111,6 +116,9 @@ getGradesByYear()
 @media only screen and (max-width: 991px) {
   #statisticsCard {
     width: 80% !important;
+  }
+  #errorForNotCompletedYearModal {
+    width: 100% !important;
   }
 }
 </style>

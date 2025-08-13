@@ -124,7 +124,7 @@
           <hr class="w-100" />
 
           <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-            <router-link :to="{ path: '/tables' }" class="btn btn-dark w-25">Go Back</router-link>
+            <router-link :to="{ path: '/tables' }" class="btn btn-dark w-50">Go Back</router-link>
           </div>
         </div>
       </div>
@@ -154,10 +154,10 @@ const userInfo = computed(() => {
 
 const getGradesTableDetails = async (): Promise<void> => {
   try {
-    const requestOptions: any = {
+    const requestOptions: RequestInit = {
       method: 'GET',
       mode: 'cors',
-      headers: { 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
     }
 
     const response = await fetch(
@@ -178,7 +178,7 @@ const getGradesTableDetails = async (): Promise<void> => {
 
 const logout = async (): Promise<void> => {
   try {
-    const requestInfo: any = {
+    const requestOptions: RequestInit = {
       method: 'GET',
       mode: 'cors',
       headers: { 'Content-Type': 'application/json' },
@@ -186,7 +186,7 @@ const logout = async (): Promise<void> => {
 
     const response = await fetch(
       'http://127.0.0.1:3000/registration/logout/' + userId.value,
-      requestInfo,
+      requestOptions,
     )
     const data = await response.json()
 

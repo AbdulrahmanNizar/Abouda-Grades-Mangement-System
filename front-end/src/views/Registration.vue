@@ -135,6 +135,15 @@
 
           <div class="w-100 d-flex flex-column justify-content-center align-items-center my-3">
             <button class="btn btn-dark w-75 mb-2" @click="signUp">Sign Up</button>
+            <button
+              class="btn btn-dark w-75 mb-2 d-flex flex-row justify-content-center align-items-center"
+              disabled
+              v-if="signUpLoading"
+            >
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden mb-0">Loading...</span>
+              </div>
+            </button>
           </div>
         </div>
       </div>
@@ -230,6 +239,15 @@
 
           <div class="w-100 d-flex flex-column justify-content-center align-items-center my-3">
             <button class="btn btn-dark w-75 mb-2" @click="login">Login</button>
+            <button
+              class="btn btn-dark w-75 mb-2 d-flex flex-row justify-content-center align-items-center"
+              disabled
+              v-if="loginLoading"
+            >
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden mb-0">Loading...</span>
+              </div>
+            </button>
           </div>
         </div>
       </div>
@@ -269,9 +287,11 @@ const loginError = ref<string>('')
 const passwordInputForLogin = ref<any>()
 const passwordInputForSignUp = ref<any>()
 const confirmPasswordInputForSignUp = ref<any>()
+const loginLoading = ref<boolean>(false)
+const signUpLoading = ref<boolean>(false)
 
 onMounted(async () => {
-  if (localStorage.getItem('jwtToken') != '') {
+  if (localStorage.getItem('jwtToken') != '' && localStorage.getItem('jwtToken') != null) {
     const jwtToken_validation = await verifyAuthToken(localStorage.getItem('jwtToken'))
 
     if (jwtToken_validation == 'accepted') {
@@ -315,25 +335,28 @@ const signUp = async () => {
     const validationResult = await v$ForSignUp.value.$validate()
 
     if (validationResult) {
-      const requestInfo: any = {
+      const requestOptions: RequestInit = {
         method: 'POST',
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: formDataForSignUp.username.toLowerCase(),
           email: formDataForSignUp.email,
-          password: formDataForSignUp.password.toLowerCase(),
+          password: formDataForSignUp.password,
         }),
       }
 
-      const response = await fetch('http://127.0.0.1:3000/registration/signup', requestInfo)
+      signUpLoading.value = true
+      const response = await fetch('http://127.0.0.1:3000/registration/signup', requestOptions)
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
+        signUpLoading.value = false
         localStorage.setItem('jwtToken', data.data.jwtToken)
         localStorage.setItem('userId', data.data.userId)
         router.push({ path: '/' })
         window.location.reload()
       } else {
+        signUpLoading.value = false
         signupError.value = data.message
         showSignupError.value = true
       }
@@ -367,24 +390,27 @@ const login = async () => {
     const validationResult = await v$ForLogin.value.$validate()
 
     if (validationResult) {
-      const requestInfo: any = {
+      const requestOptions: RequestInit = {
         method: 'POST',
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           username: formDataForLogin.username.toLowerCase(),
-          password: formDataForLogin.password.toLowerCase(),
+          password: formDataForLogin.password,
         }),
       }
 
-      const response = await fetch('http://127.0.0.1:3000/registration/login', requestInfo)
+      loginLoading.value = true
+      const response = await fetch('http://127.0.0.1:3000/registration/login', requestOptions)
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
+        loginLoading.value = false
         localStorage.setItem('jwtToken', data.data.jwtToken)
         localStorage.setItem('userId', data.data.userId)
         router.push({ path: '/' })
         window.location.reload()
       } else {
+        loginLoading.value = false
         loginError.value = data.message
         showLoginError.value = true
       }
