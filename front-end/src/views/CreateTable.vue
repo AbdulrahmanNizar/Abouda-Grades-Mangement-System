@@ -189,7 +189,7 @@
           <div
             class="d-flex flex-row justify-content-center align-items-center mt-5 operationResultModal"
             style="width: 50%"
-            v-if="showErrorModel"
+            v-if="showErrorModal"
           >
             <div
               class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
@@ -210,7 +210,7 @@
         <div
           class="d-flex flex-row justify-content-center align-items-center mt-5 p-3 operationResultModal"
           style="width: 50%"
-          v-if="showSuccessModel"
+          v-if="showSuccessModal"
         >
           <div
             class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
@@ -243,8 +243,8 @@ const gradesTableTrimester = ref<string>('Select A Trimester')
 const subjectGrade = ref<number>(0)
 const gradesTable = ref<number[]>([])
 const disableSubjectGradeInputAndButton = ref<boolean>(false)
-const showErrorModel = ref<boolean>(false)
-const showSuccessModel = ref<boolean>(false)
+const showErrorModal = ref<boolean>(false)
+const showSuccessModal = ref<boolean>(false)
 const errorForCreationOperation = ref<string>('')
 
 const userInfo: any = computed(() => {
@@ -311,17 +311,17 @@ const createTable = async (): Promise<void> => {
       )
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
-        showSuccessModel.value = true
+        showSuccessModal.value = true
         setTimeout(() => router.push({ path: '/tables' }), 2000)
       } else {
         errorForCreationOperation.value = data.message
-        showErrorModel.value = true
-        setTimeout(() => (showErrorModel.value = false), 3000)
+        showErrorModal.value = true
+        setTimeout(() => (showErrorModal.value = false), 3000)
       }
     } else {
       errorForCreationOperation.value = 'Please fill the fields'
-      showErrorModel.value = true
-      setTimeout(() => (showErrorModel.value = false), 3000)
+      showErrorModal.value = true
+      setTimeout(() => (showErrorModal.value = false), 3000)
     }
   } catch (err) {
     console.log(err)

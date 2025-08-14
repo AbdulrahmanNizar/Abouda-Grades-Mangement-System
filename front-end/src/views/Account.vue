@@ -111,6 +111,8 @@
         </div>
 
         <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+          <AccountPictureSection />
+          <hr class="w-100" />
           <SubjectsSection :subjects="userInfo[0].userSubjects" />
         </div>
       </div>
@@ -172,7 +174,8 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store'
-import SubjectsSection from '@/components/SubjectsSection.vue'
+import SubjectsSection from '@/components/AccountPage/SubjectsSection.vue'
+import AccountPictureSection from '@/components/AccountPage/AccountPictureSection.vue'
 
 const userStore = useUserStore()
 const router = useRouter()

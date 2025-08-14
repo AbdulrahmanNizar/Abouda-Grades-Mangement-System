@@ -9,14 +9,14 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { verifyAuthToken } from './helpers/verifyAuthToken'
+import { useVerifyAuthToken } from './composables/verifyAuthToken'
 
 const router = useRouter()
 
 onMounted(async () => {
   const jwtToken = localStorage.getItem('jwtToken')
   if (jwtToken != '' && jwtToken != null) {
-    const jwtTokenValidation = await verifyAuthToken(jwtToken)
+    const jwtTokenValidation = await useVerifyAuthToken(jwtToken)
     if (jwtTokenValidation == 'rejected') {
       router.push({ path: '/registration' })
     }
@@ -28,7 +28,7 @@ onMounted(async () => {
 const validateJwtToken = async () => {
   const jwtToken = localStorage.getItem('jwtToken')
   if (jwtToken != '' && jwtToken != null) {
-    const jwtTokenValidation = await verifyAuthToken(jwtToken)
+    const jwtTokenValidation = await useVerifyAuthToken(jwtToken)
     if (jwtTokenValidation == 'rejected') {
       router.push({ path: '/registration' })
     }

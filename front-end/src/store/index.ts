@@ -79,6 +79,7 @@ interface userInfoInterface {
   username: string
   email: string
   userSubjects: string[]
+  userAccountPicture: string
 }
 
 interface userGradesTablesYearsInterface {

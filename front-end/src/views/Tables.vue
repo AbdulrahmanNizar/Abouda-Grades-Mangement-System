@@ -114,7 +114,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store'
-import GradesTablesSection from '@/components/GradesTablesSection.vue'
+import GradesTablesSection from '@/components/TablesPage/GradesTablesSection.vue'
 
 const userStore = useUserStore()
 const router = useRouter()

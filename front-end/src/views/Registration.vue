@@ -134,11 +134,13 @@
           </div>
 
           <div class="w-100 d-flex flex-column justify-content-center align-items-center my-3">
-            <button class="btn btn-dark w-75 mb-2" @click="signUp">Sign Up</button>
+            <button class="btn btn-dark w-75 mb-2" @click="signUp" v-if="signUpLoading == false">
+              Sign Up
+            </button>
             <button
               class="btn btn-dark w-75 mb-2 d-flex flex-row justify-content-center align-items-center"
               disabled
-              v-if="signUpLoading"
+              v-else
             >
               <div class="spinner-border" role="status">
                 <span class="visually-hidden mb-0">Loading...</span>
@@ -238,11 +240,13 @@
           </div>
 
           <div class="w-100 d-flex flex-column justify-content-center align-items-center my-3">
-            <button class="btn btn-dark w-75 mb-2" @click="login">Login</button>
+            <button class="btn btn-dark w-75 mb-2" @click="login" v-if="loginLoading == false">
+              Login
+            </button>
             <button
               class="btn btn-dark w-75 mb-2 d-flex flex-row justify-content-center align-items-center"
               disabled
-              v-if="loginLoading"
+              v-else
             >
               <div class="spinner-border" role="status">
                 <span class="visually-hidden mb-0">Loading...</span>
@@ -272,7 +276,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { required, email, minLength, sameAs } from '@vuelidate/validators'
-import { verifyAuthToken } from '@/helpers/verifyAuthToken'
+import { useVerifyAuthToken } from '@/composables/verifyAuthToken'
 import useVuelidate from '@vuelidate/core'
 
 const router = useRouter()
@@ -292,9 +296,9 @@ const signUpLoading = ref<boolean>(false)
 
 onMounted(async () => {
   if (localStorage.getItem('jwtToken') != '' && localStorage.getItem('jwtToken') != null) {
-    const jwtToken_validation = await verifyAuthToken(localStorage.getItem('jwtToken'))
+    const jwtTokenValidation = await useVerifyAuthToken(localStorage.getItem('jwtToken'))
 
-    if (jwtToken_validation == 'accepted') {
+    if (jwtTokenValidation == 'accepted') {
       router.push('/')
     }
   }

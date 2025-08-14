@@ -136,7 +136,7 @@
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/store'
-import GradesTable from '@/components/GradesTable.vue'
+import GradesTable from '@/components/TablesPage/GradesTable.vue'
 
 const router = useRouter()
 const route = useRoute()

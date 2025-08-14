@@ -1,4 +1,4 @@
-export const verifyAuthToken = async (authToken: string | any): Promise<string | void> => {
+export const useVerifyAuthToken = async (authToken: string | null): Promise<string | void> => {
   try {
     if (authToken == '' || authToken == null) {
       return 'rejected'

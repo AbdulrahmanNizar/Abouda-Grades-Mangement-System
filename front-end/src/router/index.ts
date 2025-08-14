@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { verifyAuthToken } from '@/helpers/verifyAuthToken'
+import { useVerifyAuthToken } from '@/composables/verifyAuthToken'
 import Home from '@/views/Home.vue'
 import Registration from '@/views/Registration.vue'
 import Tables from '@/views/Tables.vue'
@@ -22,7 +22,7 @@ const router = createRouter({
       component: Home,
       meta: {
         needs_auth_token:
-          (await verifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
+          (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
     {
@@ -31,7 +31,7 @@ const router = createRouter({
       component: Tables,
       meta: {
         needs_auth_token:
-          (await verifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
+          (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
     {
@@ -40,7 +40,7 @@ const router = createRouter({
       component: CreateTable,
       meta: {
         needs_auth_token:
-          (await verifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
+          (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
     {
@@ -49,7 +49,7 @@ const router = createRouter({
       component: TableDetails,
       meta: {
         needs_auth_token:
-          (await verifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
+          (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
     {
@@ -58,7 +58,7 @@ const router = createRouter({
       component: Account,
       meta: {
         needs_auth_token:
-          (await verifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
+          (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
     {
