@@ -181,10 +181,14 @@ export class GradesManagementService {
         throw new HttpException('The grades table is already exist', 400);
       } else {
         const userInDB = await this.userModel.find({ _id: requestInfo.userId });
-
+        const userGradesTable: object[] = [];
         let userFullGrade: number = 0;
 
         for (let i = 0; i < requestInfo.userGradesTable.length; i++) {
+          userGradesTable.push({
+            subject: userInDB[0].userSubjects[i],
+            grade: requestInfo.userGradesTable[i],
+          });
           userFullGrade += requestInfo.userGradesTable[i];
         }
 
@@ -193,10 +197,9 @@ export class GradesManagementService {
 
         const newGradesTable = new this.gradesTablesModel({
           userId: requestInfo.userId,
-          userSubjects: userInDB[0].userSubjects,
           userGradesTableYear: requestInfo.userGradesTableYear,
           userGradesTableTrim: requestInfo.userGradesTableTrim,
-          userGradesTable: requestInfo.userGradesTable,
+          userGradesTable: userGradesTable,
           userGradesAverage: userGradesAverage.toFixed(2),
         });
         await newGradesTable.save();

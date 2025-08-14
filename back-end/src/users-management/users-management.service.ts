@@ -24,6 +24,7 @@ export class UsersManagementService {
           username: user[0].username,
           email: user[0].email,
           userSubjects: user[0].userSubjects,
+          userAccountPicture: user[0].userAccountPicture,
         },
       };
     } catch (err) {

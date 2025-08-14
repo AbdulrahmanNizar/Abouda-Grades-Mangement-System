@@ -3,7 +3,6 @@ import * as mongoose from 'mongoose';
 export const gradesTablesManagementSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
-    userSubjects: { type: Object, required: true },
     userGradesTableYear: { type: String, required: true },
     userGradesTableTrim: { type: String, required: true },
     userGradesTable: { type: Object, required: true },
@@ -14,7 +13,6 @@ export const gradesTablesManagementSchema = new mongoose.Schema(
 
 export interface gradesTables {
   userId: string;
-  userSubjects: string[];
   userGradesTableYear: string;
   userGradesTableTrim: string;
   userGradesTable: number[];
