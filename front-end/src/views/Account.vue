@@ -174,7 +174,23 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-dark" @click="createSubject">Add</button>
+            <button
+              type="button"
+              class="btn btn-dark"
+              @click="createSubject"
+              v-if="loading == false"
+            >
+              Add
+            </button>
+            <button
+              class="btn btn-dark mt-1 d-flex flex-row justify-content-center align-items-center"
+              disabled
+              v-else
+            >
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden mb-0">Loading...</span>
+              </div>
+            </button>
           </div>
         </div>
       </div>
@@ -196,6 +212,7 @@ const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const newSubject = ref<string>('')
 const showCreateSubjectError = ref<boolean>(false)
 const createSubjectError = ref<string>('')
+const loading = ref<boolean>(false)
 
 const userInfo = computed(() => {
   return userStore.userInfo
@@ -214,14 +231,17 @@ const createSubject = async (): Promise<void> => {
         }),
       }
 
+      loading.value = true
       const response = await fetch(
         'http://127.0.0.1:3000/subjects-management/createSubject',
         requestOptions,
       )
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
+        loading.value = false
         window.location.reload()
       } else {
+        loading.value = false
         createSubjectError.value = data.message
         showCreateSubjectError.value = true
         setTimeout(() => (showCreateSubjectError.value = false), 3000)

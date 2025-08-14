@@ -193,8 +193,19 @@
           <button class="btn btn-dark w-50" @click="resetInputs">Reset</button>
         </div>
 
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-          <button class="btn btn-dark w-50" @click="createTable">Create</button>
+        <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+          <button class="btn btn-dark w-50" @click="createTable" v-if="loading == false">
+            Create
+          </button>
+          <button
+            class="btn btn-dark w-50 mt-1 d-flex flex-row justify-content-center align-items-center"
+            disabled
+            v-else
+          >
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden mb-0">Loading...</span>
+            </div>
+          </button>
         </div>
 
         <transition name="bounce">
@@ -258,6 +269,7 @@ const disableSubjectGradeInputAndButton = ref<boolean>(false)
 const showErrorModal = ref<boolean>(false)
 const showSuccessModal = ref<boolean>(false)
 const errorForCreationOperation = ref<string>('')
+const loading = ref<boolean>(false)
 
 const userInfo: any = computed(() => {
   return userStore.userInfo
@@ -317,15 +329,18 @@ const createTable = async (): Promise<void> => {
         }),
       }
 
+      loading.value = true
       const response = await fetch(
         'http://127.0.0.1:3000/grades-management/createGradesTable',
         requestOptions,
       )
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
+        loading.value = false
         showSuccessModal.value = true
         setTimeout(() => router.push({ path: '/tables' }), 2000)
       } else {
+        loading.value = false
         errorForCreationOperation.value = data.message
         showErrorModal.value = true
         setTimeout(() => (showErrorModal.value = false), 3000)

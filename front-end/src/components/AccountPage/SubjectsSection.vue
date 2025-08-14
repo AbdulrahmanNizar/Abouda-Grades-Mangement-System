@@ -35,7 +35,22 @@
       >
         <h5 class="mb-0">{{ subject }}</h5>
         <hr class="w-100" />
-        <button class="btn btn-danger w-100 mt-1" @click="deleteSubject(subject)">Delete</button>
+        <button
+          class="btn btn-danger w-100 mt-1"
+          @click="deleteSubject(subject)"
+          v-if="loading == false"
+        >
+          Delete
+        </button>
+        <button
+          class="btn btn-danger w-100 mt-1 d-flex flex-row justify-content-center align-items-center"
+          disabled
+          v-else
+        >
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden mb-0">Loading...</span>
+          </div>
+        </button>
       </div>
     </transition-group>
   </div>
@@ -52,6 +67,7 @@ const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const showDeleteSubjectError = ref<boolean>(false)
 const deleteSubjectError = ref<string>('')
 const searchSubject = ref<string>('')
+const loading = ref<boolean>(false)
 
 const searchSubjectResult = computed(() => {
   return userSubjects.value.filter((subject) => subject.toLowerCase().includes(searchSubject.value))
@@ -69,15 +85,17 @@ const deleteSubject = async (subject: string): Promise<void> => {
       }),
     }
 
+    loading.value = true
     const response = await fetch(
       'http://127.0.0.1:3000/subjects-management/deleteSubject',
       requestOptions,
     )
     const data = await response.json()
-
     if (data.statusCode >= 200 && data.statusCode < 300) {
+      loading.value = false
       window.location.reload()
     } else {
+      loading.value = false
       deleteSubjectError.value = data.message
       showDeleteSubjectError.value = true
       setTimeout(() => (showDeleteSubjectError.value = false), 3000)

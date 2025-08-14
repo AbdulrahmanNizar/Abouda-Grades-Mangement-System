@@ -48,8 +48,21 @@
       <router-link :to="{ path: '/table/' + gradesTable._id }" class="btn btn-dark w-100"
         >View Details</router-link
       >
-      <button class="btn btn-danger w-100 mt-1" @click="deleteTable(gradesTable._id)">
+      <button
+        class="btn btn-danger w-100 mt-1"
+        @click="deleteTable(gradesTable._id)"
+        v-if="loading == false"
+      >
         Delete
+      </button>
+      <button
+        class="btn btn-danger w-100 mt-1 d-flex flex-row justify-content-center align-items-center"
+        disabled
+        v-else
+      >
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden mb-0">Loading...</span>
+        </div>
       </button>
     </div>
 
@@ -75,6 +88,7 @@ const deleteTableError = ref<string>('')
 const userGradesTables = ref<userGradesTablesInterface[]>([])
 const gradesTablesYear = ref<string>('Filter By Year')
 const gradesTablesTrimester = ref<string>('Filter By Trimester')
+const loading = ref<boolean>(false)
 
 interface userGradesTablesInterface {
   _id: string
@@ -242,14 +256,17 @@ const deleteTable = async (gradesTableId: string): Promise<void> => {
       }),
     }
 
+    loading.value = true
     const response = await fetch(
       'http://127.0.0.1:3000/grades-management/deleteGradesTable',
       requestOptions,
     )
     const data = await response.json()
     if (data.statusCode >= 200 && data.statusCode < 300) {
+      loading.value = false
       window.location.reload()
     } else {
+      loading.value = false
       deleteTableError.value = data.message
       showDeleteTableError.value = true
       setTimeout(() => (showDeleteTableError.value = false), 3000)
