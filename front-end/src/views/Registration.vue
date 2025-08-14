@@ -8,7 +8,7 @@
         class="h-100 col-6 w-50 d-md-flex flex-row justify-content-center align-items-center d-none"
       >
         <img
-          src="../images/istockphoto-1413922045-612x612.jpg"
+          src="../images/RegistrationPageImage.jpg"
           alt="Computer Image"
           class="img-fluid rounded d-md-block d-none"
           v-motion
@@ -260,7 +260,7 @@
         class="h-100 col-md-6 w-50 d-md-flex flex-row justify-content-center align-items-center d-none"
       >
         <img
-          src="../images/istockphoto-1413922045-612x612.jpg"
+          src="../images/RegistrationPageImage.jpg"
           alt="Computer Image"
           class="img-fluid rounded d-md-block d-none"
           v-motion

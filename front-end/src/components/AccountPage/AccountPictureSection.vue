@@ -13,7 +13,12 @@
       />
     </div>
     <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-1">
-      <button class="btn btn-dark w-50" @click="changeAccountPicture" v-if="loading == false">
+      <button
+        class="btn btn-dark w-50"
+        @click="changeAccountPicture"
+        :disabled="disableChangeButton"
+        v-if="loading == false"
+      >
         Change
       </button>
 
@@ -46,13 +51,21 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const uploadedFileBase64 = ref<ArrayBuffer | string | null>('')
 const loading = ref<boolean>(false)
 const showSuccessModal = ref<boolean>(false)
+
+const disableChangeButton = computed(() => {
+  if (uploadedFileBase64.value == '') {
+    return true
+  } else {
+    return false
+  }
+})
 
 const uploadFile = (event: any) => {
   const file = event.target.files[0]

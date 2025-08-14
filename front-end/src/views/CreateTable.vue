@@ -53,13 +53,22 @@
         </div>
 
         <div class="w-100 d-flex flex-column justify-content-center align-items-center mb-3">
-          <img
-            src="../images/Abouda-AN.jpg"
-            alt="profile-photo"
-            class="img-fluid"
-            style="width: 41%; height: 97%; border-radius: 50%"
-          />
-          <h6 class="text-center text-white mt-2">{{ userInfo[0].username }}</h6>
+          <div
+            class="w-100 d-flex flex-column justify-content-center align-items-center"
+            v-if="userInfo[0].userAccountPicture"
+          >
+            <img
+              :src="userInfo[0].userAccountPicture"
+              alt="profile-photo"
+              class="img-fluid"
+              style="width: 41%; height: 97%; border-radius: 50%"
+            />
+            <h6 class="text-center text-white mt-2">{{ userInfo[0].username }}</h6>
+          </div>
+          <div class="w-100 d-flex flex-column justify-content-center align-items-center" v-else>
+            <h5 class="text-center text-white mt-2">{{ userInfo[0].username }}</h5>
+            <h5 class="text-center text-white mt-2">{{ userInfo[0].email }}</h5>
+          </div>
         </div>
 
         <div
@@ -93,7 +102,10 @@
           >
         </div>
 
-        <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+        <div
+          class="w-100 d-flex flex-column justify-content-center align-items-center"
+          style="height: 19%"
+        >
           <hr class="w-100 text-white" />
           <button class="btn btn-outline-danger w-75" @click="logout">Logout</button>
         </div>
