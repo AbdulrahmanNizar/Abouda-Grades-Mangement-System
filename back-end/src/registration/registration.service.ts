@@ -47,6 +47,7 @@ export class RegistrationService {
             'Social Studies',
             'Computer Studies',
           ],
+          userAccountPicture: '',
         });
         await newUser.save();
 

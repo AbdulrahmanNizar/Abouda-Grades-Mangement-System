@@ -3,6 +3,7 @@ import { UsersManagementService } from './users-management.service';
 import { AuthGuard } from './auth/auth.guard';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { GetUserInfoDto } from './dto/GetUserInfo.dto';
+import { ChangeUserAccountPictureDto } from './dto/ChangeUserAccountPicture.dto';
 
 @Controller('users-management')
 export class UsersManagementController {
@@ -19,5 +20,20 @@ export class UsersManagementController {
     res
       .status(200)
       .json(await this.usersManagementService.getUserInfo(getUserInfoDto));
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/changeAccountPicture')
+  async changeAccountPicture(
+    @Body() changeUserAccountPictureDto: ChangeUserAccountPictureDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res
+      .status(200)
+      .json(
+        await this.usersManagementService.changeAccountPicture(
+          changeUserAccountPictureDto,
+        ),
+      );
   }
 }

@@ -7,15 +7,16 @@ export const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     logged: { type: Boolean, required: true },
     userSubjects: { type: Object, required: true },
+    userAccountPicture: { type: String, required: false },
   },
   { timestamps: true },
 );
 
 export interface User {
-  id: string;
   username: string;
   email: string;
   password: string;
   logged: boolean;
   userSubjects: string[];
+  userAccountPicture: string;
 }
