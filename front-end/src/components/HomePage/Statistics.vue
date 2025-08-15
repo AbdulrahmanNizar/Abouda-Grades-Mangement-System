@@ -66,7 +66,7 @@ const getGradesByYear = async (): Promise<void> => {
     }
 
     const response = await fetch(
-      'http://127.0.0.1:3000/grades-management/getGradesByYear',
+      'http://192.168.1.241:3000/grades-management/getGradesByYear',
       requestOptions,
     )
     const data = await response.json()

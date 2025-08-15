@@ -24,7 +24,7 @@
           class="bg-white bg-gradient text-black d-flex flex-column justify-content-center align-items-center w-75 h-auto"
           style="border-radius: 8px"
           v-motion
-          :initial="{ opacity: 0, x: 75 }"
+          :initial="{ opacity: 0, x: 45 }"
           :visibleOnce="{ opacity: 1, x: 0 }"
         >
           <div class="w-100 d-flex flex-column justify-content-center align-items-center mb-3 mt-5">
@@ -56,12 +56,12 @@
             <input
               type="text"
               class="form-control"
-              id="username_input"
+              id="usernameInput"
               placeholder="Enter Your Username"
               style="border-radius: 10px"
               v-model="formDataForSignUp.username"
             />
-            <label for="username_input">Enter Your Username</label>
+            <label for="usernameInput">Enter Your Username</label>
             <span v-for="error in v$ForSignUp.username.$errors" class="text-danger mt-3 ms-1">{{
               error.$message
             }}</span>
@@ -71,12 +71,12 @@
             <input
               type="email"
               class="form-control"
-              id="email_input"
+              id="emailInput"
               placeholder="Enter Your Email"
               style="border-radius: 10px"
               v-model="formDataForSignUp.email"
             />
-            <label for="email_input">Enter Your Email Address</label>
+            <label for="emailInput">Enter Your Email Address</label>
             <span v-for="error in v$ForSignUp.email.$errors" class="text-danger mt-3 ms-1">{{
               error.$message
             }}</span>
@@ -86,29 +86,29 @@
             <input
               type="password"
               class="form-control"
-              id="password_input"
+              id="passwordInput"
               placeholder="Enter Your Password"
               style="border-radius: 10px"
               v-model="formDataForSignUp.password"
               ref="passwordInputForSignUp"
             />
-            <label for="password_input">Enter Your Password</label>
+            <label for="passwordInput">Enter Your Password</label>
             <span v-for="error in v$ForSignUp.password.$errors" class="text-danger mt-3 ms-1">{{
               error.$message
             }}</span>
           </div>
 
-          <div class="form-floating w-75">
+          <div class="form-floating mb-3 w-75">
             <input
               type="password"
               class="form-control"
-              id="confirm_password_input"
+              id="confirmPasswordInput"
               placeholder="Confirm Your Password"
               style="border-radius: 10px"
               v-model="formDataForSignUp.confirmPassword"
               ref="confirmPasswordInputForSignUp"
             />
-            <label for="confirm_password_input">Confirm Your Password</label>
+            <label for="confirmPasswordInput">Confirm Your Password</label>
             <span
               v-for="error in v$ForSignUp.confirmPassword.$errors"
               class="text-danger mt-3 ms-1"
@@ -117,20 +117,17 @@
           </div>
 
           <div class="my-2 w-75 d-flex flex-row justify-content-start align-items-center">
-            <button
-              class="btn btn-dark"
-              @click="revealUnrevealPasswordForSignUp"
-              v-if="revealdPasswordForSignUp == false"
-            >
-              Reveal Password
-            </button>
-            <button
-              class="btn btn-dark"
-              @click="revealUnrevealPasswordForSignUp"
-              v-if="revealdPasswordForSignUp == true"
-            >
-              Unreveal Password
-            </button>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="revealPasswordCheckboxForSignUp"
+                v-model="revealdPasswordForSignUp"
+              />
+              <label class="form-check-label" for="revealPasswordCheckboxForSignUp"
+                >Show Password</label
+              >
+            </div>
           </div>
 
           <div class="w-100 d-flex flex-column justify-content-center align-items-center my-3">
@@ -163,7 +160,7 @@
           class="bg-white bg-gradient text-black d-flex flex-column justify-content-center align-items-center w-75 h-auto"
           style="border-radius: 8px"
           v-motion
-          :initial="{ opacity: 0, x: -75 }"
+          :initial="{ opacity: 0, x: -45 }"
           :visibleOnce="{ opacity: 1, x: 0 }"
         >
           <div class="w-100 d-flex flex-column justify-content-center align-items-center mb-3 mt-5">
@@ -195,12 +192,12 @@
             <input
               type="text"
               class="form-control"
-              id="username_input"
+              id="usernameInput"
               placeholder="Enter Your Username"
               style="border-radius: 10px"
               v-model="formDataForLogin.username"
             />
-            <label for="username_input">Enter Your Username</label>
+            <label for="usernameInput">Enter Your Username</label>
             <span v-for="error in v$ForLogin.username.$errors" class="text-danger mt-3 ms-1">{{
               error.$message
             }}</span>
@@ -210,33 +207,30 @@
             <input
               type="password"
               class="form-control"
-              id="password_input"
+              id="passwordInput"
               placeholder="Enter Your Password"
               style="border-radius: 10px"
               v-model="formDataForLogin.password"
               ref="passwordInputForLogin"
             />
-            <label for="password_input">Enter Your Password</label>
+            <label for="passwordInput">Enter Your Password</label>
             <span v-for="error in v$ForLogin.password.$errors" class="text-danger mt-3 ms-1">{{
               error.$message
             }}</span>
           </div>
 
           <div class="my-2 w-75 d-flex flex-row justify-content-start align-items-center">
-            <button
-              class="btn btn-dark"
-              @click="revealAndUnrevealPasswordForLogin"
-              v-if="revealdPasswordForLogin == false"
-            >
-              Reveal Password
-            </button>
-            <button
-              class="btn btn-dark"
-              @click="revealAndUnrevealPasswordForLogin"
-              v-if="revealdPasswordForLogin == true"
-            >
-              Unreveal Password
-            </button>
+            <div class="form-check">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="revealPasswordCheckboxForLogin"
+                v-model="revealdPasswordForLogin"
+              />
+              <label class="form-check-label" for="revealPasswordCheckboxForLogin"
+                >Show Password</label
+              >
+            </div>
           </div>
 
           <div class="w-100 d-flex flex-column justify-content-center align-items-center my-3">
@@ -273,7 +267,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { required, email, minLength, sameAs } from '@vuelidate/validators'
 import { useVerifyAuthToken } from '@/composables/verifyAuthToken'
@@ -309,12 +303,15 @@ const switchMood = () => {
   loginMood.value = !loginMood.value
 }
 
-const revealUnrevealPasswordForSignUp = () => {
-  revealdPasswordForSignUp.value = !revealdPasswordForSignUp.value
-  passwordInputForSignUp.value.type = revealdPasswordForSignUp.value == true ? 'text' : 'password'
-  confirmPasswordInputForSignUp.value.type =
-    revealdPasswordForSignUp.value == true ? 'text' : 'password'
-}
+watch(revealdPasswordForSignUp, (newRevealdPasswordForSignUp, oldRevealdPasswordForSignUp) => {
+  if (newRevealdPasswordForSignUp == true) {
+    passwordInputForSignUp.value.type = 'text'
+    confirmPasswordInputForSignUp.value.type = 'text'
+  } else {
+    passwordInputForSignUp.value.type = 'password'
+    confirmPasswordInputForSignUp.value.type = 'password'
+  }
+})
 
 const formDataForSignUp = reactive({
   username: <string>'',
@@ -351,7 +348,7 @@ const signUp = async () => {
       }
 
       signUpLoading.value = true
-      const response = await fetch('http://127.0.0.1:3000/registration/signup', requestOptions)
+      const response = await fetch('http://192.168.1.241:3000/registration/signup', requestOptions)
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
         signUpLoading.value = false
@@ -370,10 +367,13 @@ const signUp = async () => {
   }
 }
 
-const revealAndUnrevealPasswordForLogin = () => {
-  revealdPasswordForLogin.value = !revealdPasswordForLogin.value
-  passwordInputForLogin.value.type = revealdPasswordForLogin.value == true ? 'text' : 'password'
-}
+watch(revealdPasswordForLogin, (newRevealdPasswordForLogin, oldRevealdPasswordForLogin) => {
+  if (newRevealdPasswordForLogin == true) {
+    passwordInputForLogin.value.type = 'text'
+  } else {
+    passwordInputForLogin.value.type = 'password'
+  }
+})
 
 const formDataForLogin = reactive({
   username: <string>'',
@@ -405,7 +405,7 @@ const login = async () => {
       }
 
       loginLoading.value = true
-      const response = await fetch('http://127.0.0.1:3000/registration/login', requestOptions)
+      const response = await fetch('http://192.168.1.241:3000/registration/login', requestOptions)
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
         loginLoading.value = false

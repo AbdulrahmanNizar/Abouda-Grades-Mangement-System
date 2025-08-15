@@ -12,7 +12,10 @@ export const useVerifyAuthToken = async (authToken: string | null): Promise<stri
         }),
       }
 
-      const response = await fetch('http://127.0.0.1:3000/registration/verifyToken', requestOptions)
+      const response = await fetch(
+        'http://192.168.1.241:3000/registration/verifyToken',
+        requestOptions,
+      )
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
         return 'accepted'

@@ -331,7 +331,7 @@ const createTable = async (): Promise<void> => {
 
       loading.value = true
       const response = await fetch(
-        'http://127.0.0.1:3000/grades-management/createGradesTable',
+        'http://192.168.1.241:3000/grades-management/createGradesTable',
         requestOptions,
       )
       const data = await response.json()
@@ -364,7 +364,7 @@ const logout = async (): Promise<void> => {
     }
 
     const response = await fetch(
-      'http://127.0.0.1:3000/registration/logout/' + userId.value,
+      'http://192.168.1.241:3000/registration/logout/' + userId.value,
       requestOptions,
     )
     const data = await response.json()

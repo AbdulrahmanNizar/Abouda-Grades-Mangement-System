@@ -131,7 +131,7 @@ const getTables = async (): Promise<void> => {
     }
 
     const response = await fetch(
-      'http://127.0.0.1:3000/grades-management/getGradesTables/' + userId.value,
+      'http://192.168.1.241:3000/grades-management/getGradesTables/' + userId.value,
       requestOptions,
     )
     const data = await response.json()
@@ -160,7 +160,7 @@ watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promis
     }
 
     const response = await fetch(
-      'http://127.0.0.1:3000/grades-management/getFilteredGradesTables',
+      'http://192.168.1.241:3000/grades-management/getFilteredGradesTables',
       requestOptions,
     )
     const data = await response.json()
@@ -182,7 +182,7 @@ watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promis
     }
 
     const response = await fetch(
-      'http://127.0.0.1:3000/grades-management/getFilteredGradesTables',
+      'http://192.168.1.241:3000/grades-management/getFilteredGradesTables',
       requestOptions,
     )
     const data = await response.json()
@@ -211,7 +211,7 @@ watch(
       }
 
       const response = await fetch(
-        'http://127.0.0.1:3000/grades-management/getFilteredGradesTables',
+        'http://192.168.1.241:3000/grades-management/getFilteredGradesTables',
         requestOptions,
       )
       const data = await response.json()
@@ -233,7 +233,7 @@ watch(
       }
 
       const response = await fetch(
-        'http://127.0.0.1:3000/grades-management/getFilteredGradesTables',
+        'http://192.168.1.241:3000/grades-management/getFilteredGradesTables',
         requestOptions,
       )
       const data = await response.json()
@@ -258,7 +258,7 @@ const deleteTable = async (gradesTableId: string): Promise<void> => {
 
     loading.value = true
     const response = await fetch(
-      'http://127.0.0.1:3000/grades-management/deleteGradesTable',
+      'http://192.168.1.241:3000/grades-management/deleteGradesTable',
       requestOptions,
     )
     const data = await response.json()

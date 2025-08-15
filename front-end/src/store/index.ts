@@ -24,7 +24,7 @@ export const useUserStore = defineStore('users', {
         }
 
         const response = await fetch(
-          'http://127.0.0.1:3000/users-management/getUserInfo',
+          'http://192.168.1.241:3000/users-management/getUserInfo',
           requestOptions,
         )
         const data = await response.json()
@@ -59,7 +59,7 @@ export const useGradesTablesStore = defineStore('gradesTables', {
 
         this.loading = true
         const response = await fetch(
-          'http://127.0.0.1:3000/grades-management/getGradesTablesYears/' + this.userId,
+          'http://192.168.1.241:3000/grades-management/getGradesTablesYears/' + this.userId,
           requestOptions,
         )
         const data = await response.json()
