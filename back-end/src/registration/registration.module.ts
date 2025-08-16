@@ -4,16 +4,12 @@ import { RegistrationService } from './registration.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { userSchema } from './registration.model';
 import { JwtModule } from '@nestjs/jwt';
+import jwtConfig from './config/jwt.config';
 
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: 'User', schema: userSchema }]),
-    JwtModule.register({
-      secret: 'Abouda@Jsonwebtoken123',
-      signOptions: {
-        expiresIn: '7d',
-      },
-    }),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   controllers: [RegistrationController],
   providers: [RegistrationService],

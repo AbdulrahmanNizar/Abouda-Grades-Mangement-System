@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Post, Res, UseGuards } from '@nestjs/common';
 import { SubjectsManagementService } from './subjects-management.service';
-import { AuthGuard } from './auth/auth.guard';
+import { AuthGuard } from '../registration/auth/auth.guard';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { CreateSubjectDto } from './dto/CreateSubject.dto';
 import { DeleteSubjectDto } from './dto/DeleteSubject.dto';

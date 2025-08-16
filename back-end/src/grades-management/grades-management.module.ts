@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { gradesTablesManagementSchema } from './grades-management.model';
 import { JwtModule } from '@nestjs/jwt';
 import { userSchema } from 'src/registration/registration.model';
+import jwtConfig from './config/jwt.config';
 
 @Module({
   imports: [
@@ -12,10 +13,7 @@ import { userSchema } from 'src/registration/registration.model';
       { name: 'gradesTables', schema: gradesTablesManagementSchema },
       { name: 'User', schema: userSchema },
     ]),
-    JwtModule.register({
-      secret: 'Abouda@Jsonwebtoken123',
-      signOptions: { expiresIn: '7d' },
-    }),
+    JwtModule.registerAsync(jwtConfig.asProvider()),
   ],
   controllers: [GradesManagementController],
   providers: [GradesManagementService],

@@ -125,7 +125,7 @@ export class RegistrationService {
   ): Promise<SuccessResponseObjectDto | void> {
     try {
       this.jwtService.verify(requestInfo.jwtToken, {
-        secret: 'Abouda@Jsonwebtoken123',
+        secret: process.env.JWT_SECRET,
       });
 
       return {

@@ -12,7 +12,7 @@ export class AuthGuard implements CanActivate {
       const request = context.switchToHttp().getRequest();
 
       this.jwtService.verify(request.headers.jwt_token, {
-        secret: 'Abouda@Jsonwebtoken123',
+        secret: process.env.JWT_SECRET,
       });
 
       return true;

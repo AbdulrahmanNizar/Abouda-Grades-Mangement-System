@@ -6,10 +6,12 @@ import { RegistrationModule } from './registration/registration.module';
 import { GradesManagementModule } from './grades-management/grades-management.module';
 import { UsersManagementModule } from './users-management/users-management.module';
 import { SubjectsManagementModule } from './subjects-management/subjects-management.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/abouda-grades'),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
+    MongooseModule.forRoot(process.env.DATABASE_URL),
     RegistrationModule,
     GradesManagementModule,
     UsersManagementModule,
