@@ -339,6 +339,8 @@ const createTable = async (): Promise<void> => {
         loading.value = false
         showSuccessModal.value = true
         setTimeout(() => router.push({ path: '/tables' }), 2000)
+      } else if (data.statusCode == 403) {
+        router.push({ path: '/registration' })
       } else {
         loading.value = false
         errorForCreationOperation.value = data.message

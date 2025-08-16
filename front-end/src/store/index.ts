@@ -30,6 +30,8 @@ export const useUserStore = defineStore('users', {
         const data = await response.json()
         if (data.statusCode >= 200 && data.statusCode < 300) {
           this.userInfo.push(data.data)
+        } else if (data.statusCode == 403) {
+          this.router.push({ path: '/registration' })
         }
       } catch (err) {
         console.log(err)
@@ -41,6 +43,7 @@ export const useUserStore = defineStore('users', {
 export const useGradesTablesStore = defineStore('gradesTables', {
   state: () => {
     return {
+      router: useRouter(),
       userId: <string | null>localStorage.getItem('userId'),
       jwtToken: <string | null>localStorage.getItem('jwtToken'),
       userGradesTablesYears: <userGradesTablesYearsInterface[]>[],
@@ -66,6 +69,8 @@ export const useGradesTablesStore = defineStore('gradesTables', {
         if (data.statusCode >= 200 && data.statusCode < 300) {
           this.loading = false
           this.userGradesTablesYears = data.data
+        } else if (data.statusCode == 403) {
+          this.router.push({ path: '/registration' })
         }
       } catch (err) {
         console.log(err)

@@ -52,7 +52,9 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const uploadedFileBase64 = ref<ArrayBuffer | string | null>('')
@@ -100,6 +102,8 @@ const changeAccountPicture = async (): Promise<void> => {
       loading.value = false
       showSuccessModal.value = true
       setTimeout(() => window.location.reload(), 2000)
+    } else if (data.statusCode == 403) {
+      router.push({ path: '/registration' })
     }
   }
 }

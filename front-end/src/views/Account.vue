@@ -240,6 +240,8 @@ const createSubject = async (): Promise<void> => {
       if (data.statusCode >= 200 && data.statusCode < 300) {
         loading.value = false
         window.location.reload()
+      } else if (data.statusCode == 403) {
+        router.push({ path: '/registration' })
       } else {
         loading.value = false
         createSubjectError.value = data.message

@@ -341,7 +341,7 @@ const signUp = async () => {
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: formDataForSignUp.username.toLowerCase(),
+          username: formDataForSignUp.username.toLowerCase().split(' ').join(''),
           email: formDataForSignUp.email,
           password: formDataForSignUp.password,
         }),
@@ -399,7 +399,7 @@ const login = async () => {
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: formDataForLogin.username.toLowerCase(),
+          username: formDataForLogin.username.toLowerCase().split(' ').join(''),
           password: formDataForLogin.password,
         }),
       }

@@ -179,6 +179,8 @@ const getGradesTableDetails = async (): Promise<void> => {
     const data = await response.json()
     if (data.statusCode >= 200 && data.statusCode < 300) {
       userGradesTableDetails.value = data.data
+    } else if (data.statusCode == 403) {
+      router.push({ path: '/registration' })
     } else {
       gradesTableNotFoundMessage.value = data.message
       showGradesTableNotFoundMessage.value = true

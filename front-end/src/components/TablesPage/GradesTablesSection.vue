@@ -78,8 +78,10 @@
 
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useGradesTablesStore } from '@/store'
 
+const router = useRouter()
 const gradesTablesStore = useGradesTablesStore()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
@@ -166,6 +168,8 @@ watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promis
     const data = await response.json()
     if (data.statusCode >= 200 && data.statusCode < 300) {
       userGradesTables.value = data.data
+    } else if (data.statusCode == 403) {
+      router.push({ path: '/registration' })
     }
   } else if (
     gradesTablesTrimester.value == 'Filter By Trimester' &&
@@ -188,6 +192,8 @@ watch(gradesTablesYear, async (newGradesTablesYear, oldGradesTablesYear): Promis
     const data = await response.json()
     if (data.statusCode >= 200 && data.statusCode < 300) {
       userGradesTables.value = data.data
+    } else if (data.statusCode == 403) {
+      router.push({ path: '/registration' })
     }
   }
 })
@@ -217,6 +223,8 @@ watch(
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
         userGradesTables.value = data.data
+      } else if (data.statusCode == 403) {
+        router.push({ path: '/registration' })
       }
     } else if (
       gradesTablesYear.value == 'Filter By Year' &&
@@ -239,6 +247,8 @@ watch(
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
         userGradesTables.value = data.data
+      } else if (data.statusCode == 403) {
+        router.push({ path: '/registration' })
       }
     }
   },
@@ -265,6 +275,8 @@ const deleteTable = async (gradesTableId: string): Promise<void> => {
     if (data.statusCode >= 200 && data.statusCode < 300) {
       loading.value = false
       window.location.reload()
+    } else if (data.statusCode == 403) {
+      router.push({ path: '/registration' })
     } else {
       loading.value = false
       deleteTableError.value = data.message

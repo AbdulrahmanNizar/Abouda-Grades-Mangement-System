@@ -39,8 +39,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import Chart from 'chart.js/auto'
 
+const router = useRouter()
 const statisticsGraph = ref()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
@@ -79,6 +81,8 @@ const getGradesByYear = async (): Promise<void> => {
         errorForNotCompletedYear.value = "The data isn't enough"
         showErrorForNotCompletedYear.value = true
       }
+    } else if (data.statusCode == 403) {
+      router.push({ path: '/registration' })
     } else {
       errorForNotCompletedYear.value = data.message
       showErrorForNotCompletedYear.value = true

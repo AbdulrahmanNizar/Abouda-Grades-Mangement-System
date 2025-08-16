@@ -58,8 +58,10 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import gsap from 'gsap'
 
+const router = useRouter()
 const props = defineProps(['subjects'])
 const userSubjects = ref<string[]>(props.subjects)
 const userId = ref<string | null>(localStorage.getItem('userId'))
@@ -94,6 +96,8 @@ const deleteSubject = async (subject: string): Promise<void> => {
     if (data.statusCode >= 200 && data.statusCode < 300) {
       loading.value = false
       window.location.reload()
+    } else if (data.statusCode == 403) {
+      router.push({ path: '/registration' })
     } else {
       loading.value = false
       deleteSubjectError.value = data.message
