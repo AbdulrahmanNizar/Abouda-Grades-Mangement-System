@@ -1,15 +1,36 @@
-import { Body, Controller, Delete, Post, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { SubjectsManagementService } from './subjects-management.service';
 import { AuthGuard } from '../registration/auth/auth.guard';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { CreateSubjectDto } from './dto/CreateSubject.dto';
 import { DeleteSubjectDto } from './dto/DeleteSubject.dto';
+import { GetSubjectsDto } from './dto/GetSubjects.dto';
 
 @Controller('subjects-management')
 export class SubjectsManagementController {
   constructor(
     private readonly subjectsManagementService: SubjectsManagementService,
   ) {}
+
+  @UseGuards(AuthGuard)
+  @Get('/getSubjects/:userId')
+  async getSubjects(
+    @Param() getSubjectsDto: GetSubjectsDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res
+      .status(200)
+      .json(await this.subjectsManagementService.getSubjects(getSubjectsDto));
+  }
 
   @UseGuards(AuthGuard)
   @Post('/createSubject')

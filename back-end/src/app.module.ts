@@ -7,11 +7,18 @@ import { GradesManagementModule } from './grades-management/grades-management.mo
 import { UsersManagementModule } from './users-management/users-management.module';
 import { SubjectsManagementModule } from './subjects-management/subjects-management.module';
 import { ConfigModule } from '@nestjs/config';
+import { CacheModule } from '@nestjs/cache-manager';
+import { redisStore } from 'cache-manager-redis-yet';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     MongooseModule.forRoot(process.env.DATABASE_URL),
+    CacheModule.register({
+      isGlobal: true,
+      ttl: 15 * 1000,
+      store: redisStore,
+    }),
     RegistrationModule,
     GradesManagementModule,
     UsersManagementModule,

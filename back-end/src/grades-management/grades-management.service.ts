@@ -1,4 +1,4 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { GetGradesDto } from './dto/GetGradesTables.dto';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,10 +12,12 @@ import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
 import { User } from 'src/registration/registration.model';
 import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
 import { GetGradesByYearDto } from './dto/GetGradesByYear.dto';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class GradesManagementService {
   constructor(
+    @Inject('CACHE_MANAGER') private cacheManager: Cache,
     @InjectModel('gradesTables')
     private readonly gradesTablesModel: Model<gradesTables>,
     @InjectModel('User') private readonly userModel: Model<User>,
@@ -25,15 +27,31 @@ export class GradesManagementService {
     requestInfo: GetGradesDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const userGradesTables = await this.gradesTablesModel.find({
-        userId: requestInfo.userId,
-      });
+      const userCachedGradesTables = await this.cacheManager.get(
+        `User(${requestInfo.userId})GradesTables`,
+      );
+      if (userCachedGradesTables) {
+        return {
+          successMessage: 'Got the user grades tables successfully',
+          statusCode: 200,
+          data: userCachedGradesTables,
+        };
+      } else {
+        const userGradesTables = await this.gradesTablesModel.find({
+          userId: requestInfo.userId,
+        });
 
-      return {
-        successMessage: 'Got user grades successfully',
-        statusCode: 200,
-        data: { userGradesTables: userGradesTables },
-      };
+        await this.cacheManager.set(
+          `User(${requestInfo.userId})GradesTables`,
+          userGradesTables,
+        );
+
+        return {
+          successMessage: 'Got the user grades tables successfully',
+          statusCode: 200,
+          data: userGradesTables,
+        };
+      }
     } catch (err) {
       throw new HttpException(err, err.status);
     }

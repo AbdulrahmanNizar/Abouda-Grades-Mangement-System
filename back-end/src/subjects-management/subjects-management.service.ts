@@ -1,14 +1,52 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User } from 'src/registration/registration.model';
 import { CreateSubjectDto } from './dto/CreateSubject.dto';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { DeleteSubjectDto } from './dto/DeleteSubject.dto';
+import { GetSubjectsDto } from './dto/GetSubjects.dto';
+import { Cache } from 'cache-manager';
 
 @Injectable()
 export class SubjectsManagementService {
-  constructor(@InjectModel('User') private readonly userModel: Model<User>) {}
+  constructor(
+    @Inject('CACHE_MANAGER') private cacheManager: Cache,
+    @InjectModel('User') private readonly userModel: Model<User>,
+  ) {}
+
+  async getSubjects(
+    requestInfo: GetSubjectsDto,
+  ): Promise<SuccessResponseObjectDto | void> {
+    try {
+      const userCachedSubjects = await this.cacheManager.get(
+        `User(${requestInfo.userId})Subjects`,
+      );
+      if (userCachedSubjects) {
+        return {
+          successMessage: 'Got the user subjects successfully',
+          statusCode: 200,
+          data: userCachedSubjects,
+        };
+      } else {
+        const userInDB = await this.userModel.find({ _id: requestInfo.userId });
+        const userSubjects = userInDB[0].userSubjects;
+
+        await this.cacheManager.set(
+          `User${requestInfo.userId}Subjects`,
+          userSubjects,
+        );
+
+        return {
+          successMessage: 'Got the user subjects successfully',
+          statusCode: 200,
+          data: userSubjects,
+        };
+      }
+    } catch (err) {
+      throw new HttpException(err, err.status);
+    }
+  }
 
   async createSubject(
     requestInfo: CreateSubjectDto,

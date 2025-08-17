@@ -5,7 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { gradesTablesManagementSchema } from './grades-management.model';
 import { JwtModule } from '@nestjs/jwt';
 import { userSchema } from 'src/registration/registration.model';
-import jwtConfig from './config/jwt.config';
+import jwtConfig from '../registration/config/jwt.config';
 
 @Module({
   imports: [
