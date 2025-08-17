@@ -103,7 +103,7 @@ interface userGradesTablesInterface {
 }
 
 const userGradesTablesYears = computed(() => {
-  return gradesTablesStore.userGradesTablesYears
+  return gradesTablesStore.userGradesTablesYears.sort((a, b) => Number(b) - Number(a))
 })
 
 const showNotFoundGradesTablesMessage = computed((): boolean => {
@@ -138,7 +138,7 @@ const getTables = async (): Promise<void> => {
     )
     const data = await response.json()
     if (data.statusCode >= 200 && data.statusCode < 300) {
-      userGradesTables.value = data.data.userGradesTables
+      userGradesTables.value = data.data
     }
   } catch (err) {
     console.log(err)

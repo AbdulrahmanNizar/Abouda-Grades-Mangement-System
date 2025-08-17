@@ -125,7 +125,7 @@
         <div class="w-100 d-flex flex-column justify-content-center align-items-center">
           <AccountPictureSection />
           <hr class="w-100" />
-          <SubjectsSection :subjects="userInfo[0].userSubjects" />
+          <SubjectsSection />
         </div>
       </div>
     </div>

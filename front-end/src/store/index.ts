@@ -46,7 +46,7 @@ export const useGradesTablesStore = defineStore('gradesTables', {
       router: useRouter(),
       userId: <string | null>localStorage.getItem('userId'),
       jwtToken: <string | null>localStorage.getItem('jwtToken'),
-      userGradesTablesYears: <userGradesTablesYearsInterface[]>[],
+      userGradesTablesYears: <string[]>[],
       loading: <boolean>false,
     }
   },
@@ -85,8 +85,4 @@ interface userInfoInterface {
   email: string
   userSubjects: string[]
   userAccountPicture: string
-}
-
-interface userGradesTablesYearsInterface {
-  year: string
 }
