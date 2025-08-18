@@ -61,27 +61,43 @@ export class GradesManagementService {
     requestInfo: GetGradesTablesYearsDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const gradesTables = await this.gradesTablesModel.find({
-        userId: requestInfo.userId,
-      });
-      const gradesTablesYears: string[] = [];
-
-      if (gradesTables.length > 0) {
-        for (let i = 0; i < gradesTables.length; i++) {
-          if (
-            !gradesTablesYears.includes(gradesTables[i].userGradesTableYear)
-          ) {
-            gradesTablesYears.push(gradesTables[i].userGradesTableYear);
-          }
-        }
-
+      const userCachedGradesTablesYears = await this.cacheManager.get(
+        `User${requestInfo.userId}GradesTablesYears`,
+      );
+      if (userCachedGradesTablesYears) {
         return {
-          successMessage: 'Got the grades tables years successfully',
+          successMessage: 'Got the user grades tables years successfully',
           statusCode: 200,
-          data: gradesTablesYears,
+          data: userCachedGradesTablesYears,
         };
       } else {
-        throw new HttpException('No tables were found', 404);
+        const gradesTables = await this.gradesTablesModel.find({
+          userId: requestInfo.userId,
+        });
+        const gradesTablesYears: string[] = [];
+
+        if (gradesTables.length > 0) {
+          for (let i = 0; i < gradesTables.length; i++) {
+            if (
+              !gradesTablesYears.includes(gradesTables[i].userGradesTableYear)
+            ) {
+              gradesTablesYears.push(gradesTables[i].userGradesTableYear);
+            }
+          }
+
+          await this.cacheManager.set(
+            `User${requestInfo.userId}GradesTablesYears`,
+            gradesTablesYears,
+          );
+
+          return {
+            successMessage: 'Got the grades tables years successfully',
+            statusCode: 200,
+            data: gradesTablesYears,
+          };
+        } else {
+          throw new HttpException('No tables were found', 404);
+        }
       }
     } catch (err) {
       throw new HttpException(err, err.status);
@@ -110,29 +126,45 @@ export class GradesManagementService {
     requestInfo: GetGradesByYearDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const userGradesTables = await this.gradesTablesModel.find({
-        userId: requestInfo.userId,
-        userGradesTableYear: requestInfo.year,
-      });
-      const yearGrades: number[] = [];
-
-      if (userGradesTables.length > 0) {
-        userGradesTables.sort(
-          (a, b) =>
-            Number(a.userGradesTableTrim) - Number(b.userGradesTableTrim),
-        );
-
-        for (let i = 0; i < userGradesTables.length; i++) {
-          yearGrades.push(userGradesTables[i].userGradesAverage);
-        }
-
+      const userCachedGradesTables = await this.cacheManager.get(
+        `User${requestInfo.userId}Year${requestInfo.year}GradesTables`,
+      );
+      if (userCachedGradesTables) {
         return {
-          successMessage: 'Got the current year grades',
+          successMessage: 'Got the user grades tables successfully',
           statusCode: 200,
-          data: yearGrades,
+          data: userCachedGradesTables,
         };
       } else {
-        throw new HttpException('No tables were found', 404);
+        const userGradesTables = await this.gradesTablesModel.find({
+          userId: requestInfo.userId,
+          userGradesTableYear: requestInfo.year,
+        });
+        const yearGrades: number[] = [];
+
+        if (userGradesTables.length > 0) {
+          userGradesTables.sort(
+            (a, b) =>
+              Number(a.userGradesTableTrim) - Number(b.userGradesTableTrim),
+          );
+
+          for (let i = 0; i < userGradesTables.length; i++) {
+            yearGrades.push(userGradesTables[i].userGradesAverage);
+          }
+
+          await this.cacheManager.set(
+            `User${requestInfo.userId}Year${requestInfo.year}GradesTables`,
+            yearGrades,
+          );
+
+          return {
+            successMessage: 'Got the current year grades',
+            statusCode: 200,
+            data: yearGrades,
+          };
+        } else {
+          throw new HttpException('No tables were found', 404);
+        }
       }
     } catch (err) {
       throw new HttpException(err, err.status);
