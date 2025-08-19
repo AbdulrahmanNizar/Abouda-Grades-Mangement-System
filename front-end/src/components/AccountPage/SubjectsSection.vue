@@ -57,7 +57,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import gsap from 'gsap'
 
@@ -71,7 +71,9 @@ const searchSubject = ref<string>('')
 const loading = ref<boolean>(false)
 
 const searchSubjectResult = computed(() => {
-  return userSubjects.value.filter((subject) => subject.toLowerCase().includes(searchSubject.value))
+  return userSubjects.value.filter((subject) =>
+    subject.toLowerCase().includes(searchSubject.value.toLowerCase()),
+  )
 })
 
 const getSubjects = async (): Promise<void> => {

@@ -1,0 +1,174 @@
+<template>
+  <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+      <div class="form-floating w-50">
+        <input
+          type="text"
+          id="searchSubject"
+          class="form-control"
+          placeholder="Search Subject"
+          v-model="searchSubject"
+        />
+        <label for="searchSubject">Search Subject</label>
+      </div>
+    </div>
+
+    <hr class="w-100" />
+
+    <div
+      class="w-100 d-flex flex-md-row flex-column flex-wrap justify-content-center align-items-center"
+    >
+      <div
+        class="d-flex flex-column justify-content-center align-items-center p-3 border rounded me-2 ms-2 mt-2"
+        style="width: 30%"
+        id="subjectCard"
+        v-motion-pop-visible
+        v-for="subject in searchSubjectResult"
+      >
+        <h5>{{ subject }}</h5>
+        <hr class="w-100" />
+        <button
+          class="w-100 btn btn-dark"
+          @click="checkSubject(subject)"
+          v-if="checkedSubjects.includes(subject) == false"
+        >
+          Check
+        </button>
+        <button class="w-100 btn btn-secondary" @click="unCheckSubject(subject)" v-else>
+          Uncheck
+        </button>
+      </div>
+    </div>
+
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-2">
+      <hr class="w-100" />
+      <button class="w-50 btn btn-dark" @click="nextStage">Next</button>
+    </div>
+
+    <transition-group name="slideUp">
+      <div
+        class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 operationResultModal"
+        style="width: 50%"
+        v-if="showErrorForNotEnoughSubjects"
+      >
+        <div
+          class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+        >
+          <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+            <h5 class="text-center">Operation Failed ❌</h5>
+          </div>
+
+          <hr class="w-100" />
+
+          <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+            <h6 class="text-center">{{ errorForNotEnoughSubjects }}</h6>
+          </div>
+        </div>
+      </div>
+      <div
+        class="toast d-md-block d-none position-fixed"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        style="bottom: 3%; right: 1%"
+        v-if="showErrorForNotEnoughSubjects"
+      >
+        <div class="toast-header">
+          <strong class="me-auto">Operation Failed ❌</strong>
+        </div>
+        <div class="toast-body">{{ errorForNotEnoughSubjects }}</div>
+      </div>
+    </transition-group>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, computed } from 'vue'
+import { useRouter } from 'vue-router'
+
+const emit = defineEmits(['getCheckedSubjects'])
+const router = useRouter()
+const userId = ref<string | null>(localStorage.getItem('userId'))
+const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
+const userSubjects = ref<string[]>([])
+const checkedSubjects = ref<string[]>([])
+const searchSubject = ref<string>('')
+const errorForNotEnoughSubjects = ref<string>('')
+const showErrorForNotEnoughSubjects = ref<boolean>(false)
+
+const searchSubjectResult = computed(() => {
+  return userSubjects.value.filter((subject) =>
+    subject.toLowerCase().includes(searchSubject.value.toLowerCase()),
+  )
+})
+
+const checkSubject = (subject: string): void => {
+  checkedSubjects.value.push(subject)
+}
+
+const unCheckSubject = (subject: string): void => {
+  checkedSubjects.value = checkedSubjects.value.filter((sub) => sub != subject)
+}
+
+const nextStage = (): void => {
+  if (checkedSubjects.value.length >= 5) {
+    emit('getCheckedSubjects', checkedSubjects.value)
+  } else {
+    errorForNotEnoughSubjects.value = 'You must choose at least 5 subjects'
+    showErrorForNotEnoughSubjects.value = true
+    setTimeout(() => (showErrorForNotEnoughSubjects.value = false), 3000)
+  }
+}
+
+const getSubjects = async (): Promise<void> => {
+  try {
+    const requestOptions: RequestInit = {
+      method: 'GET',
+      mode: 'cors',
+      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+    }
+
+    const response = await fetch(
+      'http://127.0.0.1:3000/subjects-management/getSubjects/' + userId.value,
+      requestOptions,
+    )
+    const data = await response.json()
+    if (data.statusCode >= 200 && data.statusCode < 300) {
+      userSubjects.value = data.data
+    } else if (data.statusCode == 403) {
+      router.push({ path: '/registration' })
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+getSubjects()
+</script>
+
+<style>
+@media only screen and (max-width: 991px) {
+  #subjectCard {
+    width: 80% !important;
+  }
+}
+
+.slideUp-enter-active {
+  animation: slideUp 0.5s;
+}
+
+.slideUp-leave-active {
+  animation: slideUp 0.5s reverse;
+}
+
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(45px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>

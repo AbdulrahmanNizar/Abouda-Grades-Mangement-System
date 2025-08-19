@@ -173,7 +173,7 @@ const getGradesTableDetails = async (): Promise<void> => {
     }
 
     const response = await fetch(
-      'http://192.168.1.241:3000/grades-management/getGradesTableDetails/' + tableId,
+      'http://127.0.0.1:3000/grades-management/getGradesTableDetails/' + tableId,
       requestOptions,
     )
     const data = await response.json()
@@ -199,7 +199,7 @@ const logout = async (): Promise<void> => {
     }
 
     const response = await fetch(
-      'http://192.168.1.241:3000/registration/logout/' + userId.value,
+      'http://127.0.0.1:3000/registration/logout/' + userId.value,
       requestOptions,
     )
     const data = await response.json()

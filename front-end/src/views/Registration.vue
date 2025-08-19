@@ -267,7 +267,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted, watch } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { required, email, minLength, sameAs } from '@vuelidate/validators'
 import { useVerifyAuthToken } from '@/composables/verifyAuthToken'
@@ -348,7 +348,7 @@ const signUp = async () => {
       }
 
       signUpLoading.value = true
-      const response = await fetch('http://192.168.1.241:3000/registration/signup', requestOptions)
+      const response = await fetch('http://127.0.0.1:3000/registration/signup', requestOptions)
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
         signUpLoading.value = false
@@ -405,7 +405,7 @@ const login = async () => {
       }
 
       loginLoading.value = true
-      const response = await fetch('http://192.168.1.241:3000/registration/login', requestOptions)
+      const response = await fetch('http://127.0.0.1:3000/registration/login', requestOptions)
       const data = await response.json()
       if (data.statusCode >= 200 && data.statusCode < 300) {
         loginLoading.value = false

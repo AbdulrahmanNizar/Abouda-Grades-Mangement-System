@@ -94,7 +94,7 @@ const changeAccountPicture = async (): Promise<void> => {
 
     loading.value = true
     const response = await fetch(
-      'http://192.168.1.241:3000/users-management/changeAccountPicture',
+      'http://127.0.0.1:3000/users-management/changeAccountPicture',
       requestOptions,
     )
     const data = await response.json()

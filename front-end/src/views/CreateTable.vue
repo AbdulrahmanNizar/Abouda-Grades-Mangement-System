@@ -112,7 +112,7 @@
       </div>
 
       <div
-        class="h-100 text-black d-flex flex-column justify-content-start align-items-center"
+        class="h-100 overflow-y-auto text-black d-flex flex-column justify-content-start align-items-center"
         style="width: 84%"
         id="dashboard"
       >
@@ -121,7 +121,23 @@
           <hr class="w-100" />
         </div>
 
-        <div
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-3">
+          <div class="btn-group w-75">
+            <button class="btn btn-dark w-25" :disabled="currentStage != 'Subjects'">
+              Subjects
+            </button>
+            <button class="btn btn-dark w-25" :disabled="currentStage != 'Grades'">Grades</button>
+            <button class="btn btn-dark w-25" :disabled="currentStage != 'Create'">Create</button>
+          </div>
+        </div>
+
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-3">
+          <Subjects v-if="currentStage == 'Subjects'" @get-checked-subjects="gradesStage" />
+          <Grades v-if="currentStage == 'Grades'" :checkedSubjects="checkedSubjects" />
+          <Create v-if="currentStage == 'Create'" />
+        </div>
+
+        <!-- <div
           class="w-75 d-flex flex-md-row flex-column justify-content-center align-items-center p-3"
         >
           <select class="form-select ms-1 mt-1" v-model="gradesTableYear">
@@ -206,11 +222,11 @@
               <span class="visually-hidden mb-0">Loading...</span>
             </div>
           </button>
-        </div>
+        </div> -->
 
-        <transition name="bounce">
+        <transition-group name="bounce">
           <div
-            class="d-flex flex-row justify-content-center align-items-center mt-5 operationResultModal"
+            class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 operationResultModal"
             style="width: 50%"
             v-if="showErrorModal"
           >
@@ -228,10 +244,23 @@
               </div>
             </div>
           </div>
-        </transition>
+          <div
+            class="toast d-md-block d-none position-fixed"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true"
+            style="bottom: 3%; right: 1%"
+            v-if="showErrorModal"
+          >
+            <div class="toast-header">
+              <strong class="me-auto">Operation Failed ❌</strong>
+            </div>
+            <div class="toast-body">{{ errorForCreationOperation }}</div>
+          </div>
+        </transition-group>
 
         <div
-          class="d-flex flex-row justify-content-center align-items-center mt-5 p-3 operationResultModal"
+          class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 p-3 operationResultModal"
           style="width: 50%"
           v-if="showSuccessModal"
         >
@@ -244,6 +273,20 @@
             </div>
           </div>
         </div>
+        <div
+          class="toast d-md-block position-fixed"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          style="bottom: 3%; right: 1%"
+          v-motion-pop-visible
+          v-if="showSuccessModal"
+        >
+          <div class="toast-header">
+            <strong class="me-auto">Success</strong>
+          </div>
+          <div class="toast-body">Operation Completed ✅</div>
+        </div>
       </div>
     </div>
   </div>
@@ -252,7 +295,10 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/store/index.ts'
+import { useUserStore } from '@/store/index'
+import Subjects from '@/components/CreateTablePage/subjects.vue'
+import Grades from '@/components/CreateTablePage/Grades.vue'
+import Create from '@/components/CreateTablePage/Create.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -266,14 +312,21 @@ const gradesTableTrimester = ref<string>('Select A Trimester')
 const subjectGrade = ref<number>(0)
 const gradesTable = ref<number[]>([])
 const disableSubjectGradeInputAndButton = ref<boolean>(false)
-const showErrorModal = ref<boolean>(false)
 const showSuccessModal = ref<boolean>(false)
+const showErrorModal = ref<boolean>(false)
 const errorForCreationOperation = ref<string>('')
 const loading = ref<boolean>(false)
+const currentStage = ref<string | null>('Subjects')
+const checkedSubjects = ref<string[]>([])
 
-const userInfo: any = computed(() => {
+const userInfo = computed(() => {
   return userStore.userInfo
 })
+
+const gradesStage = (subjectsList: string[]) => {
+  checkedSubjects.value = subjectsList
+  currentStage.value = 'Grades'
+}
 
 const changeTheNoteColorToRed = computed(() => {
   if (subjectGrade.value > 100 || subjectGrade.value < 0) {
@@ -331,7 +384,7 @@ const createTable = async (): Promise<void> => {
 
       loading.value = true
       const response = await fetch(
-        'http://192.168.1.241:3000/grades-management/createGradesTable',
+        'http://127.0.0.1:3000/grades-management/createGradesTable',
         requestOptions,
       )
       const data = await response.json()
@@ -340,6 +393,7 @@ const createTable = async (): Promise<void> => {
         showSuccessModal.value = true
         setTimeout(() => router.push({ path: '/tables' }), 2000)
       } else if (data.statusCode == 403) {
+        loading.value = false
         router.push({ path: '/registration' })
       } else {
         loading.value = false
@@ -366,7 +420,7 @@ const logout = async (): Promise<void> => {
     }
 
     const response = await fetch(
-      'http://192.168.1.241:3000/registration/logout/' + userId.value,
+      'http://127.0.0.1:3000/registration/logout/' + userId.value,
       requestOptions,
     )
     const data = await response.json()
@@ -395,9 +449,11 @@ getLastFiveYears()
 .bounce-enter-active {
   animation: bounce-in 0.5s;
 }
+
 .bounce-leave-active {
   animation: bounce-in 0.5s reverse;
 }
+
 @keyframes bounce-in {
   0% {
     transform: scale(0);
