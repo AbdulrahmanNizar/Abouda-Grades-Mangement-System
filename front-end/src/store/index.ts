@@ -79,6 +79,41 @@ export const useGradesTablesStore = defineStore('gradesTables', {
   },
 })
 
+export const useSubjectsStore = defineStore('subjects', {
+  state: () => {
+    return {
+      router: useRouter(),
+      userId: <string | null>localStorage.getItem('userId'),
+      jwtToken: <string | null>localStorage.getItem('jwtToken'),
+      userSubjects: <string[]>[],
+    }
+  },
+  actions: {
+    async getSubjects(): Promise<void> {
+      try {
+        const requestOptions: RequestInit = {
+          method: 'GET',
+          mode: 'cors',
+          headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: this.jwtToken },
+        }
+
+        const response = await fetch(
+          'http://192.168.1.241:3000/subjects-management/getSubjects/' + this.userId,
+          requestOptions,
+        )
+        const data = await response.json()
+        if (data.statusCode >= 200 && data.statusCode < 300) {
+          this.userSubjects = data.data
+        } else if (data.statusCode == 403) {
+          this.router.push({ path: '/registration' })
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
+  },
+})
+
 interface userInfoInterface {
   id: string
   username: string

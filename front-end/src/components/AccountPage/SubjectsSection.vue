@@ -59,10 +59,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { useSubjectsStore } from '@/store'
 import gsap from 'gsap'
 
+const userSubjectsStore = useSubjectsStore()
 const router = useRouter()
-const userSubjects = ref<string[]>([])
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const showDeleteSubjectError = ref<boolean>(false)
@@ -70,34 +71,15 @@ const deleteSubjectError = ref<string>('')
 const searchSubject = ref<string>('')
 const loading = ref<boolean>(false)
 
+const userSubjects = computed(() => {
+  return userSubjectsStore.userSubjects
+})
+
 const searchSubjectResult = computed(() => {
   return userSubjects.value.filter((subject) =>
     subject.toLowerCase().includes(searchSubject.value.toLowerCase()),
   )
 })
-
-const getSubjects = async (): Promise<void> => {
-  try {
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      mode: 'cors',
-      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
-    }
-
-    const response = await fetch(
-      'http://192.168.1.241:3000/subjects-management/getSubjects/' + userId.value,
-      requestOptions,
-    )
-    const data = await response.json()
-    if (data.statusCode >= 200 && data.statusCode < 300) {
-      userSubjects.value = data.data
-    } else if (data.statusCode == 403) {
-      router.push({ path: '/registration' })
-    }
-  } catch (err) {
-    console.log(err)
-  }
-}
 
 const deleteSubject = async (subject: string): Promise<void> => {
   try {
@@ -156,7 +138,7 @@ const onLeave = (el: any, done: any) => {
   })
 }
 
-getSubjects()
+userSubjectsStore.getSubjects()
 </script>
 
 <style>

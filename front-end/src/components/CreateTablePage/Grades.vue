@@ -14,52 +14,104 @@
       </select>
     </div>
 
-    <hr class="w-100" />
+    <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+      <table
+        class="table table-hover w-100"
+        v-if="gradesTable.length == props.checkedSubjects.length"
+      >
+        <thead>
+          <tr>
+            <th scope="col">Subject</th>
+            <th scope="col">Grade</th>
+            <th scope="col">Edit</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr scope="row" v-for="(grade, index) in gradesTable">
+            <td>{{ grade.subject }}</td>
+            <td>{{ grade.grade }}%</td>
+            <td>
+              <button class="btn btn-dark" @click="switchToEditMood(index)">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
     <div
-      class="w-75 d-flex flex-md-row flex-column flex-wrap justify-content-center align-items-center p-3"
+      class="w-100 d-flex flex-md-row flex-column flex-wrap justify-content-center align-items-center p-3"
     >
-      <div class="w-100 d-flex flex-row justify-content-center align-items-center mb-1">
+      <div
+        class="w-100 d-flex flex-column justify-content-center align-items-center mb-1"
+        v-if="gradesTable.length != props.checkedSubjects.length || editMood == true"
+      >
+        <hr class="w-100" />
+
         <h6 v-if="changeTheNoteColorToRed == false" class="text-center">
           The grade must be less than 100 <br />
           and more than 0
         </h6>
+
         <h6 v-else="changeTheNoteColorToRed" class="text-danger text-center">
           The grade must be less than 100 <br />
           and more than 0
         </h6>
       </div>
 
-      <div class="form-floating mb-1 ms-1 w-50">
+      <div
+        class="form-floating mb-1 ms-1 w-50"
+        v-if="gradesTable.length != props.checkedSubjects.length"
+      >
         <input
           type="number"
           class="form-control"
-          id="subject_grade"
+          id="subjectGrade"
           placeholder="Subject Grade"
           v-model="subjectGrade"
           :disabled="disableSubjectGradeInputAndButton"
         />
-        <label for="subject_grade">{{ props.checkedSubjects[currentUserSubjectGrade] }}</label>
+        <label for="subjectGrade">{{ props.checkedSubjects[currentUserSubjectGrade] }}</label>
+      </div>
+
+      <div class="form-floating mb-1 ms-1 w-50" v-if="editMood">
+        <input
+          type="number"
+          class="form-control"
+          id="subjectGrade"
+          placeholder="Subject Grade"
+          v-model="editSubjectGrade"
+        />
+        <label for="subjectGrade">{{ editedSubjectGrade?.subject }}</label>
       </div>
     </div>
 
     <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-      <button
-        class="btn btn-dark w-50"
-        @click="setGradeForNextSubject"
-        v-if="props.checkedSubjects[currentUserSubjectGrade + 1] != undefined"
+      <div
+        class="w-100 d-flex flex-row justify-content-center align-items-center"
+        v-if="gradesTable.length != props.checkedSubjects.length"
       >
-        {{ props.checkedSubjects[currentUserSubjectGrade + 1] }}
-        <i class="bi bi-arrow-right"></i>
-      </button>
-      <button
-        class="btn btn-dark w-50"
-        :disabled="disableSubjectGradeInputAndButton"
-        @click="setUserGrades"
-        v-if="props.checkedSubjects[currentUserSubjectGrade + 1] == undefined"
-      >
-        Done
-      </button>
+        <button
+          class="btn btn-dark w-50"
+          @click="setGradeForNextSubject"
+          v-if="props.checkedSubjects[currentUserSubjectGrade + 1] != undefined"
+        >
+          {{ props.checkedSubjects[currentUserSubjectGrade + 1] }}
+          <i class="bi bi-arrow-right"></i>
+        </button>
+
+        <button
+          class="btn btn-dark w-50"
+          :disabled="disableSubjectGradeInputAndButton"
+          @click="setUserGrades"
+          v-if="props.checkedSubjects[currentUserSubjectGrade + 1] == undefined"
+        >
+          Done
+        </button>
+      </div>
+
+      <button class="btn btn-dark w-50" v-if="editMood" @click="editGrade">Edit</button>
     </div>
 
     <hr class="w-100" />
@@ -101,7 +153,7 @@
         v-if="showErrorForNotCompletedFields"
       >
         <div class="toast-header">
-          <strong class="me-auto">Operation Failed ❌</strong>
+          <strong class="me-auto">❌ Operation Failed</strong>
         </div>
         <div class="toast-body">{{ errorForNotCompletedFields }}</div>
       </div>
@@ -113,23 +165,40 @@
 import { computed, ref } from 'vue'
 
 const props = defineProps(['checkedSubjects'])
-const emit = defineEmits(['gradesTable'])
+const emit = defineEmits(['getGradesTable'])
 const lastFiveYears = ref<number[]>([])
 const currentYear = ref<number>(new Date().getFullYear())
 const currentUserSubjectGrade = ref<number | any>(0)
 const gradesTableYear = ref<string>('Select A Year')
 const gradesTableTrimester = ref<string>('Select A Trimester')
 const subjectGrade = ref<number>(0)
-const gradesTable = ref<number[]>([])
+const gradesTable = ref<gradesTableInterface[]>([])
 const disableSubjectGradeInputAndButton = ref<boolean>(false)
 const errorForNotCompletedFields = ref<string>('')
 const showErrorForNotCompletedFields = ref<boolean>(false)
+const editMood = ref<boolean>(false)
+const editSubjectGrade = ref<number>(0)
+const editedSubjectGrade = ref<gradesTableInterface>()
+const editedSubjectGradeIndex = ref<number>()
+
+interface gradesTableInterface {
+  subject: string
+  grade: number
+}
 
 const changeTheNoteColorToRed = computed(() => {
-  if (subjectGrade.value > 100 || subjectGrade.value < 0) {
-    return true
+  if (editMood.value) {
+    if (editSubjectGrade.value > 100 || editSubjectGrade.value < 0) {
+      return true
+    } else {
+      return false
+    }
   } else {
-    return false
+    if (subjectGrade.value > 100 || subjectGrade.value < 0) {
+      return true
+    } else {
+      return false
+    }
   }
 })
 
@@ -150,14 +219,20 @@ const resetInputs = () => {
 
 const setGradeForNextSubject = () => {
   if (subjectGrade.value <= 100 && subjectGrade.value > 0) {
-    gradesTable.value.push(subjectGrade.value)
+    gradesTable.value.push({
+      subject: props.checkedSubjects[currentUserSubjectGrade.value],
+      grade: subjectGrade.value,
+    })
     subjectGrade.value = 0
     currentUserSubjectGrade.value += 1
   }
 }
 
 const setUserGrades = () => {
-  gradesTable.value.push(subjectGrade.value)
+  gradesTable.value.push({
+    subject: props.checkedSubjects[currentUserSubjectGrade.value],
+    grade: subjectGrade.value,
+  })
   disableSubjectGradeInputAndButton.value = true
 }
 
@@ -165,9 +240,33 @@ const nextStage = (): void => {
   if (
     gradesTable.value.length == props.checkedSubjects.length &&
     gradesTableYear.value != 'Filter By Year' &&
-    gradesTableTrimester.value != 'Filter By Trimester'
+    gradesTableTrimester.value != 'Filter By Trimester' &&
+    changeTheNoteColorToRed.value != true
   ) {
-    emit('gradesTable', gradesTable.value)
+    emit('getGradesTable', gradesTable.value)
+  } else {
+    errorForNotCompletedFields.value = 'Please fill the fields'
+    showErrorForNotCompletedFields.value = true
+    setTimeout(() => (showErrorForNotCompletedFields.value = false), 3000)
+  }
+}
+
+const switchToEditMood = (gradeIndex: number): void => {
+  editMood.value = true
+  editSubjectGrade.value = gradesTable.value[gradeIndex].grade
+  editedSubjectGrade.value = gradesTable.value[gradeIndex]
+  editedSubjectGradeIndex.value = gradeIndex
+}
+
+const editGrade = (): void => {
+  if (
+    gradesTableYear.value != 'Filter By Year' &&
+    gradesTableTrimester.value != 'Filter By Trimester' &&
+    changeTheNoteColorToRed.value != true
+  ) {
+    const subjectGradeIndex: number | any = editedSubjectGradeIndex.value
+    gradesTable.value[subjectGradeIndex].grade = editSubjectGrade.value
+    editMood.value = false
   } else {
     errorForNotCompletedFields.value = 'Please fill the fields'
     showErrorForNotCompletedFields.value = true

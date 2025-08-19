@@ -74,7 +74,7 @@
         v-if="showErrorForNotEnoughSubjects"
       >
         <div class="toast-header">
-          <strong class="me-auto">Operation Failed ❌</strong>
+          <strong class="me-auto">❌ Operation Failed</strong>
         </div>
         <div class="toast-body">{{ errorForNotEnoughSubjects }}</div>
       </div>

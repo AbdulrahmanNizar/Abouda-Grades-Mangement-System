@@ -133,159 +133,12 @@
 
         <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-3">
           <Subjects v-if="currentStage == 'Subjects'" @get-checked-subjects="gradesStage" />
-          <Grades v-if="currentStage == 'Grades'" :checkedSubjects="checkedSubjects" />
+          <Grades
+            v-if="currentStage == 'Grades'"
+            :checkedSubjects="checkedSubjects"
+            @get-grades-table="createStage"
+          />
           <Create v-if="currentStage == 'Create'" />
-        </div>
-
-        <!-- <div
-          class="w-75 d-flex flex-md-row flex-column justify-content-center align-items-center p-3"
-        >
-          <select class="form-select ms-1 mt-1" v-model="gradesTableYear">
-            <option value="Select A Year" selected disabled>Select A Year</option>
-            <option v-for="year in lastFiveYears" :value="year">{{ year }}</option>
-          </select>
-
-          <select class="form-select ms-1 mt-1" v-model="gradesTableTrimester">
-            <option value="Select A Trimester" selected disabled>Select A Trimester</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-          </select>
-        </div>
-
-        <hr class="w-100" />
-
-        <div
-          class="w-75 d-flex flex-md-row flex-column flex-wrap justify-content-center align-items-center p-3"
-        >
-          <div class="w-100 d-flex flex-row justify-content-center align-items-center mb-1">
-            <h6 v-if="changeTheNoteColorToRed == false" class="text-center">
-              The grade must be less than 100 <br />
-              and more than 0
-            </h6>
-            <h6 v-else="changeTheNoteColorToRed" class="text-danger text-center">
-              The grade must be less than 100 <br />
-              and more than 0
-            </h6>
-          </div>
-
-          <div class="form-floating mb-1 ms-1 w-50">
-            <input
-              type="number"
-              class="form-control"
-              id="subject_grade"
-              placeholder="Subject Grade"
-              v-model="subjectGrade"
-              :disabled="disableSubjectGradeInputAndButton"
-            />
-            <label for="subject_grade">{{
-              userInfo[0].userSubjects[currentUserSubjectGrade]
-            }}</label>
-          </div>
-        </div>
-
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-          <button
-            class="btn btn-dark w-50"
-            @click="setGradeForNextSubject"
-            v-if="userInfo[0].userSubjects[currentUserSubjectGrade + 1] != undefined"
-          >
-            {{ userInfo[0].userSubjects[currentUserSubjectGrade + 1] }}
-            <i class="bi bi-arrow-right"></i>
-          </button>
-          <button
-            class="btn btn-dark w-50"
-            :disabled="disableSubjectGradeInputAndButton"
-            @click="setUserGrades"
-            v-if="userInfo[0].userSubjects[currentUserSubjectGrade + 1] == undefined"
-          >
-            Done
-          </button>
-        </div>
-
-        <hr class="w-100" />
-
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center mb-1">
-          <button class="btn btn-dark w-50" @click="resetInputs">Reset</button>
-        </div>
-
-        <div class="w-100 d-flex flex-column justify-content-center align-items-center">
-          <button class="btn btn-dark w-50" @click="createTable" v-if="loading == false">
-            Create
-          </button>
-          <button
-            class="btn btn-dark w-50 mt-1 d-flex flex-row justify-content-center align-items-center"
-            disabled
-            v-else
-          >
-            <div class="spinner-border" role="status">
-              <span class="visually-hidden mb-0">Loading...</span>
-            </div>
-          </button>
-        </div> -->
-
-        <transition-group name="bounce">
-          <div
-            class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 operationResultModal"
-            style="width: 50%"
-            v-if="showErrorModal"
-          >
-            <div
-              class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-            >
-              <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-                <h5 class="text-center">Operation Failed ❌</h5>
-              </div>
-
-              <hr class="w-100" />
-
-              <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-                <h6 class="text-center">{{ errorForCreationOperation }}</h6>
-              </div>
-            </div>
-          </div>
-          <div
-            class="toast d-md-block d-none position-fixed"
-            role="alert"
-            aria-live="assertive"
-            aria-atomic="true"
-            style="bottom: 3%; right: 1%"
-            v-if="showErrorModal"
-          >
-            <div class="toast-header">
-              <strong class="me-auto">Operation Failed ❌</strong>
-            </div>
-            <div class="toast-body">{{ errorForCreationOperation }}</div>
-          </div>
-        </transition-group>
-
-        <div
-          class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 p-3 operationResultModal"
-          style="width: 50%"
-          v-if="showSuccessModal"
-        >
-          <div
-            class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-            v-motion-pop-visible
-          >
-            <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-              <h4>Operation Completed ✅</h4>
-            </div>
-          </div>
-        </div>
-        <div
-          class="toast d-md-block position-fixed"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-          style="bottom: 3%; right: 1%"
-          v-motion-pop-visible
-          v-if="showSuccessModal"
-        >
-          <div class="toast-header">
-            <strong class="me-auto">Success</strong>
-          </div>
-          <div class="toast-body">Operation Completed ✅</div>
         </div>
       </div>
     </div>
@@ -296,7 +149,7 @@
 import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/index'
-import Subjects from '@/components/CreateTablePage/subjects.vue'
+import Subjects from '@/components/CreateTablePage/Subjects.vue'
 import Grades from '@/components/CreateTablePage/Grades.vue'
 import Create from '@/components/CreateTablePage/Create.vue'
 
@@ -304,64 +157,28 @@ const userStore = useUserStore()
 const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
-const lastFiveYears = ref<number[]>([])
-const currentYear = ref<number>(new Date().getFullYear())
-const currentUserSubjectGrade = ref<number | any>(0)
 const gradesTableYear = ref<string>('Select A Year')
 const gradesTableTrimester = ref<string>('Select A Trimester')
-const subjectGrade = ref<number>(0)
-const gradesTable = ref<number[]>([])
-const disableSubjectGradeInputAndButton = ref<boolean>(false)
 const showSuccessModal = ref<boolean>(false)
 const showErrorModal = ref<boolean>(false)
 const errorForCreationOperation = ref<string>('')
 const loading = ref<boolean>(false)
 const currentStage = ref<string | null>('Subjects')
 const checkedSubjects = ref<string[]>([])
+const gradesTable = ref<number[]>([])
 
 const userInfo = computed(() => {
   return userStore.userInfo
 })
 
-const gradesStage = (subjectsList: string[]) => {
+const gradesStage = (subjectsList: string[]): void => {
   checkedSubjects.value = subjectsList
   currentStage.value = 'Grades'
 }
 
-const changeTheNoteColorToRed = computed(() => {
-  if (subjectGrade.value > 100 || subjectGrade.value < 0) {
-    return true
-  } else {
-    return false
-  }
-})
-
-const getLastFiveYears = () => {
-  for (let i = 0; i <= 5; i++) {
-    lastFiveYears.value.push(currentYear.value - i)
-  }
-}
-
-const resetInputs = () => {
-  gradesTable.value = []
-  currentUserSubjectGrade.value = 0
-  subjectGrade.value = 0
-  gradesTableYear.value = 'Select A Year'
-  gradesTableTrimester.value = 'Select A Trimester'
-  disableSubjectGradeInputAndButton.value = false
-}
-
-const setGradeForNextSubject = () => {
-  if (subjectGrade.value <= 100 && subjectGrade.value > 0) {
-    gradesTable.value.push(subjectGrade.value)
-    subjectGrade.value = 0
-    currentUserSubjectGrade.value += 1
-  }
-}
-
-const setUserGrades = () => {
-  gradesTable.value.push(subjectGrade.value)
-  disableSubjectGradeInputAndButton.value = true
+const createStage = (gradesTableList: number[]): void => {
+  gradesTable.value = gradesTableList
+  currentStage.value = 'Create'
 }
 
 const createTable = async (): Promise<void> => {
@@ -436,7 +253,6 @@ const logout = async (): Promise<void> => {
 }
 
 userStore.getUserInfo()
-getLastFiveYears()
 </script>
 
 <style>
