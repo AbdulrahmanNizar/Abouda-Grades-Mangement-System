@@ -25,7 +25,7 @@
         v-motion-pop-visible
         v-for="subject in searchSubjectResult"
       >
-        <h5>{{ subject }}</h5>
+        <h5 class="mb-0">{{ subject }}</h5>
         <hr class="w-100" />
         <button
           class="w-100 btn btn-dark"
@@ -84,17 +84,18 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useSubjectsStore } from '@/store'
 
 const emit = defineEmits(['getCheckedSubjects'])
-const router = useRouter()
-const userId = ref<string | null>(localStorage.getItem('userId'))
-const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
-const userSubjects = ref<string[]>([])
+const userSubjectsStore = useSubjectsStore()
 const checkedSubjects = ref<string[]>([])
 const searchSubject = ref<string>('')
 const errorForNotEnoughSubjects = ref<string>('')
 const showErrorForNotEnoughSubjects = ref<boolean>(false)
+
+const userSubjects = computed(() => {
+  return userSubjectsStore.userSubjects
+})
 
 const searchSubjectResult = computed(() => {
   return userSubjects.value.filter((subject) =>
@@ -120,30 +121,7 @@ const nextStage = (): void => {
   }
 }
 
-const getSubjects = async (): Promise<void> => {
-  try {
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      mode: 'cors',
-      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
-    }
-
-    const response = await fetch(
-      'http://127.0.0.1:3000/subjects-management/getSubjects/' + userId.value,
-      requestOptions,
-    )
-    const data = await response.json()
-    if (data.statusCode >= 200 && data.statusCode < 300) {
-      userSubjects.value = data.data
-    } else if (data.statusCode == 403) {
-      router.push({ path: '/registration' })
-    }
-  } catch (err) {
-    console.log(err)
-  }
-}
-
-getSubjects()
+userSubjectsStore.getSubjects()
 </script>
 
 <style>

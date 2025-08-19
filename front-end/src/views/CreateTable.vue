@@ -136,9 +136,12 @@
           <Grades
             v-if="currentStage == 'Grades'"
             :checkedSubjects="checkedSubjects"
-            @get-grades-table="createStage"
+            @get-create-grades-table-requirements="createStage"
           />
-          <Create v-if="currentStage == 'Create'" />
+          <Create
+            v-if="currentStage == 'Create'"
+            :createGradesTableRequirements="createGradesTableRequirements"
+          />
         </div>
       </div>
     </div>
@@ -150,22 +153,17 @@ import { computed, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/store/index'
 import Subjects from '@/components/CreateTablePage/Subjects.vue'
-import Grades from '@/components/CreateTablePage/Grades.vue'
+import Grades, {
+  type createGradesTableRequirementsInterface,
+} from '@/components/CreateTablePage/Grades.vue'
 import Create from '@/components/CreateTablePage/Create.vue'
 
 const userStore = useUserStore()
 const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
-const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
-const gradesTableYear = ref<string>('Select A Year')
-const gradesTableTrimester = ref<string>('Select A Trimester')
-const showSuccessModal = ref<boolean>(false)
-const showErrorModal = ref<boolean>(false)
-const errorForCreationOperation = ref<string>('')
-const loading = ref<boolean>(false)
 const currentStage = ref<string | null>('Subjects')
 const checkedSubjects = ref<string[]>([])
-const gradesTable = ref<number[]>([])
+const createGradesTableRequirements = ref<createGradesTableRequirementsInterface>()
 
 const userInfo = computed(() => {
   return userStore.userInfo
@@ -176,56 +174,11 @@ const gradesStage = (subjectsList: string[]): void => {
   currentStage.value = 'Grades'
 }
 
-const createStage = (gradesTableList: number[]): void => {
-  gradesTable.value = gradesTableList
+const createStage = (
+  createGradesTableRequirementsObject: createGradesTableRequirementsInterface,
+): void => {
+  createGradesTableRequirements.value = createGradesTableRequirementsObject
   currentStage.value = 'Create'
-}
-
-const createTable = async (): Promise<void> => {
-  try {
-    if (
-      gradesTableYear.value != 'Select A Year' &&
-      gradesTableTrimester.value != 'Select A Trimester'
-    ) {
-      const requestOptions: RequestInit = {
-        method: 'POST',
-        mode: 'cors',
-        headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
-        body: JSON.stringify({
-          userId: userId.value,
-          userGradesTableYear: gradesTableYear.value,
-          userGradesTableTrim: gradesTableTrimester.value,
-          userGradesTable: gradesTable.value,
-        }),
-      }
-
-      loading.value = true
-      const response = await fetch(
-        'http://127.0.0.1:3000/grades-management/createGradesTable',
-        requestOptions,
-      )
-      const data = await response.json()
-      if (data.statusCode >= 200 && data.statusCode < 300) {
-        loading.value = false
-        showSuccessModal.value = true
-        setTimeout(() => router.push({ path: '/tables' }), 2000)
-      } else if (data.statusCode == 403) {
-        loading.value = false
-        router.push({ path: '/registration' })
-      } else {
-        loading.value = false
-        errorForCreationOperation.value = data.message
-        showErrorModal.value = true
-        setTimeout(() => (showErrorModal.value = false), 3000)
-      }
-    } else {
-      errorForCreationOperation.value = 'Please fill the fields'
-      showErrorModal.value = true
-      setTimeout(() => (showErrorModal.value = false), 3000)
-    }
-  } catch (err) {
-    console.log(err)
-  }
 }
 
 const logout = async (): Promise<void> => {

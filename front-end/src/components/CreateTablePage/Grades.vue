@@ -165,7 +165,7 @@
 import { computed, ref } from 'vue'
 
 const props = defineProps(['checkedSubjects'])
-const emit = defineEmits(['getGradesTable'])
+const emit = defineEmits(['getCreateGradesTableRequirements'])
 const lastFiveYears = ref<number[]>([])
 const currentYear = ref<number>(new Date().getFullYear())
 const currentUserSubjectGrade = ref<number | any>(0)
@@ -178,12 +178,19 @@ const errorForNotCompletedFields = ref<string>('')
 const showErrorForNotCompletedFields = ref<boolean>(false)
 const editMood = ref<boolean>(false)
 const editSubjectGrade = ref<number>(0)
-const editedSubjectGrade = ref<gradesTableInterface>()
 const editedSubjectGradeIndex = ref<number>()
+const editedSubjectGrade = ref<gradesTableInterface>()
+const createGradesTableRequirements = ref<createGradesTableRequirementsInterface>()
 
-interface gradesTableInterface {
+export interface gradesTableInterface {
   subject: string
   grade: number
+}
+
+export interface createGradesTableRequirementsInterface {
+  gradesTable: gradesTableInterface[]
+  gradesTableYear: string
+  gradesTableTrimester: string
 }
 
 const changeTheNoteColorToRed = computed(() => {
@@ -243,7 +250,12 @@ const nextStage = (): void => {
     gradesTableTrimester.value != 'Filter By Trimester' &&
     changeTheNoteColorToRed.value != true
   ) {
-    emit('getGradesTable', gradesTable.value)
+    createGradesTableRequirements.value = {
+      gradesTable: gradesTable.value,
+      gradesTableYear: gradesTableYear.value,
+      gradesTableTrimester: gradesTableTrimester.value,
+    }
+    emit('getCreateGradesTableRequirements', createGradesTableRequirements.value)
   } else {
     errorForNotCompletedFields.value = 'Please fill the fields'
     showErrorForNotCompletedFields.value = true
