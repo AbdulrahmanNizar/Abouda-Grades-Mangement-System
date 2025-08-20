@@ -20,6 +20,7 @@ import { GetFilteredGradesDto } from './dto/GetFilteredGradesTables.dto';
 import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
 import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
 import { GetGradesByYearDto } from './dto/GetGradesByYear.dto';
+import { ValidateGradesTableDataDto } from './dto/ValidateGradesTableDate.dto';
 
 @Controller('grades-management')
 export class GradesManagementController {
@@ -92,6 +93,21 @@ export class GradesManagementController {
       .json(
         await this.gradesManagementService.getFilteredGradesTables(
           getFilteredGradesDto,
+        ),
+      );
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/validateGradesTableDate')
+  async validateGradesTableDate(
+    @Body() validateGradesTableDateDto: ValidateGradesTableDataDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res
+      .status(200)
+      .json(
+        await this.gradesManagementService.validateGradesTableDate(
+          validateGradesTableDateDto,
         ),
       );
   }

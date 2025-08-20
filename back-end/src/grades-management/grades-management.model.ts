@@ -4,7 +4,7 @@ export const gradesTablesManagementSchema = new mongoose.Schema(
   {
     userId: { type: String, required: true },
     userGradesTableYear: { type: String, required: true },
-    userGradesTableTrim: { type: String, required: true },
+    userGradesTableTrimester: { type: String, required: true },
     userGradesTable: { type: Object, required: true },
     userGradesAverage: { type: Number, required: true },
   },
@@ -14,7 +14,7 @@ export const gradesTablesManagementSchema = new mongoose.Schema(
 export interface gradesTables {
   userId: string;
   userGradesTableYear: string;
-  userGradesTableTrim: string;
+  userGradesTableTrimester: string;
   userGradesTable: number[];
   userGradesAverage: number;
 }

@@ -13,6 +13,7 @@ import { User } from 'src/registration/registration.model';
 import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
 import { GetGradesByYearDto } from './dto/GetGradesByYear.dto';
 import { Cache } from 'cache-manager';
+import { ValidateGradesTableDataDto } from './dto/ValidateGradesTableDate.dto';
 
 @Injectable()
 export class GradesManagementService {
@@ -145,7 +146,8 @@ export class GradesManagementService {
         if (userGradesTables.length > 0) {
           userGradesTables.sort(
             (a, b) =>
-              Number(a.userGradesTableTrim) - Number(b.userGradesTableTrim),
+              Number(a.userGradesTableTrimester) -
+              Number(b.userGradesTableTrimester),
           );
 
           for (let i = 0; i < userGradesTables.length; i++) {
@@ -182,7 +184,7 @@ export class GradesManagementService {
         const userFilteredGradesTables = await this.gradesTablesModel.find({
           userId: requestInfo.userId,
           userGradesTableYear: requestInfo.yearFiltration,
-          userGradesTableTrim: requestInfo.trimesterFiltration,
+          userGradesTableTrimester: requestInfo.trimesterFiltration,
         });
 
         return {
@@ -204,7 +206,7 @@ export class GradesManagementService {
       } else if (requestInfo.trimesterFiltration != undefined) {
         const userFilteredGradesTables = await this.gradesTablesModel.find({
           userId: requestInfo.userId,
-          userGradesTableTrim: requestInfo.trimesterFiltration,
+          userGradesTableTrimester: requestInfo.trimesterFiltration,
         });
 
         return {
@@ -218,47 +220,55 @@ export class GradesManagementService {
     }
   }
 
+  async validateGradesTableDate(
+    requestInfo: ValidateGradesTableDataDto,
+  ): Promise<SuccessResponseObjectDto | void> {
+    try {
+      const checkingTheExistenseOfTheTable = await this.gradesTablesModel.find({
+        userId: requestInfo.userId,
+        userGradesTableYear: requestInfo.userGradesTableYear,
+        userGradesTableTrimester: requestInfo.userGradesTableTrimester,
+      });
+
+      if (checkingTheExistenseOfTheTable.length > 0) {
+        throw new HttpException('The grades table is already exists', 400);
+      } else {
+        return {
+          successMessage: 'Grades table was validated successfully',
+          statusCode: 200,
+        };
+      }
+    } catch (err) {
+      throw new HttpException(err, err.status);
+    }
+  }
+
   async createGradesTable(
     requestInfo: CreateGradesTableDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const checkingTheExistenseOfTheTable = await this.gradesTablesModel.find({
-        userGradesTableYear: requestInfo.userGradesTableYear,
-        userGradesTableTrim: requestInfo.userGradesTableTrim,
-      });
+      let userFullGrade: number = 0;
 
-      if (checkingTheExistenseOfTheTable.length > 0) {
-        throw new HttpException('The grades table is already exist', 400);
-      } else {
-        const userInDB = await this.userModel.find({ _id: requestInfo.userId });
-        const userGradesTable: object[] = [];
-        let userFullGrade: number = 0;
-
-        for (let i = 0; i < requestInfo.userGradesTable.length; i++) {
-          userGradesTable.push({
-            subject: userInDB[0].userSubjects[i],
-            grade: requestInfo.userGradesTable[i],
-          });
-          userFullGrade += requestInfo.userGradesTable[i];
-        }
-
-        const userGradesAverage: number =
-          userFullGrade / requestInfo.userGradesTable.length;
-
-        const newGradesTable = new this.gradesTablesModel({
-          userId: requestInfo.userId,
-          userGradesTableYear: requestInfo.userGradesTableYear,
-          userGradesTableTrim: requestInfo.userGradesTableTrim,
-          userGradesTable: userGradesTable,
-          userGradesAverage: userGradesAverage.toFixed(2),
-        });
-        await newGradesTable.save();
-
-        return {
-          successMessage: 'Grades table created successfully',
-          statusCode: 201,
-        };
+      for (let i = 0; i < requestInfo.userGradesTable.length; i++) {
+        userFullGrade += requestInfo.userGradesTable[i].grade;
       }
+
+      const userGradesAverage: number =
+        userFullGrade / requestInfo.userGradesTable.length;
+
+      const newGradesTable = new this.gradesTablesModel({
+        userId: requestInfo.userId,
+        userGradesTableYear: requestInfo.userGradesTableYear,
+        userGradesTableTrimester: requestInfo.userGradesTableTrimester,
+        userGradesTable: requestInfo.userGradesTable,
+        userGradesAverage: userGradesAverage.toFixed(2),
+      });
+      await newGradesTable.save();
+
+      return {
+        successMessage: 'Grades table created successfully',
+        statusCode: 201,
+      };
     } catch (err) {
       throw new HttpException(err, err.status);
     }
@@ -276,7 +286,7 @@ export class GradesManagementService {
         const checkingTheExistenseOfTheTable =
           await this.gradesTablesModel.find({
             userGradesTableYear: requestInfo.newUserGradesTableYear,
-            userGradesTableTrim: requestInfo.newUserGradesTableTrim,
+            userGradesTableTrimester: requestInfo.newuserGradesTableTrimester,
           });
 
         if (checkingTheExistenseOfTheTable.length > 0) {
@@ -296,7 +306,8 @@ export class GradesManagementService {
             {
               $set: {
                 userGradesTableYear: requestInfo.newUserGradesTableYear,
-                userGradesTableTrim: requestInfo.newUserGradesTableTrim,
+                userGradesTableTrimester:
+                  requestInfo.newuserGradesTableTrimester,
                 userGradesTable: requestInfo.newUserGradesTable,
                 userGradesAverage: userGradesAverage.toFixed(2),
               },
