@@ -1,5 +1,10 @@
 <template>
-  <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+  <div
+    v-motion
+    :initial="{ opacity: 0, y: 200 }"
+    :visibleOnce="{ opacity: 1, y: 0 }"
+    class="w-100 d-flex flex-column justify-content-center align-items-center"
+  >
     <div class="w-100 d-flex flex-column justify-content-center align-items-center">
       <div class="form-floating w-50">
         <input

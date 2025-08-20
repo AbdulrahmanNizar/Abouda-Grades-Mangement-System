@@ -1,5 +1,10 @@
 <template>
-  <div class="w-100 text-black d-flex flex-column justify-content-start align-items-center">
+  <div
+    v-motion
+    :initial="{ opacity: 0, y: 200 }"
+    :visibleOnce="{ opacity: 1, y: 0 }"
+    class="w-100 text-black d-flex flex-column justify-content-start align-items-center"
+  >
     <div class="w-75 d-flex flex-md-row flex-column justify-content-center align-items-center p-3">
       <select class="form-select ms-1 mt-1" v-model="gradesTableYear">
         <option value="Select A Year" selected disabled>Select A Year</option>
@@ -40,6 +45,8 @@
       </table>
     </div>
 
+    <hr class="w-100" />
+
     <div
       class="w-100 d-flex flex-md-row flex-column flex-wrap justify-content-center align-items-center p-3"
     >
@@ -47,8 +54,6 @@
         class="w-100 d-flex flex-column justify-content-center align-items-center mb-1"
         v-if="gradesTable.length != props.checkedSubjects.length || editMood == true"
       >
-        <hr class="w-100" />
-
         <h6 v-if="changeTheNoteColorToRed == false" class="text-center">
           The grade must be less than 100 <br />
           and more than 0
@@ -111,7 +116,9 @@
         </button>
       </div>
 
-      <button class="btn btn-dark w-50" v-if="editMood" @click="editGrade">Edit</button>
+      <div class="w-100 d-flex flex-row justify-content-center align-items-center" v-if="editMood">
+        <button class="btn btn-dark w-50" @click="editGrade">Edit</button>
+      </div>
     </div>
 
     <hr class="w-100" />
