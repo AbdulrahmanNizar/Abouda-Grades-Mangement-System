@@ -61,7 +61,9 @@
         </button>
       </div>
     </div>
+  </div>
 
+  <transition-group name="slideUp">
     <div
       class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 p-3 operationResultModal"
       style="width: 50%"
@@ -69,7 +71,6 @@
     >
       <div
         class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-        v-motion-pop-visible
       >
         <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
           <h4>Operation Completed ✅</h4>
@@ -82,7 +83,6 @@
       aria-live="assertive"
       aria-atomic="true"
       style="bottom: 3%; right: 1%"
-      v-motion-pop-visible
       v-if="showSuccessModal"
     >
       <div class="toast-header">
@@ -90,7 +90,7 @@
       </div>
       <div class="toast-body">✅ Operation Completed</div>
     </div>
-  </div>
+  </transition-group>
 </template>
 
 <script setup lang="ts">
@@ -113,7 +113,8 @@ const createGradesTable = async (): Promise<void> => {
       body: JSON.stringify({
         userId: userId.value,
         userGradesTableYear: props.createGradesTableRequirements.gradesTableYear.toString(),
-        userGradesTableTrim: props.createGradesTableRequirements.gradesTableTrimester.toString(),
+        userGradesTableTrimester:
+          props.createGradesTableRequirements.gradesTableTrimester.toString(),
         userGradesTable: props.createGradesTableRequirements.gradesTable,
       }),
     }

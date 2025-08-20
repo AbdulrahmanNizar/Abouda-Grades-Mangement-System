@@ -36,7 +36,12 @@
             <td>{{ grade.subject }}</td>
             <td>{{ grade.grade }}%</td>
             <td>
-              <button class="btn btn-dark" @click="switchToEditMood(index)">
+              <button
+                class="btn btn-dark"
+                data-bs-toggle="modal"
+                data-bs-target="#editGradeModal"
+                @click="switchToEditMood(index)"
+              >
                 <i class="bi bi-pencil-square"></i>
               </button>
             </td>
@@ -45,14 +50,12 @@
       </table>
     </div>
 
-    <hr class="w-100" />
-
     <div
       class="w-100 d-flex flex-md-row flex-column flex-wrap justify-content-center align-items-center p-3"
     >
       <div
         class="w-100 d-flex flex-column justify-content-center align-items-center mb-1"
-        v-if="gradesTable.length != props.checkedSubjects.length || editMood == true"
+        v-if="gradesTable.length != props.checkedSubjects.length"
       >
         <h6 v-if="changeTheNoteColorToRed == false" class="text-center">
           The grade must be less than 100 <br />
@@ -79,17 +82,6 @@
         />
         <label for="subjectGrade">{{ props.checkedSubjects[currentUserSubjectGrade] }}</label>
       </div>
-
-      <div class="form-floating mb-1 ms-1 w-50" v-if="editMood">
-        <input
-          type="number"
-          class="form-control"
-          id="subjectGrade"
-          placeholder="Subject Grade"
-          v-model="editSubjectGrade"
-        />
-        <label for="subjectGrade">{{ editedSubjectGrade?.subject }}</label>
-      </div>
     </div>
 
     <div class="w-100 d-flex flex-row justify-content-center align-items-center">
@@ -115,10 +107,6 @@
           Done
         </button>
       </div>
-
-      <div class="w-100 d-flex flex-row justify-content-center align-items-center" v-if="editMood">
-        <button class="btn btn-dark w-50" @click="editGrade">Edit</button>
-      </div>
     </div>
 
     <hr class="w-100" />
@@ -130,49 +118,105 @@
     <div class="w-100 d-flex flex-row justify-content-center align-items-center mb-1">
       <button class="btn btn-dark w-50" @click="nextStage">Next</button>
     </div>
+  </div>
 
-    <transition-group name="slideUp">
+  <transition-group name="slideUp">
+    <div
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 operationResultModal"
+      style="width: 50%"
+      v-if="showErrorForGoingToNextStage"
+    >
       <div
-        class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 operationResultModal"
-        style="width: 50%"
-        v-if="showErrorForNotCompletedFields"
+        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
       >
-        <div
-          class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-        >
-          <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-            <h5 class="text-center">Operation Failed ❌</h5>
-          </div>
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+          <h5 class="text-center">Operation Failed ❌</h5>
+        </div>
 
-          <hr class="w-100" />
+        <hr class="w-100" />
 
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+          <h6 class="text-center">{{ errorForGoingToNextStage }}</h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="toast d-md-block d-none position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showErrorForGoingToNextStage"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">❌ Operation Failed</strong>
+      </div>
+      <div class="toast-body">{{ errorForGoingToNextStage }}</div>
+    </div>
+  </transition-group>
+
+  <div
+    class="modal fade"
+    id="editGradeModal"
+    tabindex="-1"
+    aria-labelledby="editGradeModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="editGradeModalLabel">Edit Grade</h1>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body w-100 d-flex flex-column justify-content-center align-items-center">
           <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-            <h6 class="text-center">{{ errorForNotCompletedFields }}</h6>
+            <h6 v-if="changeTheNoteColorToRed == false" class="text-center">
+              The grade must be less than 100 <br />
+              and more than 0
+            </h6>
+
+            <h6 v-else="changeTheNoteColorToRed" class="text-danger text-center">
+              The grade must be less than 100 <br />
+              and more than 0
+            </h6>
+          </div>
+
+          <div class="form-floating w-100">
+            <input
+              type="number"
+              class="form-control"
+              id="subjectGrade"
+              placeholder="Subject Grade"
+              v-model="editSubjectGrade"
+            />
+            <label for="subjectGrade">{{ editedSubjectGrade?.subject }}</label>
           </div>
         </div>
-      </div>
-      <div
-        class="toast d-md-block d-none position-fixed"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-        style="bottom: 3%; right: 1%"
-        v-if="showErrorForNotCompletedFields"
-      >
-        <div class="toast-header">
-          <strong class="me-auto">❌ Operation Failed</strong>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal" @click="editGrade">
+            Edit
+          </button>
         </div>
-        <div class="toast-body">{{ errorForNotCompletedFields }}</div>
       </div>
-    </transition-group>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { useRouter } from 'vue-router'
 
+const router = useRouter()
 const props = defineProps(['checkedSubjects'])
 const emit = defineEmits(['getCreateGradesTableRequirements'])
+const userId = ref<string | null>(localStorage.getItem('userId'))
+const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const lastFiveYears = ref<number[]>([])
 const currentYear = ref<number>(new Date().getFullYear())
 const currentUserSubjectGrade = ref<number | any>(0)
@@ -181,8 +225,8 @@ const gradesTableTrimester = ref<string>('Select A Trimester')
 const subjectGrade = ref<number>(0)
 const gradesTable = ref<gradesTableInterface[]>([])
 const disableSubjectGradeInputAndButton = ref<boolean>(false)
-const errorForNotCompletedFields = ref<string>('')
-const showErrorForNotCompletedFields = ref<boolean>(false)
+const errorForGoingToNextStage = ref<string>('')
+const showErrorForGoingToNextStage = ref<boolean>(false)
 const editMood = ref<boolean>(false)
 const editSubjectGrade = ref<number>(0)
 const editedSubjectGradeIndex = ref<number>()
@@ -250,23 +294,47 @@ const setUserGrades = () => {
   disableSubjectGradeInputAndButton.value = true
 }
 
-const nextStage = (): void => {
+const nextStage = async (): Promise<void> => {
   if (
     gradesTable.value.length == props.checkedSubjects.length &&
-    gradesTableYear.value != 'Filter By Year' &&
-    gradesTableTrimester.value != 'Filter By Trimester' &&
+    gradesTableYear.value != 'Select A Year' &&
+    gradesTableTrimester.value != 'Select A Trimester' &&
     changeTheNoteColorToRed.value != true
   ) {
-    createGradesTableRequirements.value = {
-      gradesTable: gradesTable.value,
-      gradesTableYear: gradesTableYear.value,
-      gradesTableTrimester: gradesTableTrimester.value,
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      mode: 'cors',
+      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+      body: JSON.stringify({
+        userId: userId.value,
+        userGradesTableYear: gradesTableYear.value.toString(),
+        userGradesTableTrimester: gradesTableTrimester.value.toString(),
+      }),
     }
-    emit('getCreateGradesTableRequirements', createGradesTableRequirements.value)
+
+    const response = await fetch(
+      'http://127.0.0.1:3000/grades-management/validateGradesTableDate',
+      requestOptions,
+    )
+    const data = await response.json()
+    if (data.statusCode >= 200 && data.statusCode < 300) {
+      createGradesTableRequirements.value = {
+        gradesTable: gradesTable.value,
+        gradesTableYear: gradesTableYear.value.toString(),
+        gradesTableTrimester: gradesTableTrimester.value.toString(),
+      }
+      emit('getCreateGradesTableRequirements', createGradesTableRequirements.value)
+    } else if (data.statusCode == 403) {
+      router.push({ path: '/registration' })
+    } else {
+      errorForGoingToNextStage.value = data.message
+      showErrorForGoingToNextStage.value = true
+      setTimeout(() => (showErrorForGoingToNextStage.value = false), 3000)
+    }
   } else {
-    errorForNotCompletedFields.value = 'Please fill the fields'
-    showErrorForNotCompletedFields.value = true
-    setTimeout(() => (showErrorForNotCompletedFields.value = false), 3000)
+    errorForGoingToNextStage.value = 'Please fill the fields'
+    showErrorForGoingToNextStage.value = true
+    setTimeout(() => (showErrorForGoingToNextStage.value = false), 3000)
   }
 }
 
@@ -287,9 +355,9 @@ const editGrade = (): void => {
     gradesTable.value[subjectGradeIndex].grade = editSubjectGrade.value
     editMood.value = false
   } else {
-    errorForNotCompletedFields.value = 'Please fill the fields'
-    showErrorForNotCompletedFields.value = true
-    setTimeout(() => (showErrorForNotCompletedFields.value = false), 3000)
+    errorForGoingToNextStage.value = 'Please fill the fields'
+    showErrorForGoingToNextStage.value = true
+    setTimeout(() => (showErrorForGoingToNextStage.value = false), 3000)
   }
 }
 

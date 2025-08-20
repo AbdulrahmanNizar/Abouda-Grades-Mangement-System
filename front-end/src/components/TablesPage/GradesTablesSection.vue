@@ -42,7 +42,7 @@
       v-for="gradesTable in userGradesTables"
     >
       <h5>Year: {{ gradesTable.userGradesTableYear }}</h5>
-      <h5>Term: {{ gradesTable.userGradesTableTrim }}</h5>
+      <h5>Trimester: {{ gradesTable.userGradesTableTrimester }}</h5>
       <h5>Grade: {{ gradesTable.userGradesAverage }}%</h5>
       <hr class="w-100" />
       <router-link :to="{ path: '/table/' + gradesTable._id }" class="btn btn-dark w-100"
@@ -96,7 +96,7 @@ interface userGradesTablesInterface {
   _id: string
   userId: string
   userSubjects: string[]
-  userGradesTableTrim: string
+  userGradesTableTrimester: string
   userGradesTableYear: string
   userGradesTable: string[]
   userGradesAverage: number

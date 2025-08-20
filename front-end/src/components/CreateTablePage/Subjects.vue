@@ -1,7 +1,7 @@
 <template>
   <div
     v-motion
-    :initial="{ opacity: 0, y: 200 }"
+    :initial="{ opacity: 0, y: 100 }"
     :visibleOnce="{ opacity: 1, y: 0 }"
     class="w-100 d-flex flex-column justify-content-center align-items-center"
   >
@@ -49,42 +49,42 @@
       <hr class="w-100" />
       <button class="w-50 btn btn-dark" @click="nextStage">Next</button>
     </div>
-
-    <transition-group name="slideUp">
-      <div
-        class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 operationResultModal"
-        style="width: 50%"
-        v-if="showErrorForNotEnoughSubjects"
-      >
-        <div
-          class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-        >
-          <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-            <h5 class="text-center">Operation Failed ❌</h5>
-          </div>
-
-          <hr class="w-100" />
-
-          <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-            <h6 class="text-center">{{ errorForNotEnoughSubjects }}</h6>
-          </div>
-        </div>
-      </div>
-      <div
-        class="toast d-md-block d-none position-fixed"
-        role="alert"
-        aria-live="assertive"
-        aria-atomic="true"
-        style="bottom: 3%; right: 1%"
-        v-if="showErrorForNotEnoughSubjects"
-      >
-        <div class="toast-header">
-          <strong class="me-auto">❌ Operation Failed</strong>
-        </div>
-        <div class="toast-body">{{ errorForNotEnoughSubjects }}</div>
-      </div>
-    </transition-group>
   </div>
+
+  <transition-group name="slideUp">
+    <div
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 operationResultModal"
+      style="width: 50%"
+      v-if="showErrorForNotEnoughSubjects"
+    >
+      <div
+        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+          <h5 class="text-center">Operation Failed ❌</h5>
+        </div>
+
+        <hr class="w-100" />
+
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+          <h6 class="text-center">{{ errorForNotEnoughSubjects }}</h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="toast d-md-block d-none position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showErrorForNotEnoughSubjects"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">❌ Operation Failed</strong>
+      </div>
+      <div class="toast-body">{{ errorForNotEnoughSubjects }}</div>
+    </div>
+  </transition-group>
 </template>
 
 <script setup lang="ts">
@@ -120,7 +120,7 @@ const nextStage = (): void => {
   if (checkedSubjects.value.length >= 5) {
     emit('getCheckedSubjects', checkedSubjects.value)
   } else {
-    errorForNotEnoughSubjects.value = 'You must choose at least 5 subjects'
+    errorForNotEnoughSubjects.value = 'You must choose 5 subjects at least'
     showErrorForNotEnoughSubjects.value = true
     setTimeout(() => (showErrorForNotEnoughSubjects.value = false), 3000)
   }
