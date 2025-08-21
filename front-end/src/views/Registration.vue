@@ -130,7 +130,7 @@
             </div>
           </div>
 
-          <div class="w-100 d-flex flex-column justify-content-center align-items-center my-3">
+          <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-3">
             <button class="btn btn-dark w-75 mb-2" @click="signUp" v-if="signUpLoading == false">
               Sign Up
             </button>
@@ -142,6 +142,18 @@
               <div class="spinner-border" role="status">
                 <span class="visually-hidden mb-0">Loading...</span>
               </div>
+            </button>
+          </div>
+
+          <div class="w-75 d-flex flex-row justify-content-center align-items-center mt-1">
+            <hr class="w-100" />
+            <p class="mb-0 mx-1">or</p>
+            <hr class="w-100" />
+          </div>
+
+          <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-1 mb-3">
+            <button class="btn btn-dark w-75">
+              <i class="bi bi-google me-1 mb-0"></i> Sign Up With Google
             </button>
           </div>
         </div>
@@ -233,7 +245,7 @@
             </div>
           </div>
 
-          <div class="w-100 d-flex flex-column justify-content-center align-items-center my-3">
+          <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-3">
             <button class="btn btn-dark w-75 mb-2" @click="login" v-if="loginLoading == false">
               Login
             </button>
@@ -245,6 +257,18 @@
               <div class="spinner-border" role="status">
                 <span class="visually-hidden mb-0">Loading...</span>
               </div>
+            </button>
+          </div>
+
+          <div class="w-75 d-flex flex-row justify-content-center align-items-center mt-1">
+            <hr class="w-100" />
+            <p class="mb-0 mx-1">or</p>
+            <hr class="w-100" />
+          </div>
+
+          <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-1 mb-3">
+            <button class="btn btn-dark w-75">
+              <i class="bi bi-google me-1"></i> Login With Google
             </button>
           </div>
         </div>
