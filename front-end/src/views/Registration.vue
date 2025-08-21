@@ -152,7 +152,7 @@
           </div>
 
           <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-1 mb-3">
-            <button class="btn btn-dark w-75">
+            <button class="btn btn-dark w-75" @click="signUpWithGoogle">
               <i class="bi bi-google me-1 mb-0"></i> Sign Up With Google
             </button>
           </div>
@@ -267,7 +267,7 @@
           </div>
 
           <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-1 mb-3">
-            <button class="btn btn-dark w-75">
+            <button class="btn btn-dark w-75" @click="loginWithGoogle">
               <i class="bi bi-google me-1"></i> Login With Google
             </button>
           </div>
@@ -355,7 +355,7 @@ const formRulesForSignUp = computed(() => {
 
 const v$ForSignUp = useVuelidate(formRulesForSignUp, formDataForSignUp)
 
-const signUp = async () => {
+const signUp = async (): Promise<void> => {
   try {
     const validationResult = await v$ForSignUp.value.$validate()
 
@@ -391,6 +391,14 @@ const signUp = async () => {
   }
 }
 
+const signUpWithGoogle = async (): Promise<void> => {
+  try {
+    window.location.href = 'http://127.0.0.1:3000/registration/google/login'
+  } catch (err) {
+    console.log(err)
+  }
+}
+
 watch(revealdPasswordForLogin, (newRevealdPasswordForLogin, oldRevealdPasswordForLogin) => {
   if (newRevealdPasswordForLogin == true) {
     passwordInputForLogin.value.type = 'text'
@@ -413,7 +421,7 @@ const formRulesForLogin = computed(() => {
 
 const v$ForLogin = useVuelidate(formRulesForLogin, formDataForLogin)
 
-const login = async () => {
+const login = async (): Promise<void> => {
   try {
     const validationResult = await v$ForLogin.value.$validate()
 
@@ -443,6 +451,14 @@ const login = async () => {
         showLoginError.value = true
       }
     }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const loginWithGoogle = async (): Promise<void> => {
+  try {
+    window.location.href = 'http://127.0.0.1:3000/registration/google/login'
   } catch (err) {
     console.log(err)
   }

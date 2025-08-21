@@ -201,10 +201,11 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/store'
+import { useUserStore, useJwtTokensStore } from '@/store'
 import SubjectsSection from '@/components/AccountPage/SubjectsSection.vue'
 import AccountPictureSection from '@/components/AccountPage/AccountPictureSection.vue'
 
+const jwtTokensStore = useJwtTokensStore()
 const userStore = useUserStore()
 const router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
@@ -283,6 +284,8 @@ const logout = async (): Promise<void> => {
 }
 
 userStore.getUserInfo()
+jwtTokensStore.validateJwtToken()
+setInterval(jwtTokensStore.validateJwtToken, 10000)
 </script>
 
 <style scoped>

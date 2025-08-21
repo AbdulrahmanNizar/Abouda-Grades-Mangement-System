@@ -147,11 +147,12 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useUserStore } from '@/store'
+import { useUserStore, useJwtTokensStore } from '@/store'
 import GradesTable from '@/components/TablesPage/GradesTable.vue'
 
 const router = useRouter()
 const route = useRoute()
+const jwtTokensStore = useJwtTokensStore()
 const userStore = useUserStore()
 const tableId = route.params.tableId
 const userId = ref<string | null>(localStorage.getItem('userId'))
@@ -216,4 +217,6 @@ const logout = async (): Promise<void> => {
 
 userStore.getUserInfo()
 getGradesTableDetails()
+jwtTokensStore.validateJwtToken()
+setInterval(jwtTokensStore.validateJwtToken, 10000)
 </script>

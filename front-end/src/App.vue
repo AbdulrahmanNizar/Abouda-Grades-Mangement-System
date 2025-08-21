@@ -6,39 +6,7 @@
   </router-view>
 </template>
 
-<script setup lang="ts">
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useVerifyAuthToken } from './composables/verifyAuthToken'
-
-const router = useRouter()
-
-onMounted(async () => {
-  const jwtToken = localStorage.getItem('jwtToken')
-  if (jwtToken != '' && jwtToken != null) {
-    const jwtTokenValidation = await useVerifyAuthToken(jwtToken)
-    if (jwtTokenValidation == 'rejected') {
-      router.push({ path: '/registration' })
-    }
-  } else {
-    router.push({ path: '/registration' })
-  }
-})
-
-const validateJwtToken = async () => {
-  const jwtToken = localStorage.getItem('jwtToken')
-  if (jwtToken != '' && jwtToken != null) {
-    const jwtTokenValidation = await useVerifyAuthToken(jwtToken)
-    if (jwtTokenValidation == 'rejected') {
-      router.push({ path: '/registration' })
-    }
-  } else {
-    router.push({ path: '/registration' })
-  }
-}
-
-setInterval(validateJwtToken, 10000)
-</script>
+<script setup lang="ts"></script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600&display=swap');

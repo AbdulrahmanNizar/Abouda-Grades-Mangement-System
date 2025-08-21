@@ -7,6 +7,7 @@ import CreateTable from '@/views/CreateTable.vue'
 import TableDetails from '@/views/TableDetails.vue'
 import NotFound from '@/views/NotFound.vue'
 import Account from '@/views/Account.vue'
+import GoogleAuth from '@/views/GoogleAuth.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -60,6 +61,11 @@ const router = createRouter({
         needs_auth_token:
           (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
+    },
+    {
+      name: 'GoogleAuth',
+      path: '/googleAuth/:jwtToken',
+      component: GoogleAuth,
     },
     {
       name: 'NotFound',

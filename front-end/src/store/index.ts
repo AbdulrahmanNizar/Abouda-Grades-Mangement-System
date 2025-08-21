@@ -1,3 +1,4 @@
+import { useVerifyAuthToken } from '@/composables/verifyAuthToken'
 import { defineStore } from 'pinia'
 import { useRouter } from 'vue-router'
 
@@ -88,6 +89,7 @@ export const useSubjectsStore = defineStore('subjects', {
       userSubjects: <string[]>[],
     }
   },
+
   actions: {
     async getSubjects(): Promise<void> {
       try {
@@ -109,6 +111,28 @@ export const useSubjectsStore = defineStore('subjects', {
         }
       } catch (err) {
         console.log(err)
+      }
+    },
+  },
+})
+
+export const useJwtTokensStore = defineStore('jwtToken', {
+  state: () => {
+    return {
+      router: useRouter(),
+      jwtToken: <string | null>localStorage.getItem('jwtToken'),
+    }
+  },
+
+  actions: {
+    async validateJwtToken(): Promise<void> {
+      if (this.jwtToken != '' && this.jwtToken != null) {
+        const jwtTokenValidation = await useVerifyAuthToken(this.jwtToken)
+        if (jwtTokenValidation == 'rejected') {
+          this.router.push({ path: '/registration' })
+        }
+      } else {
+        this.router.push({ path: '/registration' })
       }
     },
   },
