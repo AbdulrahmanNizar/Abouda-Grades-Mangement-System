@@ -1,6 +1,6 @@
 import { Body, Controller, Post, Res, UseGuards } from '@nestjs/common';
 import { UsersManagementService } from './users-management.service';
-import { AuthGuard } from '../registration/auth/auth.guard';
+import { AuthGuard } from '../registration/guards/auth.guard';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { GetUserInfoDto } from './dto/GetUserInfo.dto';
 import { ChangeUserAccountPictureDto } from './dto/ChangeUserAccountPicture.dto';

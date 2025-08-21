@@ -15,7 +15,7 @@ import { GetGradesDto } from './dto/GetGradesTables.dto';
 import { CreateGradesTableDto } from './dto/CreateGradesTable.dto';
 import { UpdateUserGradesTableDto } from './dto/UpdateGradesTable.dto';
 import { DeleteGradesTableDto } from './dto/DeleteGradesTable.dto';
-import { AuthGuard } from '../registration/auth/auth.guard';
+import { AuthGuard } from '../registration/guards/auth.guard';
 import { GetFilteredGradesDto } from './dto/GetFilteredGradesTables.dto';
 import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
 import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';

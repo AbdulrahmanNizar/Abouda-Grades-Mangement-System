@@ -1,10 +1,20 @@
-import { Body, Controller, Get, Param, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { RegistrationService } from './registration.service';
 import { SignUpUserDto } from './dto/SignUp.dto';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { LoginUserDto } from './dto/Login.dto';
 import { LogoutUserDto } from './dto/Logout.dto';
 import { VerifyTokenDto } from './dto/VerifyToken.dto';
+import { GoogleAuthGuard } from './guards/google-auth.guard';
 
 @Controller('registration')
 export class RegistrationController {
@@ -42,5 +52,18 @@ export class RegistrationController {
     res
       .status(200)
       .json(await this.registrationService.verifyToken(verifyTokenDto));
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('/google/login')
+  googleLogin() {}
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('/google/callback')
+  googleCallback(@Req() req, @Res() res): SuccessResponseObjectDto | void {
+    const googleToken = this.registrationService.initializeGoogleToken(
+      req.user._id,
+    );
+    res.redirect('http://localhost:5173/googleAuth/' + googleToken);
   }
 }

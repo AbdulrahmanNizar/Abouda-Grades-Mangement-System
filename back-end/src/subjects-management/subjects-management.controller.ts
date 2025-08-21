@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SubjectsManagementService } from './subjects-management.service';
-import { AuthGuard } from '../registration/auth/auth.guard';
+import { AuthGuard } from '../registration/guards/auth.guard';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { CreateSubjectDto } from './dto/CreateSubject.dto';
 import { DeleteSubjectDto } from './dto/DeleteSubject.dto';

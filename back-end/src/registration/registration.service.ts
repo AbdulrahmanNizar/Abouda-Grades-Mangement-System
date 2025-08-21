@@ -9,6 +9,7 @@ import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/Login.dto';
 import { LogoutUserDto } from './dto/Logout.dto';
 import { VerifyTokenDto } from './dto/VerifyToken.dto';
+import { GoogleLoginDto } from './dto/GoogleLogin.dto';
 
 @Injectable()
 export class RegistrationService {
@@ -135,5 +136,39 @@ export class RegistrationService {
     } catch (err) {
       throw new HttpException(err, err.status);
     }
+  }
+
+  async validateGoogleUser(googleUser: GoogleLoginDto) {
+    const userInDB = await this.userModel.find({ email: googleUser.email });
+
+    if (userInDB.length > 0) {
+      return userInDB[0];
+    } else {
+      const newUser = new this.userModel({
+        username: googleUser.firstName,
+        email: googleUser.email,
+        password: googleUser.password,
+        userAccountPicture: googleUser.avatarUrl,
+        logged: true,
+        userSubjects: [
+          'English',
+          'Math',
+          'Chemistry',
+          'Physics',
+          'Biology',
+          'History',
+          'Geography',
+          'Social Studies',
+          'Computer Studies',
+        ],
+      });
+      await newUser.save();
+      return newUser;
+    }
+  }
+
+  initializeGoogleToken({ userId }): string | void {
+    const jwtToken = this.jwtService.sign({ id: userId });
+    return jwtToken;
   }
 }
