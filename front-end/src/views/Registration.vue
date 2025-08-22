@@ -317,7 +317,7 @@ onMounted(async () => {
     const jwtTokenValidation = await useVerifyAuthToken(localStorage.getItem('jwtToken'))
 
     if (jwtTokenValidation == 'accepted') {
-      router.push('/')
+      window.location.href = 'http://localhost:5173/'
     }
   }
 })
@@ -393,7 +393,7 @@ const signUp = async (): Promise<void> => {
 
 const signUpWithGoogle = async (): Promise<void> => {
   try {
-    window.location.href = 'http://127.0.0.1:3000/registration/google/login'
+    window.location.href = 'http://127.0.0.1:3000/registration/google/signup'
   } catch (err) {
     console.log(err)
   }

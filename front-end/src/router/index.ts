@@ -64,7 +64,7 @@ const router = createRouter({
     },
     {
       name: 'GoogleAuth',
-      path: '/googleAuth/:jwtToken',
+      path: '/googleAuth/:jwtToken/:userId',
       component: GoogleAuth,
     },
     {

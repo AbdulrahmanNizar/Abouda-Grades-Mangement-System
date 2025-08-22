@@ -55,6 +55,10 @@ export class RegistrationController {
   }
 
   @UseGuards(GoogleAuthGuard)
+  @Get('/google/signup')
+  googleSignup() {}
+
+  @UseGuards(GoogleAuthGuard)
   @Get('/google/login')
   googleLogin() {}
 
@@ -64,6 +68,8 @@ export class RegistrationController {
     const googleToken = this.registrationService.initializeGoogleToken(
       req.user._id,
     );
-    res.redirect('http://localhost:5173/googleAuth/' + googleToken);
+    res.redirect(
+      `http://localhost:5173/googleAuth/${googleToken}/${req.user._id}`,
+    );
   }
 }

@@ -142,6 +142,10 @@ export class RegistrationService {
     const userInDB = await this.userModel.find({ email: googleUser.email });
 
     if (userInDB.length > 0) {
+      await this.userModel.updateOne(
+        { _id: userInDB[0]._id },
+        { $set: { logged: true } },
+      );
       return userInDB[0];
     } else {
       const newUser = new this.userModel({

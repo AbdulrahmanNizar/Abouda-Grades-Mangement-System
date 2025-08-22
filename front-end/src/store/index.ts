@@ -100,7 +100,7 @@ export const useSubjectsStore = defineStore('subjects', {
         }
 
         const response = await fetch(
-          'http://192.168.1.241:3000/subjects-management/getSubjects/' + this.userId,
+          'http://127.0.0.1:3000/subjects-management/getSubjects/' + this.userId,
           requestOptions,
         )
         const data = await response.json()
