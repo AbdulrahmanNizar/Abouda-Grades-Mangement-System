@@ -3,9 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Patch,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -29,9 +29,9 @@ export class GradesManagementController {
   ) {}
 
   @UseGuards(AuthGuard)
-  @Get('/getGradesTables/:userId')
+  @Get('/getGradesTables')
   async getGradesTable(
-    @Param() getGradesDto: GetGradesDto,
+    @Query() getGradesDto: GetGradesDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res
@@ -40,9 +40,9 @@ export class GradesManagementController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('/getGradesTablesYears/:userId')
+  @Get('/getGradesTablesYears')
   async getGradesTablesYears(
-    @Param() getGradesTablesYearsDto: GetGradesTablesYearsDto,
+    @Query() getGradesTablesYearsDto: GetGradesTablesYearsDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res
@@ -55,9 +55,9 @@ export class GradesManagementController {
   }
 
   @UseGuards(AuthGuard)
-  @Get('/getGradesTableDetails/:tableId')
+  @Get('/getGradesTableDetails')
   async getGradesTableDetails(
-    @Param() getGradesTableDetailsDto: GetGradesTableDetailsDto,
+    @Query() getGradesTableDetailsDto: GetGradesTableDetailsDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res

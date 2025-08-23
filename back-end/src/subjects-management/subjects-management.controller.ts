@@ -3,8 +3,8 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -22,9 +22,9 @@ export class SubjectsManagementController {
   ) {}
 
   @UseGuards(AuthGuard)
-  @Get('/getSubjects/:userId')
+  @Get('/getSubjects')
   async getSubjects(
-    @Param() getSubjectsDto: GetSubjectsDto,
+    @Query() getSubjectsDto: GetSubjectsDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res
