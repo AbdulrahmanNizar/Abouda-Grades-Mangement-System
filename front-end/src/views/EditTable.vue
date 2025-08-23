@@ -116,7 +116,14 @@
         style="width: 84%"
         id="dashboard"
       >
-        <GradesTablesSection />
+        <div class="w-100 d-flex flex-column justify-content-center align-items-start">
+          <h3 class="ms-5 mt-5">Edit Table</h3>
+          <hr class="w-100" />
+        </div>
+
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+          <EditGradesTableSection :tableId="tableId" />
+        </div>
       </div>
     </div>
   </div>
@@ -124,14 +131,21 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter, type Router } from 'vue-router'
+import {
+  useRoute,
+  useRouter,
+  type Router,
+  type RouteLocationNormalizedLoadedGeneric,
+} from 'vue-router'
 import { useUserStore, useJwtTokensStore } from '@/store'
-import GradesTablesSection from '@/components/TablesPage/GradesTablesSection.vue'
+import EditGradesTableSection from '@/components/EditTablePage/EditGradesTableSection.vue'
 
+const router: Router = useRouter()
+const route: RouteLocationNormalizedLoadedGeneric = useRoute()
 const userStore = useUserStore()
 const jwtTokensStore = useJwtTokensStore()
-const router: Router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
+const tableId = route.params.tableId
 
 const userInfo = computed(() => {
   return userStore.userInfo

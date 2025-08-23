@@ -8,6 +8,7 @@ import TableDetails from '@/views/TableDetails.vue'
 import NotFound from '@/views/NotFound.vue'
 import Account from '@/views/Account.vue'
 import GoogleAuth from '@/views/GoogleAuth.vue'
+import EditTable from '@/views/EditTable.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -39,6 +40,15 @@ const router = createRouter({
       name: 'CreateTable',
       path: '/createTable',
       component: CreateTable,
+      meta: {
+        needs_auth_token:
+          (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
+      },
+    },
+    {
+      name: 'EditTable',
+      path: '/editTable/:tableId',
+      component: EditTable,
       meta: {
         needs_auth_token:
           (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,

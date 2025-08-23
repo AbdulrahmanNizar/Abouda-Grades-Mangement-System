@@ -53,7 +53,7 @@
 
   <transition-group name="slideUp">
     <div
-      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 operationResultModal"
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
       style="width: 50%"
       v-if="showErrorForNotEnoughSubjects"
     >
@@ -132,6 +132,10 @@ userSubjectsStore.getSubjects()
 <style>
 @media only screen and (max-width: 991px) {
   #subjectCard {
+    width: 80% !important;
+  }
+
+  .errorForNotEnoughSubjectsCard {
     width: 80% !important;
   }
 }

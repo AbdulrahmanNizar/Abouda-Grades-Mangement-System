@@ -48,6 +48,9 @@
       <router-link :to="{ path: '/table/' + gradesTable._id }" class="btn btn-dark w-100"
         >View Details</router-link
       >
+      <router-link :to="{ path: '/editTable/' + gradesTable._id }" class="btn btn-dark w-100 mt-1"
+        >Edit</router-link
+      >
       <button
         class="btn btn-danger w-100 mt-1"
         @click="deleteTable(gradesTable._id)"
@@ -68,7 +71,7 @@
 
     <div
       class="d-flex flex-row justify-content-center align-items-center p-5 mt-2 shadow rounded"
-      v-motion-fade
+      v-motion-slide-bottom
       v-if="showNotFoundGradesTablesMessage"
     >
       <h3 class="text-black">No tables were found</h3>
@@ -78,10 +81,10 @@
 
 <script setup lang="ts">
 import { computed, watch, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type Router } from 'vue-router'
 import { useGradesTablesStore } from '@/store'
 
-const router = useRouter()
+const router: Router = useRouter()
 const gradesTablesStore = useGradesTablesStore()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
@@ -133,7 +136,7 @@ const getTables = async (): Promise<void> => {
     }
 
     const response = await fetch(
-      'http://127.0.0.1:3000/grades-management/getGradesTables/' + userId.value,
+      'http://127.0.0.1:3000/grades-management/getGradesTables?userId=' + userId.value,
       requestOptions,
     )
     const data = await response.json()

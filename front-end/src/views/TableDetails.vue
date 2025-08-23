@@ -122,74 +122,90 @@
           <hr class="w-100" />
         </div>
 
-        <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+        <div
+          class="w-100 d-flex flex-column justify-content-center align-items-center"
+          v-if="userGradesTableDetails.length > 0"
+        >
           <GradesTable :gradesTableDetails="userGradesTableDetails" />
+        </div>
 
-          <div
-            class="shadow rounded p-5 d-flex flex-row justify-content-center align-items-center w-25"
-            v-motion-fade
-            v-if="showGradesTableNotFoundMessage"
-          >
-            <h2>{{ gradesTableNotFoundMessage }}</h2>
-          </div>
-
-          <hr class="w-100" />
-
-          <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-            <router-link :to="{ path: '/tables' }" class="btn btn-dark w-50">Go Back</router-link>
-          </div>
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+          <router-link :to="{ path: '/tables' }" class="btn btn-dark w-50">Go Back</router-link>
         </div>
       </div>
     </div>
   </div>
+
+  <transition-group name="slideUp">
+    <div
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
+      style="width: 50%"
+      v-if="showGradesTableNotFoundMessage"
+    >
+      <div
+        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+          <h5 class="text-center">Operation Failed ❌</h5>
+        </div>
+
+        <hr class="w-100" />
+
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+          <h6 class="text-center">{{ gradesTableNotFoundMessage }}</h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="toast d-md-block d-none position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showGradesTableNotFoundMessage"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">❌ Operation Failed</strong>
+      </div>
+      <div class="toast-body">{{ gradesTableNotFoundMessage }}</div>
+    </div>
+  </transition-group>
 </template>
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter, useRoute } from 'vue-router'
-import { useUserStore, useJwtTokensStore } from '@/store'
+import {
+  useRouter,
+  useRoute,
+  type Router,
+  type RouteLocationNormalizedLoadedGeneric,
+} from 'vue-router'
+import { useUserStore, useGradesTablesStore, useJwtTokensStore } from '@/store'
 import GradesTable from '@/components/TablesPage/GradesTable.vue'
 
-const router = useRouter()
-const route = useRoute()
+const router: Router = useRouter()
+const route: RouteLocationNormalizedLoadedGeneric = useRoute()
 const jwtTokensStore = useJwtTokensStore()
 const userStore = useUserStore()
-const tableId = route.params.tableId
+const userGradesTablesStore = useGradesTablesStore()
+const tableId: string | any = route.params.tableId
 const userId = ref<string | null>(localStorage.getItem('userId'))
-const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
-const userGradesTableDetails = ref<string[] | object[]>([])
-const showGradesTableNotFoundMessage = ref<boolean>(false)
-const gradesTableNotFoundMessage = ref<string>('')
 
 const userInfo = computed(() => {
   return userStore.userInfo
 })
 
-const getGradesTableDetails = async (): Promise<void> => {
-  try {
-    const requestOptions: RequestInit = {
-      method: 'GET',
-      mode: 'cors',
-      headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
-    }
+const userGradesTableDetails = computed(() => {
+  return userGradesTablesStore.userGradesTableDetails
+})
 
-    const response = await fetch(
-      'http://127.0.0.1:3000/grades-management/getGradesTableDetails/' + tableId,
-      requestOptions,
-    )
-    const data = await response.json()
-    if (data.statusCode >= 200 && data.statusCode < 300) {
-      userGradesTableDetails.value = data.data
-    } else if (data.statusCode == 403) {
-      router.push({ path: '/registration' })
-    } else {
-      gradesTableNotFoundMessage.value = data.message
-      showGradesTableNotFoundMessage.value = true
-    }
-  } catch (err) {
-    console.log(err)
-  }
-}
+const showGradesTableNotFoundMessage = computed(() => {
+  return userGradesTablesStore.showGradesTableNotFoundMessage
+})
+
+const gradesTableNotFoundMessage = computed(() => {
+  return userGradesTablesStore.gradesTableNotFoundMessage
+})
 
 const logout = async (): Promise<void> => {
   try {
@@ -216,7 +232,7 @@ const logout = async (): Promise<void> => {
 }
 
 userStore.getUserInfo()
-getGradesTableDetails()
+userGradesTablesStore.getGradesTableDetails(tableId)
 jwtTokensStore.validateJwtToken()
 setInterval(jwtTokensStore.validateJwtToken, 10000)
 </script>

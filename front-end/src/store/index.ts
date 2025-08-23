@@ -47,12 +47,40 @@ export const useGradesTablesStore = defineStore('gradesTables', {
       router: useRouter(),
       userId: <string | null>localStorage.getItem('userId'),
       jwtToken: <string | null>localStorage.getItem('jwtToken'),
+      userGradesTableDetails: <userGradesTableInterface[]>[],
       userGradesTablesYears: <string[]>[],
       loading: <boolean>false,
+      gradesTableNotFoundMessage: <string>'',
+      showGradesTableNotFoundMessage: <boolean>false,
     }
   },
 
   actions: {
+    async getGradesTableDetails(tableId: string): Promise<void> {
+      try {
+        const requestOptions: RequestInit = {
+          method: 'GET',
+          mode: 'cors',
+          headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: this.jwtToken },
+        }
+
+        const response = await fetch(
+          'http://127.0.0.1:3000/grades-management/getGradesTableDetails?tableId=' + tableId,
+          requestOptions,
+        )
+        const data = await response.json()
+        if (data.statusCode >= 200 && data.statusCode < 300) {
+          this.userGradesTableDetails = data.data
+        } else if (data.statusCode == 403) {
+          this.router.push({ path: '/registration' })
+        } else {
+          this.gradesTableNotFoundMessage = data.message
+          this.showGradesTableNotFoundMessage = true
+        }
+      } catch (err) {
+        console.log(err)
+      }
+    },
     async getTablesYears(): Promise<void> {
       try {
         const requestOptions: RequestInit = {
@@ -63,7 +91,7 @@ export const useGradesTablesStore = defineStore('gradesTables', {
 
         this.loading = true
         const response = await fetch(
-          'http://127.0.0.1:3000/grades-management/getGradesTablesYears/' + this.userId,
+          'http://127.0.0.1:3000/grades-management/getGradesTablesYears?userId=' + this.userId,
           requestOptions,
         )
         const data = await response.json()
@@ -100,7 +128,7 @@ export const useSubjectsStore = defineStore('subjects', {
         }
 
         const response = await fetch(
-          'http://127.0.0.1:3000/subjects-management/getSubjects/' + this.userId,
+          'http://127.0.0.1:3000/subjects-management/getSubjects?userId=' + this.userId,
           requestOptions,
         )
         const data = await response.json()
@@ -138,10 +166,24 @@ export const useJwtTokensStore = defineStore('jwtToken', {
   },
 })
 
-interface userInfoInterface {
+export interface userInfoInterface {
   id: string
   username: string
   email: string
   userSubjects: string[]
   userAccountPicture: string
+}
+
+export interface gradesTableInterface {
+  subject: string
+  grade: number
+}
+
+export interface userGradesTableInterface {
+  _id: string
+  userId: string
+  userGradesTableYear: string
+  userGradesTableTrimester: string
+  userGradesTable: gradesTableInterface[]
+  userGradesTableAverage: number
 }

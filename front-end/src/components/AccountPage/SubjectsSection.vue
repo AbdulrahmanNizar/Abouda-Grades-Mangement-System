@@ -58,12 +58,12 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type Router } from 'vue-router'
 import { useSubjectsStore } from '@/store'
 import gsap from 'gsap'
 
 const userSubjectsStore = useSubjectsStore()
-const router = useRouter()
+const router: Router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const showDeleteSubjectError = ref<boolean>(false)

@@ -292,12 +292,12 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type Router } from 'vue-router'
 import { required, email, minLength, sameAs } from '@vuelidate/validators'
 import { useVerifyAuthToken } from '@/composables/verifyAuthToken'
 import useVuelidate from '@vuelidate/core'
 
-const router = useRouter()
+const router: Router = useRouter()
 const signUpMood = ref<boolean>(true)
 const loginMood = ref<boolean>(false)
 const revealdPasswordForSignUp = ref<boolean>(false)

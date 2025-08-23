@@ -32,29 +32,43 @@
         </div>
       </button>
 
-      <div
-        class="d-flex flex-row justify-content-center align-items-center mt-2 p-3 operationResultModal"
-        style="width: 50%"
-        v-if="showSuccessModal"
-      >
+      <transition-group name="slideUp">
         <div
-          class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-          v-motion-pop-visible
+          class="d-flex d-md-none flex-row justify-content-center align-items-center mt-2 p-3 operationResultModal"
+          style="width: 50%"
+          v-if="showSuccessModal"
         >
-          <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-            <h4>Operation Completed ✅</h4>
+          <div
+            class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+          >
+            <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+              <h4>Operation Completed ✅</h4>
+            </div>
           </div>
         </div>
-      </div>
+        <div
+          class="toast d-md-block d-none position-fixed"
+          role="alert"
+          aria-live="assertive"
+          aria-atomic="true"
+          style="bottom: 3%; right: 1%"
+          v-if="showSuccessModal"
+        >
+          <div class="toast-header">
+            <strong class="me-auto">Success</strong>
+          </div>
+          <div class="toast-body">✅ Operation Completed</div>
+        </div>
+      </transition-group>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type Router } from 'vue-router'
 
-const router = useRouter()
+const router: Router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const uploadedFileBase64 = ref<ArrayBuffer | string | null>('')
@@ -69,7 +83,7 @@ const disableChangeButton = computed(() => {
   }
 })
 
-const uploadFile = (event: any) => {
+const uploadFile = (event: any): void => {
   const file = event.target.files[0]
   const reader = new FileReader()
 

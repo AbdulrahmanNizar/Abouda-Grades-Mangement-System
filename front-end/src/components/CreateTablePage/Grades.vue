@@ -122,7 +122,7 @@
 
   <transition-group name="slideUp">
     <div
-      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 operationResultModal"
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
       style="width: 50%"
       v-if="showErrorForGoingToNextStage"
     >
@@ -210,9 +210,10 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type Router } from 'vue-router'
+import { type gradesTableInterface } from '@/store'
 
-const router = useRouter()
+const router: Router = useRouter()
 const props = defineProps(['checkedSubjects'])
 const emit = defineEmits(['getCreateGradesTableRequirements'])
 const userId = ref<string | null>(localStorage.getItem('userId'))
@@ -232,11 +233,6 @@ const editSubjectGrade = ref<number>(0)
 const editedSubjectGradeIndex = ref<number>()
 const editedSubjectGrade = ref<gradesTableInterface>()
 const createGradesTableRequirements = ref<createGradesTableRequirementsInterface>()
-
-export interface gradesTableInterface {
-  subject: string
-  grade: number
-}
 
 export interface createGradesTableRequirementsInterface {
   gradesTable: gradesTableInterface[]

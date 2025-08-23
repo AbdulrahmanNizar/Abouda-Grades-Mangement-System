@@ -39,10 +39,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type Router } from 'vue-router'
 import Chart from 'chart.js/auto'
 
-const router = useRouter()
+const router: Router = useRouter()
 const statisticsGraph = ref()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))

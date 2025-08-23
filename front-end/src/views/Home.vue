@@ -137,13 +137,13 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type Router } from 'vue-router'
 import { useUserStore, useJwtTokensStore } from '@/store'
 import Statistics from '@/components/HomePage/Statistics.vue'
 
 const jwtTokensStore = useJwtTokensStore()
 const userStore = useUserStore()
-const router = useRouter()
+const router: Router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
 
 const userInfo = computed(() => {

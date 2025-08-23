@@ -1,10 +1,15 @@
 <template></template>
 
 <script setup lang="ts">
-import { useRouter, useRoute } from 'vue-router'
+import {
+  useRouter,
+  useRoute,
+  type Router,
+  type RouteLocationNormalizedLoadedGeneric,
+} from 'vue-router'
 
-const router = useRouter()
-const route = useRoute()
+const router: Router = useRouter()
+const route: RouteLocationNormalizedLoadedGeneric = useRoute()
 const userId: string | any = route.params.userId
 const jwtToken: string | any = route.params.jwtToken
 

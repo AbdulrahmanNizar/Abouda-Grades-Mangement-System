@@ -65,7 +65,7 @@
 
   <transition-group name="slideUp">
     <div
-      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 p-3 operationResultModal"
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
       style="width: 50%"
       v-if="showSuccessModal"
     >
@@ -95,9 +95,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, type Router } from 'vue-router'
 
-const router = useRouter()
+const router: Router = useRouter()
 const props = defineProps(['createGradesTableRequirements'])
 const userId = ref<string | null>(localStorage.getItem('userId'))
 const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
