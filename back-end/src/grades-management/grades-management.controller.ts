@@ -129,7 +129,7 @@ export class GradesManagementController {
 
   @UseGuards(AuthGuard)
   @Patch('/updateGradesTable')
-  async update_grades_table(
+  async updateGradesTable(
     @Body() updateGradesTableDto: UpdateUserGradesTableDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {

@@ -9,7 +9,6 @@ import { UpdateUserGradesTableDto } from './dto/UpdateGradesTable.dto';
 import { DeleteGradesTableDto } from './dto/DeleteGradesTable.dto';
 import { GetFilteredGradesDto } from './dto/GetFilteredGradesTables.dto';
 import { GetGradesTableDetailsDto } from './dto/GetGradesTableDetails.dto';
-import { User } from 'src/registration/registration.model';
 import { GetGradesTablesYearsDto } from './dto/GetGradesTablesYears.dto';
 import { GetGradesByYearDto } from './dto/GetGradesByYear.dto';
 import { Cache } from 'cache-manager';
@@ -21,7 +20,6 @@ export class GradesManagementService {
     @Inject('CACHE_MANAGER') private cacheManager: Cache,
     @InjectModel('gradesTables')
     private readonly gradesTablesModel: Model<gradesTables>,
-    @InjectModel('User') private readonly userModel: Model<User>,
   ) {}
 
   async getGradesTable(
@@ -278,37 +276,33 @@ export class GradesManagementService {
     requestInfo: UpdateUserGradesTableDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const grades_table = await this.gradesTablesModel.find({
+      const gradesTable = await this.gradesTablesModel.find({
         _id: requestInfo.tableId,
       });
 
-      if (grades_table[0].userId == requestInfo.userId) {
-        const checkingTheExistenseOfTheTable =
-          await this.gradesTablesModel.find({
-            userGradesTableYear: requestInfo.newUserGradesTableYear,
-            userGradesTableTrimester: requestInfo.newuserGradesTableTrimester,
-          });
-
-        if (checkingTheExistenseOfTheTable.length > 0) {
-          throw new HttpException('This table is already exist', 400);
-        } else {
+      if (gradesTable[0].userId == requestInfo.userId) {
+        if (
+          requestInfo.newGradesTableYear ==
+            gradesTable[0].userGradesTableYear &&
+          requestInfo.newGradesTableTrimester ==
+            gradesTable[0].userGradesTableTrimester
+        ) {
           let userFullGrade: number = 0;
 
-          for (let i = 0; i < requestInfo.newUserGradesTable.length; i++) {
-            userFullGrade += requestInfo.newUserGradesTable[i];
+          for (let i = 0; i < requestInfo.newGradesTable.length; i++) {
+            userFullGrade += requestInfo.newGradesTable[i].grade;
           }
 
           const userGradesAverage: number =
-            userFullGrade / requestInfo.newUserGradesTable.length;
+            userFullGrade / requestInfo.newGradesTable.length;
 
           await this.gradesTablesModel.updateOne(
             { _id: requestInfo.tableId },
             {
               $set: {
-                userGradesTableYear: requestInfo.newUserGradesTableYear,
-                userGradesTableTrimester:
-                  requestInfo.newuserGradesTableTrimester,
-                userGradesTable: requestInfo.newUserGradesTable,
+                userGradesTableYear: requestInfo.newGradesTableYear,
+                userGradesTableTrimester: requestInfo.newGradesTableTrimester,
+                userGradesTable: requestInfo.newGradesTable,
                 userGradesAverage: userGradesAverage.toFixed(2),
               },
             },
@@ -318,6 +312,43 @@ export class GradesManagementService {
             successMessage: 'Table was updated successfully',
             statusCode: 200,
           };
+        } else {
+          const checkingTheExistenseOfTheTable =
+            await this.gradesTablesModel.find({
+              userId: requestInfo.userId,
+              userGradesTableYear: requestInfo.newGradesTableYear,
+              userGradesTableTrimester: requestInfo.newGradesTableTrimester,
+            });
+
+          if (checkingTheExistenseOfTheTable.length > 0) {
+            throw new HttpException('This table is already exist', 400);
+          } else {
+            let userFullGrade: number = 0;
+
+            for (let i = 0; i < requestInfo.newGradesTable.length; i++) {
+              userFullGrade += requestInfo.newGradesTable[i].grade;
+            }
+
+            const userGradesAverage: number =
+              userFullGrade / requestInfo.newGradesTable.length;
+
+            await this.gradesTablesModel.updateOne(
+              { _id: requestInfo.tableId },
+              {
+                $set: {
+                  userGradesTableYear: requestInfo.newGradesTableYear,
+                  userGradesTableTrimester: requestInfo.newGradesTableTrimester,
+                  userGradesTable: requestInfo.newGradesTable,
+                  userGradesAverage: userGradesAverage.toFixed(2),
+                },
+              },
+            );
+
+            return {
+              successMessage: 'Table was updated successfully',
+              statusCode: 200,
+            };
+          }
         }
       } else {
         throw new HttpException(

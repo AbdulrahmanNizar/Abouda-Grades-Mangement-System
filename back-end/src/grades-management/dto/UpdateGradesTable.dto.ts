@@ -1,7 +1,12 @@
 export class UpdateUserGradesTableDto {
   readonly tableId: string;
   readonly userId: string;
-  readonly newUserGradesTableYear: string;
-  readonly newuserGradesTableTrimester: string;
-  readonly newUserGradesTable: number[];
+  readonly newGradesTableYear: string;
+  readonly newGradesTableTrimester: string;
+  readonly newGradesTable: userGradesTableInterface[];
+}
+
+interface userGradesTableInterface {
+  subject: string;
+  grade: number;
 }

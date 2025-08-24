@@ -1,6 +1,4 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RegistrationModule } from './registration/registration.module';
 import { GradesManagementModule } from './grades-management/grades-management.module';
@@ -11,7 +9,6 @@ import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import jwtConfig from './registration/config/jwt.config';
 import googleConfig from './registration/config/google.config';
-import { GoogleStrategy } from './registration/strategies/google.strategy';
 
 @Module({
   imports: [
@@ -29,7 +26,5 @@ import { GoogleStrategy } from './registration/strategies/google.strategy';
     UsersManagementModule,
     SubjectsManagementModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, GoogleStrategy],
 })
 export class AppModule {}
