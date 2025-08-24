@@ -132,7 +132,9 @@
         </div>
 
         <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-3">
-          <Subjects v-if="currentStage == 'Subjects'" @get-checked-subjects="gradesStage" />
+          <Suspense>
+            <Subjects v-if="currentStage == 'Subjects'" @get-checked-subjects="gradesStage" />
+          </Suspense>
           <Grades
             v-if="currentStage == 'Grades'"
             :checkedSubjects="checkedSubjects"

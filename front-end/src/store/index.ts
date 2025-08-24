@@ -175,7 +175,7 @@ export interface userInfoInterface {
 }
 
 export interface gradesTableInterface {
-  subject: string
+  subject: string | undefined
   grade: number
 }
 

@@ -116,7 +116,9 @@
         style="width: 84%"
         id="dashboard"
       >
-        <GradesTablesSection />
+        <Suspense>
+          <GradesTablesSection />
+        </Suspense>
       </div>
     </div>
   </div>

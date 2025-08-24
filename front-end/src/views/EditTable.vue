@@ -122,7 +122,9 @@
         </div>
 
         <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-          <EditGradesTableSection :tableId="tableId" />
+          <Suspense>
+            <EditGradesTableSection :tableId="tableId" />
+          </Suspense>
         </div>
       </div>
     </div>

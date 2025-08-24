@@ -44,7 +44,124 @@
         </tbody>
       </table>
     </div>
+
+    <hr class="w-100" />
+
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+      <button class="btn btn-dark w-50" @click="resetInputs">Reset</button>
+      <button class="btn btn-dark w-50 mt-1" @click="submitEdit" v-if="loading == false">
+        Submit
+      </button>
+      <button
+        class="btn btn-dark w-50 mt-1 d-flex flex-row justify-content-center align-items-center"
+        disabled
+        v-else
+      >
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden mb-0">Loading...</span>
+        </div>
+      </button>
+    </div>
   </div>
+
+  <transition-group name="slideUp">
+    <div
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
+      style="width: 50%"
+      v-if="showGradesTableNotFoundMessage"
+    >
+      <div
+        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+          <h5 class="text-center">Operation Failed ❌</h5>
+        </div>
+
+        <hr class="w-100" />
+
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+          <h6 class="text-center">{{ gradesTableNotFoundMessage }}</h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="toast d-md-block d-none position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showGradesTableNotFoundMessage"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">❌ Operation Failed</strong>
+      </div>
+      <div class="toast-body">{{ gradesTableNotFoundMessage }}</div>
+    </div>
+  </transition-group>
+
+  <transition-group name="slideUp">
+    <div
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
+      style="width: 50%"
+      v-if="showErrorModal"
+    >
+      <div
+        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+          <h5 class="text-center">Operation Failed ❌</h5>
+        </div>
+
+        <hr class="w-100" />
+
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+          <h6 class="text-center">{{ errorMessage }}</h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="toast d-md-block d-none position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showErrorModal"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">❌ Operation Failed</strong>
+      </div>
+      <div class="toast-body">{{ errorMessage }}</div>
+    </div>
+  </transition-group>
+
+  <transition-group name="slideUp">
+    <div
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
+      style="width: 50%"
+      v-if="showSuccessModal"
+    >
+      <div
+        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+          <h4>Operation Completed ✅</h4>
+        </div>
+      </div>
+    </div>
+    <div
+      class="toast d-md-block d-none position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showSuccessModal"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">Success</strong>
+      </div>
+      <div class="toast-body">✅ Operation Completed</div>
+    </div>
+  </transition-group>
 
   <div
     class="modal fade"
@@ -90,7 +207,12 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-dark" data-bs-dismiss="modal" @click="editGrade">
+          <button
+            type="button"
+            class="btn btn-dark"
+            data-bs-dismiss="modal"
+            @click="editGrade(editedSubjectGrade?.subject)"
+          >
             Edit
           </button>
         </div>
@@ -116,6 +238,10 @@ const editSubjectGrade = ref<number>(0)
 const gradesTableYear = ref<string>('Select A Year')
 const gradesTableTrimester = ref<string>('Select A Trimester')
 const editedSubjectGrade = ref<gradesTableInterface>()
+const loading = ref<boolean>(false)
+const showSuccessModal = ref<boolean>(false)
+const showErrorModal = ref<boolean>(false)
+const errorMessage = ref<string>('')
 
 const userGradesTableDetails = computed(() => {
   return userGradesTablesStore.userGradesTableDetails
@@ -143,12 +269,70 @@ const getLastFiveYears = () => {
   }
 }
 
+const resetInputs = (): void => {
+  gradesTableYear.value = 'Select A Year'
+  gradesTableTrimester.value = 'Select A Trimester'
+}
+
 const setEditSubjectGradeIndex = (subjectIndex: number): void => {
   editedSubjectGrade.value = userGradesTableDetails.value[0].userGradesTable[subjectIndex]
   editSubjectGrade.value = editedSubjectGrade.value.grade
 }
 
-const editGrade = async (): Promise<void> => {}
+const editGrade = (subject: string | undefined): void => {
+  if (changeTheNoteColorToRed.value != true) {
+    userGradesTableDetails.value[0].userGradesTable =
+      userGradesTableDetails.value[0].userGradesTable.filter((grade) => subject != grade.subject)
+    userGradesTableDetails.value[0].userGradesTable.push({
+      subject: subject,
+      grade: editSubjectGrade.value,
+    })
+  }
+}
+
+const submitEdit = async (): Promise<void> => {
+  try {
+    if (
+      gradesTableYear.value != 'Select A Year' &&
+      gradesTableTrimester.value != 'Select A Trimester'
+    ) {
+      const requestOptions: RequestInit = {
+        method: 'PATCH',
+        mode: 'cors',
+        headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
+        body: JSON.stringify({
+          tableId: tableId,
+          userId: userId.value,
+          newGradesTableYear: gradesTableYear.value.toString(),
+          newGradesTableTrimester: gradesTableTrimester.value.toString(),
+          newGradesTable: userGradesTableDetails.value[0].userGradesTable,
+        }),
+      }
+
+      loading.value = true
+      const response = await fetch(
+        'http://127.0.0.1:3000/grades-management/updateGradesTable',
+        requestOptions,
+      )
+      const data = await response.json()
+      if (data.statusCode >= 200 && data.statusCode < 300) {
+        loading.value = false
+        showSuccessModal.value = true
+        setTimeout(() => router.push({ path: '/tables' }), 2000)
+      } else {
+        errorMessage.value = data.message
+        showErrorModal.value = true
+        setTimeout(() => (showErrorModal.value = false), 3000)
+      }
+    } else {
+      errorMessage.value = 'Please make sure that the grades table year and trimester are valid'
+      showErrorModal.value = true
+      setTimeout(() => (showErrorModal.value = false), 3000)
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 userGradesTablesStore.getGradesTableDetails(tableId)
 getLastFiveYears()
