@@ -320,6 +320,7 @@ const submitEdit = async (): Promise<void> => {
         showSuccessModal.value = true
         setTimeout(() => router.push({ path: '/tables' }), 2000)
       } else {
+        loading.value = false
         errorMessage.value = data.message
         showErrorModal.value = true
         setTimeout(() => (showErrorModal.value = false), 3000)

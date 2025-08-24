@@ -122,11 +122,10 @@
           <hr class="w-100" />
         </div>
 
-        <div
-          class="w-100 d-flex flex-column justify-content-center align-items-center"
-          v-if="userGradesTableDetails.length > 0"
-        >
-          <GradesTable :gradesTableDetails="userGradesTableDetails" />
+        <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+          <Suspense>
+            <GradesTable :tableId="tableId" />
+          </Suspense>
         </div>
 
         <div class="w-100 d-flex flex-row justify-content-center align-items-center">
@@ -135,41 +134,6 @@
       </div>
     </div>
   </div>
-
-  <transition-group name="slideUp">
-    <div
-      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
-      style="width: 50%"
-      v-if="showGradesTableNotFoundMessage"
-    >
-      <div
-        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-      >
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-          <h5 class="text-center">Operation Failed ❌</h5>
-        </div>
-
-        <hr class="w-100" />
-
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-          <h6 class="text-center">{{ gradesTableNotFoundMessage }}</h6>
-        </div>
-      </div>
-    </div>
-    <div
-      class="toast d-md-block d-none position-fixed"
-      role="alert"
-      aria-live="assertive"
-      aria-atomic="true"
-      style="bottom: 3%; right: 1%"
-      v-if="showGradesTableNotFoundMessage"
-    >
-      <div class="toast-header">
-        <strong class="me-auto">❌ Operation Failed</strong>
-      </div>
-      <div class="toast-body">{{ gradesTableNotFoundMessage }}</div>
-    </div>
-  </transition-group>
 </template>
 
 <script setup lang="ts">
@@ -180,31 +144,18 @@ import {
   type Router,
   type RouteLocationNormalizedLoadedGeneric,
 } from 'vue-router'
-import { useUserStore, useGradesTablesStore, useJwtTokensStore } from '@/store'
+import { useUserStore, useJwtTokensStore } from '@/store'
 import GradesTable from '@/components/TablesPage/GradesTable.vue'
 
 const router: Router = useRouter()
 const route: RouteLocationNormalizedLoadedGeneric = useRoute()
 const jwtTokensStore = useJwtTokensStore()
 const userStore = useUserStore()
-const userGradesTablesStore = useGradesTablesStore()
 const tableId: string | any = route.params.tableId
 const userId = ref<string | null>(localStorage.getItem('userId'))
 
 const userInfo = computed(() => {
   return userStore.userInfo
-})
-
-const userGradesTableDetails = computed(() => {
-  return userGradesTablesStore.userGradesTableDetails
-})
-
-const showGradesTableNotFoundMessage = computed(() => {
-  return userGradesTablesStore.showGradesTableNotFoundMessage
-})
-
-const gradesTableNotFoundMessage = computed(() => {
-  return userGradesTablesStore.gradesTableNotFoundMessage
 })
 
 const logout = async (): Promise<void> => {
@@ -232,7 +183,6 @@ const logout = async (): Promise<void> => {
 }
 
 userStore.getUserInfo()
-userGradesTablesStore.getGradesTableDetails(tableId)
 jwtTokensStore.validateJwtToken()
 setInterval(jwtTokensStore.validateJwtToken, 10000)
 </script>
