@@ -52,34 +52,36 @@
             <button class="btn btn-dark" v-if="loginMood">Login</button>
           </div>
 
-          <div class="form-floating mt-3 w-75">
-            <input
-              type="text"
-              class="form-control"
-              id="usernameInput"
-              placeholder="Enter Your Username"
-              style="border-radius: 10px"
-              v-model="formDataForSignUp.username"
-            />
-            <label for="usernameInput">Enter Your Username</label>
-            <span v-for="error in v$ForSignUp.username.$errors" class="text-danger mt-3 ms-1">{{
-              error.$message
-            }}</span>
-          </div>
+          <div class="w-75 mb-3 d-flex flex-row justify-content-center align-items-center">
+            <div class="form-floating mt-3 w-75 me-1">
+              <input
+                type="text"
+                class="form-control"
+                id="usernameInput"
+                placeholder="Enter Your Username"
+                style="border-radius: 10px"
+                v-model="formDataForSignUp.username"
+              />
+              <label for="usernameInput">Username</label>
+              <span v-for="error in v$ForSignUp.username.$errors" class="text-danger mt-3 ms-1">{{
+                error.$message
+              }}</span>
+            </div>
 
-          <div class="form-floating my-3 w-75">
-            <input
-              type="email"
-              class="form-control"
-              id="emailInput"
-              placeholder="Enter Your Email"
-              style="border-radius: 10px"
-              v-model="formDataForSignUp.email"
-            />
-            <label for="emailInput">Enter Your Email Address</label>
-            <span v-for="error in v$ForSignUp.email.$errors" class="text-danger mt-3 ms-1">{{
-              error.$message
-            }}</span>
+            <div class="form-floating mt-3 w-75 ms-1">
+              <input
+                type="email"
+                class="form-control"
+                id="emailInput"
+                placeholder="Enter Your Email"
+                style="border-radius: 10px"
+                v-model="formDataForSignUp.email"
+              />
+              <label for="emailInput">Email Address</label>
+              <span v-for="error in v$ForSignUp.email.$errors" class="text-danger mt-3 ms-1">{{
+                error.$message
+              }}</span>
+            </div>
           </div>
 
           <div class="form-floating mb-3 w-75">
@@ -92,7 +94,7 @@
               v-model="formDataForSignUp.password"
               ref="passwordInputForSignUp"
             />
-            <label for="passwordInput">Enter Your Password</label>
+            <label for="passwordInput">Password</label>
             <span v-for="error in v$ForSignUp.password.$errors" class="text-danger mt-3 ms-1">{{
               error.$message
             }}</span>
@@ -108,7 +110,7 @@
               v-model="formDataForSignUp.confirmPassword"
               ref="confirmPasswordInputForSignUp"
             />
-            <label for="confirmPasswordInput">Confirm Your Password</label>
+            <label for="confirmPasswordInput">Confirm Password</label>
             <span
               v-for="error in v$ForSignUp.confirmPassword.$errors"
               class="text-danger mt-3 ms-1"
@@ -209,7 +211,7 @@
               style="border-radius: 10px"
               v-model="formDataForLogin.username"
             />
-            <label for="usernameInput">Enter Your Username</label>
+            <label for="usernameInput">Username</label>
             <span v-for="error in v$ForLogin.username.$errors" class="text-danger mt-3 ms-1">{{
               error.$message
             }}</span>
@@ -225,7 +227,7 @@
               v-model="formDataForLogin.password"
               ref="passwordInputForLogin"
             />
-            <label for="passwordInput">Enter Your Password</label>
+            <label for="passwordInput">Password</label>
             <span v-for="error in v$ForLogin.password.$errors" class="text-danger mt-3 ms-1">{{
               error.$message
             }}</span>
@@ -275,7 +277,7 @@
       </div>
 
       <div
-        class="h-100 col-md-6 w-50 d-md-flex flex-row justify-content-center align-items-center d-none"
+        class="h-100 col-6 w-50 d-md-flex flex-row justify-content-center align-items-center d-none"
       >
         <img
           src="../images/RegistrationPageImage.jpg"
