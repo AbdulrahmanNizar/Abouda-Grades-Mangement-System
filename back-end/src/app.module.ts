@@ -18,7 +18,7 @@ import googleConfig from './registration/config/google.config';
     MongooseModule.forRoot(process.env.DATABASE_URL),
     CacheModule.register({
       isGlobal: true,
-      ttl: 15 * 1000,
+      ttl: 5 * 1000,
       store: redisStore,
     }),
     forwardRef(() => RegistrationModule),
