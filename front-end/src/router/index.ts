@@ -9,6 +9,7 @@ import NotFound from '@/views/NotFound.vue'
 import Account from '@/views/Account.vue'
 import GoogleAuth from '@/views/GoogleAuth.vue'
 import EditTable from '@/views/EditTable.vue'
+import ForgetPassword from '@/views/ForgetPassword.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -23,7 +24,7 @@ const router = createRouter({
       path: '/',
       component: Home,
       meta: {
-        needs_auth_token:
+        needsAuthToken:
           (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
@@ -32,7 +33,7 @@ const router = createRouter({
       path: '/tables',
       component: Tables,
       meta: {
-        needs_auth_token:
+        needsAuthToken:
           (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
@@ -41,7 +42,7 @@ const router = createRouter({
       path: '/createTable',
       component: CreateTable,
       meta: {
-        needs_auth_token:
+        needsAuthToken:
           (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
@@ -50,7 +51,7 @@ const router = createRouter({
       path: '/editTable/:tableId',
       component: EditTable,
       meta: {
-        needs_auth_token:
+        needsAuthToken:
           (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
@@ -59,7 +60,7 @@ const router = createRouter({
       path: '/table/:tableId',
       component: TableDetails,
       meta: {
-        needs_auth_token:
+        needsAuthToken:
           (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
     },
@@ -68,9 +69,14 @@ const router = createRouter({
       path: '/account',
       component: Account,
       meta: {
-        needs_auth_token:
+        needsAuthToken:
           (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
+    },
+    {
+      name: 'ForgetPassword',
+      path: '/forgetPassword',
+      component: ForgetPassword,
     },
     {
       name: 'GoogleAuth',
@@ -86,7 +92,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.needs_auth_token == true) {
+  if (to.meta.needsAuthToken == true) {
     next('/registration')
   } else {
     next()
