@@ -4,25 +4,38 @@
     v-motion-slide-bottom
   >
     <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-4 mb-3">
-      <h3>Forget Password</h3>
+      <h3>Change Password</h3>
       <hr class="w-100" />
     </div>
 
     <div class="form-floating mb-3 w-75">
       <input
-        type="email"
+        type="password"
         class="form-control"
-        id="emailInput"
-        placeholder="Email Address"
-        v-model="formData.email"
+        id="newPasswordInput"
+        placeholder="New Password"
+        v-model="formData.password"
+        ref="passwordInput"
       />
-      <label for="emailInput">Email Address</label>
+      <label for="newPasswordInput">New Password</label>
+    </div>
+
+    <div class="my-2 w-75 d-flex flex-row justify-content-start align-items-center">
+      <div class="form-check">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          id="revealPasswordCheckboxForLogin"
+          v-model="revealdPassword"
+        />
+        <label class="form-check-label" for="revealPasswordCheckboxForLogin">Show Password</label>
+      </div>
     </div>
 
     <div class="w-100 d-flex flex-column justify-content-center align-items-center">
       <hr class="w-100" />
-      <button class="btn btn-dark w-75 my-2" @click="sendEmail" v-if="loading == false">
-        Send Email
+      <button class="btn btn-dark w-75 my-2" @click="changePassword" v-if="loading == false">
+        Change
       </button>
       <button
         class="btn btn-dark w-75 my-2 d-flex flex-row justify-content-center align-items-center"
@@ -46,7 +59,7 @@
         class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
       >
         <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-          <h4>The email was sent successfully ✅</h4>
+          <h4>The password was changed successfully ✅</h4>
         </div>
       </div>
     </div>
@@ -61,7 +74,7 @@
       <div class="toast-header">
         <strong class="me-auto">✅ Operation Completed</strong>
       </div>
-      <div class="toast-body">The email was sent successfully</div>
+      <div class="toast-body">The password was changed successfully</div>
     </div>
   </transition-group>
 
@@ -102,62 +115,85 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
-import { useRouter, type Router } from 'vue-router'
-import { required, email } from '@vuelidate/validators'
+import { ref, reactive, computed, watch } from 'vue'
+import {
+  useRouter,
+  useRoute,
+  type Router,
+  type RouteLocationNormalizedGeneric,
+  type LocationQueryValue,
+} from 'vue-router'
+import { required, minLength } from '@vuelidate/validators'
 import useVuelidate from '@vuelidate/core'
 
 const router: Router = useRouter()
-const loading = ref<boolean>(false)
+const route: RouteLocationNormalizedGeneric = useRoute()
+const userId: LocationQueryValue | LocationQueryValue[] = route.query.userId
 const showSuccessModal = ref<boolean>(false)
 const showErrorModal = ref<boolean>(false)
 const errorMessage = ref<string>('')
+const loading = ref<boolean>(false)
+const revealdPassword = ref<boolean>(false)
+const passwordInput = ref()
+
+watch(revealdPassword, (newRevealdPassword, oldRevealdPassword) => {
+  if (newRevealdPassword == true) {
+    passwordInput.value.type = 'text'
+  } else {
+    passwordInput.value.type = 'password'
+  }
+})
 
 const formData = reactive({
-  email: '',
+  password: <string>'',
 })
 
 const formRules = computed(() => {
   return {
-    email: { required, email },
+    password: { required, minLength: minLength(7) },
   }
 })
 
 const v$ = useVuelidate(formRules, formData)
 
-const sendEmail = async (): Promise<void> => {
-  const validationResult = await v$.value.$validate()
+const changePassword = async (): Promise<void> => {
+  try {
+    const validationResult = await v$.value.$validate()
 
-  if (validationResult) {
-    const requestOptions: RequestInit = {
-      method: 'POST',
-      mode: 'cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        email: formData.email,
-      }),
-    }
+    if (validationResult) {
+      const requestOptions: RequestInit = {
+        method: 'POST',
+        mode: 'cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: userId,
+          newPassword: formData.password,
+        }),
+      }
 
-    loading.value = true
-    const response = await fetch(
-      'http://127.0.0.1:3000/mailes-management/sendCreateNewPasswordEmail',
-      requestOptions,
-    )
-    const data = await response.json()
-    if (data.statusCode >= 200 && data.statusCode < 300) {
-      loading.value = false
-      showSuccessModal.value = true
-      setTimeout(() => router.push({ path: '/registration' }), 2000)
+      loading.value = true
+      const response = await fetch(
+        'http://127.0.0.1:3000/users-management/changePassword',
+        requestOptions,
+      )
+      const data = await response.json()
+      if (data.statusCode >= 200 && data.statusCode < 300) {
+        loading.value = false
+        showSuccessModal.value = true
+        setTimeout(() => router.push({ path: '/registration' }), 2000)
+      } else {
+        loading.value = false
+        errorMessage.value = data.message
+        showErrorModal.value = true
+        setTimeout(() => (showErrorModal.value = false), 3000)
+      }
     } else {
-      loading.value = false
-      errorMessage.value = data.message
+      errorMessage.value = v$.value.password.$errors[0].$message.toString()
       showErrorModal.value = true
       setTimeout(() => (showErrorModal.value = false), 3000)
     }
-  } else {
-    errorMessage.value = v$.value.email.$errors[0].$message.toString()
-    showErrorModal.value = true
-    setTimeout(() => (showErrorModal.value = false), 3000)
+  } catch (err) {
+    console.log(err)
   }
 }
 </script>

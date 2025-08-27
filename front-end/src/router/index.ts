@@ -10,6 +10,7 @@ import Account from '@/views/Account.vue'
 import GoogleAuth from '@/views/GoogleAuth.vue'
 import EditTable from '@/views/EditTable.vue'
 import ForgetPassword from '@/views/ForgetPassword.vue'
+import CreateNewPassword from '@/views/CreateNewPassword.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -77,6 +78,11 @@ const router = createRouter({
       name: 'ForgetPassword',
       path: '/forgetPassword',
       component: ForgetPassword,
+    },
+    {
+      name: 'CreateNewPassword',
+      path: '/createNewPassword',
+      component: CreateNewPassword,
     },
     {
       name: 'GoogleAuth',

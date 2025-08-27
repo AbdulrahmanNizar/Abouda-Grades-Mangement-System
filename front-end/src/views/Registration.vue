@@ -233,8 +233,10 @@
             }}</span>
           </div>
 
-          <div class="my-2 w-75 d-flex flex-row justify-content-start align-items-center">
-            <div class="form-check">
+          <div
+            class="my-2 w-75 d-flex flex-md-row flex-column justify-content-between align-items-center"
+          >
+            <div class="form-check mt-1">
               <input
                 class="form-check-input"
                 type="checkbox"
@@ -243,6 +245,11 @@
               />
               <label class="form-check-label" for="revealPasswordCheckboxForLogin"
                 >Show Password</label
+              >
+            </div>
+            <div class="d-flex flex-row justify-content-center align-items-center mt-1">
+              <router-link :to="{ path: '/forgetPassword' }" class="btn btn-dark"
+                >Forget Password?</router-link
               >
             </div>
           </div>
