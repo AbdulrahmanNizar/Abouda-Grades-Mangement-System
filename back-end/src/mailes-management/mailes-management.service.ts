@@ -25,13 +25,22 @@ export class MailesManagementService {
         process.env.ENCRYPTION_SECRET_KEY,
       ).toString();
 
+      let encodedEncryptedUserId = encryptedUserId.split('');
+      for (let i = 0; i < encodedEncryptedUserId.length; i++) {
+        if (encodedEncryptedUserId[i] == '+') {
+          encodedEncryptedUserId[i] = encodeURIComponent('+');
+        } else if (encodedEncryptedUserId[i] == '/') {
+          encodedEncryptedUserId[i] = encodeURIComponent('/');
+        }
+      }
+
       if (userInDB.length > 0) {
         await this.mailerService.sendMail({
           to: userInDB[0].email,
           subject: 'Create New Password',
           template: './CreateNewPasswordEmailTemplate',
           context: {
-            userId: encryptedUserId,
+            userId: encodedEncryptedUserId.join(''),
             email: userInDB[0].email,
           },
         });

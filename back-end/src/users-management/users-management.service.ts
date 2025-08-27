@@ -81,20 +81,41 @@ export class UsersManagementService {
     requestInfo: ChangeUserPasswordDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
+      const decodedDecryptedUserId = requestInfo.userId.split('');
+      for (let i = 0; i < decodedDecryptedUserId.length; i++) {
+        if (
+          decodedDecryptedUserId[i] == '%' &&
+          decodedDecryptedUserId[i + 1] == '2' &&
+          decodedDecryptedUserId[i + 2] == 'B'
+        ) {
+          decodedDecryptedUserId[i] = '+';
+          decodedDecryptedUserId[i + 1] = '';
+          decodedDecryptedUserId[i + 2] = '';
+        } else if (
+          decodedDecryptedUserId[i] == '%' &&
+          decodedDecryptedUserId[i + 1] == '2' &&
+          decodedDecryptedUserId[i + 2] == 'F'
+        ) {
+          decodedDecryptedUserId[i] = '/';
+          decodedDecryptedUserId[i + 1] = '';
+          decodedDecryptedUserId[i + 2] = '';
+        }
+      }
+
       const encryptedUserIdBytes = crypto.AES.decrypt(
-        requestInfo.userId,
+        decodedDecryptedUserId.join(''),
         process.env.ENCRYPTION_SECRET_KEY,
       );
       const decryptedUserId = encryptedUserIdBytes.toString(crypto.enc.Utf8);
       JSON.parse(decryptedUserId);
 
-      const decryptedUserIdWithoutQuotos = decryptedUserId
+      const decryptedUserIdWithoutQuotes = decryptedUserId
         .split('')
         .filter((char) => char != '"')
         .join('');
 
       const userInDB = await this.userModel.find({
-        _id: decryptedUserIdWithoutQuotos,
+        _id: decryptedUserIdWithoutQuotes,
       });
       if (userInDB.length > 0) {
         const salt = await bcrypt.genSalt(10);
