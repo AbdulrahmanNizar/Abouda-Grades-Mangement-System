@@ -6,6 +6,9 @@ import { User } from 'src/registration/registration.model';
 import { GetUserInfoDto } from './dto/GetUserInfo.dto';
 import { ChangeUserAccountPictureDto } from './dto/ChangeUserAccountPicture.dto';
 import { Cache } from 'cache-manager';
+import { ChangeUserPasswordDto } from './dto/ChangeUserPassword.dto';
+import * as bcrypt from 'bcrypt';
+import * as crypto from 'crypto-js';
 
 @Injectable()
 export class UsersManagementService {
@@ -69,6 +72,45 @@ export class UsersManagementService {
         successMessage: 'Account picture changed successfully',
         statusCode: 200,
       };
+    } catch (err) {
+      throw new HttpException(err, err.status);
+    }
+  }
+
+  async changePassword(
+    requestInfo: ChangeUserPasswordDto,
+  ): Promise<SuccessResponseObjectDto | void> {
+    try {
+      const encryptedUserIdBytes = crypto.AES.decrypt(
+        requestInfo.userId,
+        process.env.ENCRYPTION_SECRET_KEY,
+      );
+      const decryptedUserId = encryptedUserIdBytes.toString(crypto.enc.Utf8);
+      JSON.parse(decryptedUserId);
+
+      const decryptedUserIdWithoutQuotos = decryptedUserId
+        .split('')
+        .filter((char) => char != '"')
+        .join('');
+
+      const userInDB = await this.userModel.find({
+        _id: decryptedUserIdWithoutQuotos,
+      });
+      if (userInDB.length > 0) {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(requestInfo.newPassword, salt);
+        await this.userModel.updateOne(
+          { _id: userInDB[0]._id },
+          { $set: { password: hashedPassword } },
+        );
+
+        return {
+          successMessage: 'Password was changed successfully',
+          statusCode: 200,
+        };
+      } else {
+        throw new HttpException('User not found', 404);
+      }
     } catch (err) {
       throw new HttpException(err, err.status);
     }

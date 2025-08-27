@@ -9,7 +9,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CacheModule } from '@nestjs/cache-manager';
 import { redisStore } from 'cache-manager-redis-yet';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
 import jwtConfig from './registration/config/jwt.config';
 import googleConfig from './registration/config/google.config';
@@ -39,10 +39,8 @@ import googleConfig from './registration/config/google.config';
         from: 'No Reply',
       },
       template: {
-        dir: join(__dirname, 'templates'),
-        adapter: new EjsAdapter({
-          inlineCssEnabled: true,
-        }),
+        dir: join(__dirname, '../src/mailes-management/templates'),
+        adapter: new HandlebarsAdapter(),
         options: {
           strict: true,
         },

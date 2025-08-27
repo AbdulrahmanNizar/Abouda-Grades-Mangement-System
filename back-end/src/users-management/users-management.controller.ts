@@ -4,6 +4,7 @@ import { AuthGuard } from '../registration/guards/auth.guard';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { GetUserInfoDto } from './dto/GetUserInfo.dto';
 import { ChangeUserAccountPictureDto } from './dto/ChangeUserAccountPicture.dto';
+import { ChangeUserPasswordDto } from './dto/ChangeUserPassword.dto';
 
 @Controller('users-management')
 export class UsersManagementController {
@@ -34,6 +35,18 @@ export class UsersManagementController {
         await this.usersManagementService.changeAccountPicture(
           changeUserAccountPictureDto,
         ),
+      );
+  }
+
+  @Post('/changePassword')
+  async changePassword(
+    @Body() changeUserPasswordDto: ChangeUserPasswordDto,
+    @Res() res,
+  ): Promise<SuccessResponseObjectDto | void> {
+    res
+      .status(200)
+      .json(
+        await this.usersManagementService.changePassword(changeUserPasswordDto),
       );
   }
 }

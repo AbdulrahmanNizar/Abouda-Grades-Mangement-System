@@ -5,11 +5,11 @@ import { Model } from 'mongoose';
 import { User } from './registration.model';
 import { SuccessResponseObjectDto } from 'src/dto/SuccessResponseObjectDto';
 import { SignUpUserDto } from './dto/SignUp.dto';
-import * as bcrypt from 'bcrypt';
 import { LoginUserDto } from './dto/Login.dto';
 import { LogoutUserDto } from './dto/Logout.dto';
 import { VerifyTokenDto } from './dto/VerifyToken.dto';
 import { GoogleLoginDto } from './dto/GoogleLogin.dto';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class RegistrationService {
@@ -79,7 +79,7 @@ export class RegistrationService {
           userInDB[0].password,
         );
 
-        if (passwordComparison == true) {
+        if (passwordComparison) {
           await this.userModel.updateOne(
             { username: requestInfo.username },
             { $set: { logged: true } },
