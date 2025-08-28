@@ -12,7 +12,7 @@
           alt="Computer Image"
           class="img-fluid rounded d-md-block d-none"
           v-motion
-          :initial="{ opacity: 0, x: 150 }"
+          :initial="{ opacity: 0, x: 100 }"
           :visibleOnce="{ opacity: 1, x: 0 }"
         />
       </div>
@@ -52,70 +52,70 @@
             <button class="btn btn-dark" v-if="loginMood">Login</button>
           </div>
 
-          <div class="w-75 mb-3 d-flex flex-row justify-content-center align-items-center">
-            <div class="form-floating mt-3 w-75 me-1">
-              <input
-                type="text"
-                class="form-control"
-                id="usernameInput"
-                placeholder="Enter Your Username"
-                style="border-radius: 10px"
-                v-model="formDataForSignUp.username"
-              />
-              <label for="usernameInput">Username</label>
-              <span v-for="error in v$ForSignUp.username.$errors" class="text-danger mt-3 ms-1">{{
-                error.$message
-              }}</span>
-            </div>
-
-            <div class="form-floating mt-3 w-75 ms-1">
-              <input
-                type="email"
-                class="form-control"
-                id="emailInput"
-                placeholder="Enter Your Email"
-                style="border-radius: 10px"
-                v-model="formDataForSignUp.email"
-              />
-              <label for="emailInput">Email Address</label>
-              <span v-for="error in v$ForSignUp.email.$errors" class="text-danger mt-3 ms-1">{{
-                error.$message
-              }}</span>
-            </div>
-          </div>
-
-          <div class="form-floating mb-3 w-75">
+          <div class="form-floating mt-3 w-75">
             <input
-              type="password"
+              type="text"
               class="form-control"
-              id="passwordInput"
-              placeholder="Enter Your Password"
+              id="usernameInput"
+              placeholder="Enter Your Username"
               style="border-radius: 10px"
-              v-model="formDataForSignUp.password"
-              ref="passwordInputForSignUp"
+              v-model="formDataForSignUp.username"
             />
-            <label for="passwordInput">Password</label>
-            <span v-for="error in v$ForSignUp.password.$errors" class="text-danger mt-3 ms-1">{{
+            <label for="usernameInput">Username</label>
+            <span v-for="error in v$ForSignUp.username.$errors" class="text-danger mt-3 ms-1">{{
               error.$message
             }}</span>
           </div>
 
-          <div class="form-floating mb-3 w-75">
+          <div class="form-floating mt-3 w-75">
             <input
-              type="password"
+              type="email"
               class="form-control"
-              id="confirmPasswordInput"
-              placeholder="Confirm Your Password"
+              id="emailInput"
+              placeholder="Enter Your Email"
               style="border-radius: 10px"
-              v-model="formDataForSignUp.confirmPassword"
-              ref="confirmPasswordInputForSignUp"
+              v-model="formDataForSignUp.email"
             />
-            <label for="confirmPasswordInput">Confirm Password</label>
-            <span
-              v-for="error in v$ForSignUp.confirmPassword.$errors"
-              class="text-danger mt-3 ms-1"
-              >{{ error.$message }}</span
-            >
+            <label for="emailInput">Email Address</label>
+            <span v-for="error in v$ForSignUp.email.$errors" class="text-danger mt-3 ms-1">{{
+              error.$message
+            }}</span>
+          </div>
+
+          <div class="w-75 mb-3 d-flex flex-row justify-content-center align-items-center">
+            <div class="form-floating mt-3 me-1 w-75">
+              <input
+                type="password"
+                class="form-control"
+                id="passwordInput"
+                placeholder="Enter Your Password"
+                style="border-radius: 10px"
+                v-model="formDataForSignUp.password"
+                ref="passwordInputForSignUp"
+              />
+              <label for="passwordInput">Password</label>
+              <span v-for="error in v$ForSignUp.password.$errors" class="text-danger mt-3 ms-1">{{
+                error.$message
+              }}</span>
+            </div>
+
+            <div class="form-floating mt-3 ms-1 w-75">
+              <input
+                type="password"
+                class="form-control"
+                id="confirmPasswordInput"
+                placeholder="Confirm Your Password"
+                style="border-radius: 10px"
+                v-model="formDataForSignUp.confirmPassword"
+                ref="confirmPasswordInputForSignUp"
+              />
+              <label for="confirmPasswordInput">Confirm Password</label>
+              <span
+                v-for="error in v$ForSignUp.confirmPassword.$errors"
+                class="text-danger mt-3 ms-1"
+                >{{ error.$message }}</span
+              >
+            </div>
           </div>
 
           <div class="my-2 w-75 d-flex flex-row justify-content-start align-items-center">
@@ -291,12 +291,76 @@
           alt="Computer Image"
           class="img-fluid rounded d-md-block d-none"
           v-motion
-          :initial="{ opacity: 0, x: -150 }"
+          :initial="{ opacity: 0, x: -100 }"
           :visibleOnce="{ opacity: 1, x: 0 }"
         />
       </div>
     </div>
   </div>
+
+  <transition-group name="slideUp">
+    <div
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
+      style="width: 50%"
+      v-if="showErrorModal"
+    >
+      <div
+        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+          <h5 class="text-center">Operation Failed ❌</h5>
+        </div>
+
+        <hr class="w-100" />
+
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
+          <h6 class="text-center">{{ errorMessage }}</h6>
+        </div>
+      </div>
+    </div>
+    <div
+      class="toast bg-white d-md-block d-none position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showErrorModal"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">❌ Operation Failed</strong>
+      </div>
+      <div class="toast-body">{{ errorMessage }}</div>
+    </div>
+  </transition-group>
+
+  <transition-group name="slideUp">
+    <div
+      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
+      style="width: 50%"
+      v-if="showSuccessModal"
+    >
+      <div
+        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
+      >
+        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
+          <h4>Operation Completed ✅</h4>
+        </div>
+      </div>
+    </div>
+    <div
+      class="toast bg-white d-md-block d-none position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showSuccessModal"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">Success</strong>
+      </div>
+      <div class="toast-body">✅ Operation Completed</div>
+    </div>
+  </transition-group>
 </template>
 
 <script setup lang="ts">
@@ -320,6 +384,9 @@ const passwordInputForSignUp = ref<any>()
 const confirmPasswordInputForSignUp = ref<any>()
 const loginLoading = ref<boolean>(false)
 const signUpLoading = ref<boolean>(false)
+const showSuccessModal = ref<boolean>(false)
+const showErrorModal = ref<boolean>(false)
+const errorMessage = ref<string>('')
 
 onMounted(async () => {
   if (localStorage.getItem('jwtToken') != '' && localStorage.getItem('jwtToken') != null) {
@@ -391,8 +458,9 @@ const signUp = async (): Promise<void> => {
         window.location.reload()
       } else {
         signUpLoading.value = false
-        signupError.value = data.message
-        showSignupError.value = true
+        errorMessage.value = data.message
+        showErrorModal.value = true
+        setTimeout(() => (showErrorModal.value = false), 3000)
       }
     }
   } catch (err) {
@@ -456,9 +524,20 @@ const login = async (): Promise<void> => {
         window.location.reload()
       } else {
         loginLoading.value = false
-        loginError.value = data.message
-        showLoginError.value = true
+        errorMessage.value = data.message
+        showErrorModal.value = true
+        setTimeout(() => (showErrorModal.value = false), 3000)
       }
+    } else {
+      // if (v$ForLogin.value.username.$errors.length > 0) {
+      //   errorMessage.value = v$ForLogin.value.username.$errors[0].$message.toString()
+      //   showErrorModal.value = true
+      //   setTimeout(() => (showErrorModal.value = false), 3000)
+      // } else if (v$ForLogin.value.password.$errors.length > 0) {
+      //   errorMessage.value = v$ForLogin.value.password.$errors[0].$message.toString()
+      //   showErrorModal.value = true
+      //   setTimeout(() => (showErrorModal.value = false), 3000)
+      // }
     }
   } catch (err) {
     console.log(err)
