@@ -81,29 +81,10 @@ export class UsersManagementService {
     requestInfo: ChangeUserPasswordDto,
   ): Promise<SuccessResponseObjectDto | void> {
     try {
-      const decodedDecryptedUserId = requestInfo.userId.split('');
-      for (let i = 0; i < decodedDecryptedUserId.length; i++) {
-        if (
-          decodedDecryptedUserId[i] == '%' &&
-          decodedDecryptedUserId[i + 1] == '2' &&
-          decodedDecryptedUserId[i + 2] == 'B'
-        ) {
-          decodedDecryptedUserId[i] = '+';
-          decodedDecryptedUserId[i + 1] = '';
-          decodedDecryptedUserId[i + 2] = '';
-        } else if (
-          decodedDecryptedUserId[i] == '%' &&
-          decodedDecryptedUserId[i + 1] == '2' &&
-          decodedDecryptedUserId[i + 2] == 'F'
-        ) {
-          decodedDecryptedUserId[i] = '/';
-          decodedDecryptedUserId[i + 1] = '';
-          decodedDecryptedUserId[i + 2] = '';
-        }
-      }
+      const decodedDecryptedUserId = decodeURIComponent(requestInfo.userId);
 
       const encryptedUserIdBytes = crypto.AES.decrypt(
-        decodedDecryptedUserId.join(''),
+        decodedDecryptedUserId,
         process.env.ENCRYPTION_SECRET_KEY,
       );
       const decryptedUserId = encryptedUserIdBytes.toString(crypto.enc.Utf8);

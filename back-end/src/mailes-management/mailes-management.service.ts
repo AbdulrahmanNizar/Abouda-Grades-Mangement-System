@@ -25,14 +25,7 @@ export class MailesManagementService {
         process.env.ENCRYPTION_SECRET_KEY,
       ).toString();
 
-      let encodedEncryptedUserId = encryptedUserId.split('');
-      for (let i = 0; i < encodedEncryptedUserId.length; i++) {
-        if (encodedEncryptedUserId[i] == '+') {
-          encodedEncryptedUserId[i] = encodeURIComponent('+');
-        } else if (encodedEncryptedUserId[i] == '/') {
-          encodedEncryptedUserId[i] = encodeURIComponent('/');
-        }
-      }
+      const encodedEncryptedUserId = encodeURIComponent(encryptedUserId);
 
       if (userInDB.length > 0) {
         await this.mailerService.sendMail({
@@ -40,8 +33,7 @@ export class MailesManagementService {
           subject: 'Create New Password',
           template: './CreateNewPasswordEmailTemplate',
           context: {
-            userId: encodedEncryptedUserId.join(''),
-            email: userInDB[0].email,
+            userId: encodedEncryptedUserId,
           },
         });
 
