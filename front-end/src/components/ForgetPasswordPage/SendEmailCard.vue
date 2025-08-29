@@ -51,7 +51,7 @@
       </div>
     </div>
     <div
-      class="toast d-md-block d-none position-fixed"
+      class="toast bg-white d-block position-fixed"
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
@@ -86,7 +86,7 @@
       </div>
     </div>
     <div
-      class="toast d-md-block d-none position-fixed"
+      class="toast bg-white d-block position-fixed"
       role="alert"
       aria-live="assertive"
       aria-atomic="true"

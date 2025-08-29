@@ -34,20 +34,7 @@
 
       <transition-group name="slideUp">
         <div
-          class="d-flex d-md-none flex-row justify-content-center align-items-center mt-2 p-3 operationResultModal"
-          style="width: 50%"
-          v-if="showSuccessModal"
-        >
-          <div
-            class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-          >
-            <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-              <h4>Operation Completed ✅</h4>
-            </div>
-          </div>
-        </div>
-        <div
-          class="toast d-md-block d-none position-fixed"
+          class="toast bg-white d-block position-fixed"
           role="alert"
           aria-live="assertive"
           aria-atomic="true"

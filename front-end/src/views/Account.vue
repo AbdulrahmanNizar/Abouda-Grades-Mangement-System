@@ -289,11 +289,3 @@ userStore.getUserInfo()
 jwtTokensStore.validateJwtToken()
 setInterval(jwtTokensStore.validateJwtToken, 10000)
 </script>
-
-<style scoped>
-@media only screen and (max-width: 991px) {
-  #subjectsList {
-    width: 100% !important;
-  }
-}
-</style>

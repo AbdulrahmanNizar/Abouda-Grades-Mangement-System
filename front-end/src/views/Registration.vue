@@ -300,26 +300,7 @@
 
   <transition-group name="slideUp">
     <div
-      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
-      style="width: 50%"
-      v-if="showErrorModal"
-    >
-      <div
-        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-      >
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-          <h5 class="text-center">Operation Failed ❌</h5>
-        </div>
-
-        <hr class="w-100" />
-
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-          <h6 class="text-center">{{ errorMessage }}</h6>
-        </div>
-      </div>
-    </div>
-    <div
-      class="toast bg-white d-md-block d-none position-fixed"
+      class="toast bg-white d-block position-fixed"
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
@@ -335,20 +316,7 @@
 
   <transition-group name="slideUp">
     <div
-      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
-      style="width: 50%"
-      v-if="showSuccessModal"
-    >
-      <div
-        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-      >
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-          <h4>Operation Completed ✅</h4>
-        </div>
-      </div>
-    </div>
-    <div
-      class="toast bg-white d-md-block d-none position-fixed"
+      class="toast bg-white d-block position-fixed"
       role="alert"
       aria-live="assertive"
       aria-atomic="true"
@@ -528,16 +496,6 @@ const login = async (): Promise<void> => {
         showErrorModal.value = true
         setTimeout(() => (showErrorModal.value = false), 3000)
       }
-    } else {
-      // if (v$ForLogin.value.username.$errors.length > 0) {
-      //   errorMessage.value = v$ForLogin.value.username.$errors[0].$message.toString()
-      //   showErrorModal.value = true
-      //   setTimeout(() => (showErrorModal.value = false), 3000)
-      // } else if (v$ForLogin.value.password.$errors.length > 0) {
-      //   errorMessage.value = v$ForLogin.value.password.$errors[0].$message.toString()
-      //   showErrorModal.value = true
-      //   setTimeout(() => (showErrorModal.value = false), 3000)
-      // }
     }
   } catch (err) {
     console.log(err)
@@ -552,3 +510,11 @@ const loginWithGoogle = async (): Promise<void> => {
   }
 }
 </script>
+
+<style>
+@media only screen and (max-width: 991px) {
+  .successAndErrorModals {
+    width: 80% !important;
+  }
+}
+</style>
