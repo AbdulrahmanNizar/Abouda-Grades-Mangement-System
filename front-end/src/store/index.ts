@@ -15,24 +15,31 @@ export const useUserStore = defineStore('users', {
   actions: {
     async getUserInfo(): Promise<void> {
       try {
-        const requestOptions: RequestInit = {
-          method: 'POST',
-          mode: 'cors',
-          headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: this.jwtToken },
-          body: <BodyInit>JSON.stringify({
-            userId: this.userId,
-          }),
-        }
+        if (
+          this.userId != '' &&
+          this.userId != null &&
+          this.jwtToken != '' &&
+          this.jwtToken != null
+        ) {
+          const requestOptions: RequestInit = {
+            method: 'POST',
+            mode: 'cors',
+            headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: this.jwtToken },
+            body: <BodyInit>JSON.stringify({
+              userId: this.userId,
+            }),
+          }
 
-        const response = await fetch(
-          'http://127.0.0.1:3000/users-management/getUserInfo',
-          requestOptions,
-        )
-        const data = await response.json()
-        if (data.statusCode >= 200 && data.statusCode < 300) {
-          this.userInfo.push(data.data)
-        } else if (data.statusCode == 403) {
-          this.router.push({ path: '/registration' })
+          const response = await fetch(
+            'http://127.0.0.1:3000/users-management/getUserInfo',
+            requestOptions,
+          )
+          const data = await response.json()
+          if (data.statusCode >= 200 && data.statusCode < 300) {
+            this.userInfo.push(data.data)
+          } else if (data.statusCode == 403) {
+            this.router.push({ path: '/registration' })
+          }
         }
       } catch (err) {
         console.log(err)
@@ -149,6 +156,7 @@ export const useJwtTokensStore = defineStore('jwtToken', {
     return {
       router: useRouter(),
       jwtToken: <string | null>localStorage.getItem('jwtToken'),
+      userAuthorized: <boolean>false,
     }
   },
 
@@ -158,6 +166,8 @@ export const useJwtTokensStore = defineStore('jwtToken', {
         const jwtTokenValidation = await useVerifyAuthToken(this.jwtToken)
         if (jwtTokenValidation == 'rejected') {
           this.router.push({ path: '/registration' })
+        } else if (jwtTokenValidation == 'accepted') {
+          this.userAuthorized = true
         }
       } else {
         this.router.push({ path: '/registration' })

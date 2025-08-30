@@ -185,7 +185,7 @@
               Add
             </button>
             <button
-              class="btn btn-dark mt-1 d-flex flex-row justify-content-center align-items-center"
+              class="btn btn-dark d-flex flex-row justify-content-center align-items-center"
               disabled
               v-else
             >

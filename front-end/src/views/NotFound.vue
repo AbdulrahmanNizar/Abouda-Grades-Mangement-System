@@ -1,5 +1,5 @@
 <template>
-  <div class="h-100 text-black">
+  <div class="h-100 text-black" v-if="userAuthorized">
     <nav class="navbar navbar-expand-lg bg-black bg-gradient text-white d-md-none d-block">
       <div class="container-fluid text-white">
         <a class="navbar-brand text-white"
@@ -139,6 +139,10 @@ const jwtTokensStore = useJwtTokensStore()
 const userStore = useUserStore()
 const router: Router = useRouter()
 const userId = ref<string | null>(localStorage.getItem('userId'))
+
+const userAuthorized = computed(() => {
+  return jwtTokensStore.userAuthorized
+})
 
 const userInfo = computed(() => {
   return userStore.userInfo

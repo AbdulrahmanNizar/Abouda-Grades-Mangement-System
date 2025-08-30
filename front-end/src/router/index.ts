@@ -9,7 +9,6 @@ import NotFound from '@/views/NotFound.vue'
 import Account from '@/views/Account.vue'
 import GoogleAuth from '@/views/GoogleAuth.vue'
 import EditTable from '@/views/EditTable.vue'
-import ForgetPassword from '@/views/ForgetPassword.vue'
 import CreateNewPassword from '@/views/CreateNewPassword.vue'
 
 const router = createRouter({
@@ -73,11 +72,6 @@ const router = createRouter({
         needsAuthToken:
           (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? false : true,
       },
-    },
-    {
-      name: 'ForgetPassword',
-      path: '/forgetPassword',
-      component: ForgetPassword,
     },
     {
       name: 'CreateNewPassword',

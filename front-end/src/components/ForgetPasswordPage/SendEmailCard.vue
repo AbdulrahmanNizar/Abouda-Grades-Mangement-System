@@ -1,55 +1,48 @@
 <template>
   <div
-    class="w-75 p-3 bg-white bg-gradient border rounded d-flex flex-column justify-content-center align-items-center h-auto"
-    v-motion-slide-bottom
+    class="bg-black bg-gradient d-flex flex-row justify-content-center align-items-center h-75"
+    id="cardBackground"
+    style="width: 60%; border-radius: 20px"
   >
-    <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-4 mb-3">
-      <h3>Forget Password</h3>
-      <hr class="w-100" />
-    </div>
+    <div
+      class="w-75 p-3 bg-white bg-gradient border rounded d-flex flex-column justify-content-center align-items-center h-auto"
+      v-motion-slide-bottom
+    >
+      <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-4 mb-3">
+        <h3>Forget Password</h3>
+        <hr class="w-100" />
+      </div>
 
-    <div class="form-floating mb-3 w-75">
-      <input
-        type="email"
-        class="form-control"
-        id="emailInput"
-        placeholder="Email Address"
-        v-model="formData.email"
-      />
-      <label for="emailInput">Email Address</label>
-    </div>
+      <div class="form-floating mb-3 w-75">
+        <input
+          type="email"
+          class="form-control"
+          id="emailInput"
+          placeholder="Email Address"
+          v-model="formData.email"
+        />
+        <label for="emailInput">Email Address</label>
+      </div>
 
-    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
-      <hr class="w-100" />
-      <button class="btn btn-dark w-75 my-2" @click="sendEmail" v-if="loading == false">
-        Send Email
-      </button>
-      <button
-        class="btn btn-dark w-75 my-2 d-flex flex-row justify-content-center align-items-center"
-        disabled
-        v-else
-      >
-        <div class="spinner-border" role="status">
-          <span class="visually-hidden mb-0">Loading...</span>
-        </div>
-      </button>
+      <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+        <hr class="w-100" />
+        <button class="btn btn-dark w-75 my-2" @click="sendEmail" v-if="loading == false">
+          Send Email
+        </button>
+        <button
+          class="btn btn-dark w-75 my-2 d-flex flex-row justify-content-center align-items-center"
+          disabled
+          v-else
+        >
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden mb-0">Loading...</span>
+          </div>
+        </button>
+      </div>
     </div>
   </div>
 
   <transition-group name="slideUp">
-    <div
-      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
-      style="width: 50%"
-      v-if="showSuccessModal"
-    >
-      <div
-        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-      >
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-          <h4>The email was sent successfully ✅</h4>
-        </div>
-      </div>
-    </div>
     <div
       class="toast bg-white d-block position-fixed"
       role="alert"
@@ -66,25 +59,6 @@
   </transition-group>
 
   <transition-group name="slideUp">
-    <div
-      class="d-flex d-md-none flex-row justify-content-center align-items-center mt-5 bottom-50 bg-white position-fixed errorForNotEnoughSubjectsCard"
-      style="width: 50%"
-      v-if="showErrorModal"
-    >
-      <div
-        class="w-100 p-3 rounded shadow d-flex flex-column justify-content-center align-items-center"
-      >
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center mt-2">
-          <h5 class="text-center">Operation Failed ❌</h5>
-        </div>
-
-        <hr class="w-100" />
-
-        <div class="w-100 d-flex flex-row justify-content-center align-items-center">
-          <h6 class="text-center">{{ errorMessage }}</h6>
-        </div>
-      </div>
-    </div>
     <div
       class="toast bg-white d-block position-fixed"
       role="alert"
@@ -161,3 +135,11 @@ const sendEmail = async (): Promise<void> => {
   }
 }
 </script>
+
+<style>
+@media only screen and (max-width: 991px) {
+  #cardBackground {
+    width: 90% !important;
+  }
+}
+</style>

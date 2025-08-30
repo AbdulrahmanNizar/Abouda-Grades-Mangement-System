@@ -248,9 +248,9 @@
               >
             </div>
             <div class="d-flex flex-row justify-content-center align-items-center mt-1">
-              <router-link :to="{ path: '/forgetPassword' }" class="btn btn-dark"
-                >Forget Password?</router-link
-              >
+              <button class="btn btn-dark" @click="showSendForgetPasswordEmailModalMethod">
+                Forget Password?
+              </button>
             </div>
           </div>
 
@@ -296,6 +296,61 @@
         />
       </div>
     </div>
+
+    <transition-group name="fade">
+      <div
+        class="h-100 w-100 d-flex flex-row justify-content-center align-items-center position-fixed sendForgetPasswordEmailModalBackground"
+        v-if="showSendForgetPasswordEmailModal"
+      >
+        <div
+          class="w-50 d-flex flex-column justify-content-center align-items-center p-3 w-50 top-25 rounded shadow bg-white position-fixed"
+          ref="sendForgetPasswordEmailModal"
+        >
+          <div class="w-100 d-flex flex-row justify-content-center align-items-center p-3">
+            <h3>Forget Password</h3>
+          </div>
+
+          <hr class="w-100" />
+
+          <div class="w-100 d-flex flex-row justify-content-center align-items-center my-1">
+            <div class="form-floating w-75">
+              <input
+                type="email"
+                class="form-control"
+                id="emailInput"
+                placeholder="Email Address"
+                v-model="formDataForSendForgetPasswordEmail.email"
+              />
+              <label for="emailInput">Email Address</label>
+            </div>
+          </div>
+
+          <hr class="w-100" />
+
+          <div class="w-100 d-flex flex-column justify-content-center align-items-center p-3">
+            <button class="btn btn-dark w-75" @click="showSendForgetPasswordEmailModalMethod">
+              Cancel
+            </button>
+            <button
+              class="btn btn-dark w-75 mt-1"
+              @click="sendEmail"
+              v-if="sendForgetPasswordEmailLoading == false"
+            >
+              Send Email
+            </button>
+            <button
+              class="btn btn-dark w-75 mt-1 d-flex flex-row justify-content-center align-items-center"
+              disabled
+              v-else
+            >
+              <div class="spinner-border" role="status">
+                <span class="visually-hidden mb-0">Loading...</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </transition-group>
   </div>
 
   <transition-group name="slideUp">
@@ -336,6 +391,7 @@ import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { useRouter, type Router } from 'vue-router'
 import { required, email, minLength, sameAs } from '@vuelidate/validators'
 import { useVerifyAuthToken } from '@/composables/verifyAuthToken'
+import { onClickOutside } from '@vueuse/core'
 import useVuelidate from '@vuelidate/core'
 
 const router: Router = useRouter()
@@ -352,9 +408,12 @@ const passwordInputForSignUp = ref<any>()
 const confirmPasswordInputForSignUp = ref<any>()
 const loginLoading = ref<boolean>(false)
 const signUpLoading = ref<boolean>(false)
+const sendForgetPasswordEmailLoading = ref<boolean>(false)
 const showSuccessModal = ref<boolean>(false)
 const showErrorModal = ref<boolean>(false)
 const errorMessage = ref<string>('')
+const showSendForgetPasswordEmailModal = ref<boolean>(false)
+const sendForgetPasswordEmailModal = ref()
 
 onMounted(async () => {
   if (localStorage.getItem('jwtToken') != '' && localStorage.getItem('jwtToken') != null) {
@@ -509,6 +568,64 @@ const loginWithGoogle = async (): Promise<void> => {
     console.log(err)
   }
 }
+
+onClickOutside(sendForgetPasswordEmailModal, () => (showSendForgetPasswordEmailModal.value = false))
+
+const showSendForgetPasswordEmailModalMethod = (): void => {
+  showSendForgetPasswordEmailModal.value = !showSendForgetPasswordEmailModal.value
+}
+
+const formDataForSendForgetPasswordEmail = reactive({
+  email: '',
+})
+
+const formRulesForSendForgetPasswordEmail = computed(() => {
+  return {
+    email: { required, email },
+  }
+})
+
+const v$ForSendForgetPasswordEmail = useVuelidate(
+  formRulesForSendForgetPasswordEmail,
+  formDataForSendForgetPasswordEmail,
+)
+
+const sendEmail = async (): Promise<void> => {
+  const validationResult = await v$ForSendForgetPasswordEmail.value.$validate()
+
+  if (validationResult) {
+    const requestOptions: RequestInit = {
+      method: 'POST',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: formDataForSendForgetPasswordEmail.email,
+      }),
+    }
+
+    sendForgetPasswordEmailLoading.value = true
+    const response = await fetch(
+      'http://127.0.0.1:3000/mailes-management/sendCreateNewPasswordEmail',
+      requestOptions,
+    )
+    const data = await response.json()
+    if (data.statusCode >= 200 && data.statusCode < 300) {
+      sendForgetPasswordEmailLoading.value = false
+      showSendForgetPasswordEmailModal.value = false
+      showSuccessModal.value = true
+      setTimeout(() => (showSuccessModal.value = false), 2000)
+    } else {
+      sendForgetPasswordEmailLoading.value = false
+      errorMessage.value = data.message
+      showErrorModal.value = true
+      setTimeout(() => (showErrorModal.value = false), 3000)
+    }
+  } else {
+    errorMessage.value = v$ForSendForgetPasswordEmail.value.email.$errors[0].$message.toString()
+    showErrorModal.value = true
+    setTimeout(() => (showErrorModal.value = false), 3000)
+  }
+}
 </script>
 
 <style>
@@ -516,5 +633,33 @@ const loginWithGoogle = async (): Promise<void> => {
   .successAndErrorModals {
     width: 80% !important;
   }
+}
+
+.sendForgetPasswordEmailModalBackground {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.fade-enter-from {
+  opacity: 0;
+}
+
+.fade-enter-to {
+  opacity: 1;
+}
+
+.fade-enter-active {
+  transition: all 0.7s ease;
+}
+
+.fade-leave-from {
+  opacity: 1;
+}
+
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-leave-active {
+  transition: all 0.7s ease;
 }
 </style>

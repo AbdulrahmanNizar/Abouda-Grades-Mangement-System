@@ -53,29 +53,50 @@
       >
       <button
         class="btn btn-danger w-100 mt-1"
-        @click="deleteTable(gradesTable._id)"
-        v-if="loading == false"
+        @click="setDeleteGradesTableIntention(gradesTable._id)"
       >
         Delete
       </button>
-      <button
-        class="btn btn-danger w-100 mt-1 d-flex flex-row justify-content-center align-items-center"
-        disabled
-        v-else
-      >
-        <div class="spinner-border" role="status">
-          <span class="visually-hidden mb-0">Loading...</span>
-        </div>
-      </button>
     </div>
 
-    <div
-      class="d-flex flex-row justify-content-center align-items-center p-5 mt-2 shadow rounded"
-      v-motion-slide-bottom
-      v-if="showNotFoundGradesTablesMessage"
-    >
-      <h3 class="text-black">No tables were found</h3>
-    </div>
+    <transition-group name="slideUp">
+      <div
+        class="d-flex flex-row justify-content-center align-items-center p-5 mt-2 shadow rounded"
+        v-if="showNotFoundGradesTablesMessage"
+      >
+        <h3 class="text-black">No tables were found</h3>
+      </div>
+
+      <div
+        class="toast bg-white d-block position-fixed"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+        style="bottom: 3%; right: 1%"
+        v-if="showDeleteTableModal"
+      >
+        <div class="toast-header">
+          <strong class="me-auto h6 mb-0">Are You Sure</strong>
+        </div>
+        <div class="toast-body d-flex flex-row justify-content-end align-items-end w-100">
+          <button class="btn btn-dark me-1" @click="cancelDeleteGradesTableIntention">
+            Cancel
+          </button>
+          <button class="btn btn-danger" @click="deleteTable" v-if="loading == false">
+            Delete
+          </button>
+          <button
+            class="btn btn-danger d-flex flex-row justify-content-center align-items-center"
+            disabled
+            v-else
+          >
+            <div class="spinner-border" role="status">
+              <span class="visually-hidden mb-0">Loading...</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </transition-group>
   </div>
 </template>
 
@@ -94,6 +115,8 @@ const userGradesTables = ref<userGradesTablesInterface[]>([])
 const gradesTablesYear = ref<string>('Filter By Year')
 const gradesTablesTrimester = ref<string>('Filter By Trimester')
 const loading = ref<boolean>(false)
+const showDeleteTableModal = ref<boolean>(false)
+const deleteGradesTableId = ref<string>('')
 
 interface userGradesTablesInterface {
   _id: string
@@ -257,7 +280,17 @@ watch(
   },
 )
 
-const deleteTable = async (gradesTableId: string): Promise<void> => {
+const setDeleteGradesTableIntention = (gradesTableId: string): void => {
+  deleteGradesTableId.value = gradesTableId
+  showDeleteTableModal.value = true
+}
+
+const cancelDeleteGradesTableIntention = (): void => {
+  deleteGradesTableId.value = ''
+  showDeleteTableModal.value = false
+}
+
+const deleteTable = async (): Promise<void> => {
   try {
     const requestOptions: RequestInit = {
       method: 'DELETE',
@@ -265,7 +298,7 @@ const deleteTable = async (gradesTableId: string): Promise<void> => {
       headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
       body: JSON.stringify({
         userId: userId.value,
-        tableId: gradesTableId,
+        tableId: deleteGradesTableId.value,
       }),
     }
 
