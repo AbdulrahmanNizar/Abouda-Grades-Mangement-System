@@ -77,6 +77,10 @@ const router = createRouter({
       name: 'CreateNewPassword',
       path: '/createNewPassword',
       component: CreateNewPassword,
+      meta: {
+        needsAuthToken:
+          (await useVerifyAuthToken(localStorage.getItem('jwtToken'))) == 'accepted' ? true : false,
+      },
     },
     {
       name: 'GoogleAuth',

@@ -303,7 +303,7 @@
         v-if="showSendForgetPasswordEmailModal"
       >
         <div
-          class="w-50 d-flex flex-column justify-content-center align-items-center p-3 w-50 top-25 rounded shadow bg-white position-fixed"
+          class="w-50 d-flex flex-column justify-content-center align-items-center p-3 top-25 rounded shadow bg-white position-fixed"
           ref="sendForgetPasswordEmailModal"
         >
           <div class="w-100 d-flex flex-row justify-content-center align-items-center p-3">
@@ -569,7 +569,10 @@ const loginWithGoogle = async (): Promise<void> => {
   }
 }
 
-onClickOutside(sendForgetPasswordEmailModal, () => (showSendForgetPasswordEmailModal.value = false))
+onClickOutside(
+  sendForgetPasswordEmailModal,
+  () => (showSendForgetPasswordEmailModal.value = !showSendForgetPasswordEmailModal.value),
+)
 
 const showSendForgetPasswordEmailModalMethod = (): void => {
   showSendForgetPasswordEmailModal.value = !showSendForgetPasswordEmailModal.value
