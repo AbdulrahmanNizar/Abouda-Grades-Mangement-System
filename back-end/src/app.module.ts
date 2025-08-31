@@ -11,6 +11,7 @@ import { redisStore } from 'cache-manager-redis-yet';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { join } from 'path';
+import { ChangePasswordLinksManagementModule } from './change-password-links-management/change-password-links-management.module';
 import jwtConfig from './registration/config/jwt.config';
 import googleConfig from './registration/config/google.config';
 
@@ -51,6 +52,7 @@ import googleConfig from './registration/config/google.config';
     UsersManagementModule,
     SubjectsManagementModule,
     MailesManagementModule,
+    ChangePasswordLinksManagementModule,
   ],
 })
 export class AppModule {}
