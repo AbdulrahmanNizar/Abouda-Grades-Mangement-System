@@ -45,7 +45,7 @@ import CreateNewPasswordCard from '@/components/CreateNewPasswordPage/CreateNewP
 
 const router: Router = useRouter()
 const route: RouteLocationNormalizedLoadedGeneric = useRoute()
-const userId = route.query.userId
+const userId: string | any = route.query.userId
 const validLink = ref<boolean>()
 
 const checkTheChangePasswordState = async (): Promise<void> => {
@@ -58,7 +58,7 @@ const checkTheChangePasswordState = async (): Promise<void> => {
 
     const response = await fetch(
       'http://127.0.0.1:3000/change-password-links-management/getChangePasswordLinkState?userId=' +
-        userId,
+        encodeURIComponent(userId),
       requestOptions,
     )
     const data = await response.json()

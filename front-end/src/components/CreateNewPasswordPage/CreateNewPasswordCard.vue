@@ -96,13 +96,37 @@ import useVuelidate from '@vuelidate/core'
 
 const router: Router = useRouter()
 const route: RouteLocationNormalizedGeneric = useRoute()
-const userId: LocationQueryValue | LocationQueryValue[] = route.query.userId
+const userId: LocationQueryValue | LocationQueryValue[] | any | string = route.query.userId
 const showSuccessModal = ref<boolean>(false)
 const showErrorModal = ref<boolean>(false)
 const errorMessage = ref<string>('')
 const loading = ref<boolean>(false)
 const revealdPassword = ref<boolean>(false)
 const passwordInput = ref()
+
+const changePasswordLinkState = async (): Promise<void> => {
+  try {
+    const requestOptions: RequestInit = {
+      method: 'PATCH',
+      mode: 'cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        userId: encodeURIComponent(userId),
+        valid: false,
+      }),
+    }
+
+    const response = await fetch(
+      'http://127.0.0.1:3000/change-password-links-management/changePasswordLinkState',
+      requestOptions,
+    )
+    const data = await response.json()
+    if (data.statusCode >= 200 && data.statusCode < 300) {
+    }
+  } catch (err) {
+    console.log(err)
+  }
+}
 
 watch(revealdPassword, (newRevealdPassword, oldRevealdPassword) => {
   if (newRevealdPassword == true) {
@@ -126,6 +150,8 @@ const v$ = useVuelidate(formRules, formData)
 
 const changePassword = async (): Promise<void> => {
   try {
+    await changePasswordLinkState()
+
     const validationResult = await v$.value.$validate()
 
     if (validationResult) {

@@ -468,7 +468,7 @@ const signUp = async (): Promise<void> => {
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: formDataForSignUp.username.toLowerCase().split(' ').join(''),
+          username: formDataForSignUp.username.split(' ').join(''),
           email: formDataForSignUp.email,
           password: formDataForSignUp.password,
         }),
@@ -535,7 +535,7 @@ const login = async (): Promise<void> => {
         mode: 'cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          username: formDataForLogin.username.toLowerCase().split(' ').join(''),
+          username: formDataForLogin.username.split(' ').join(''),
           password: formDataForLogin.password,
         }),
       }
