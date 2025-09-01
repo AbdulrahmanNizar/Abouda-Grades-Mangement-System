@@ -34,6 +34,7 @@ export class MailesManagementService {
         const changePasswordLink = `http://localhost:5173/createNewPassword?userId=${encodedEncryptedUserId}`;
 
         const newChangePasswordLink = new this.changePasswordLinksModel({
+          userId: encodedEncryptedUserId,
           link: changePasswordLink,
           valid: true,
         });

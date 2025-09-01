@@ -18,7 +18,7 @@ export class ChangePasswordLinksManagementService {
   ): Promise<SuccessResponseObjectDto | void> {
     try {
       const linkInDB = await this.changePasswordLinksModel.find({
-        _id: requestInfo.linkId,
+        userId: encodeURIComponent(requestInfo.userId),
       });
 
       if (linkInDB.length > 0) {
@@ -40,13 +40,13 @@ export class ChangePasswordLinksManagementService {
   ): Promise<SuccessResponseObjectDto | void> {
     try {
       const linkInDB = await this.changePasswordLinksModel.find({
-        _id: requestInfo.linkId,
+        userId: requestInfo.userId,
       });
 
       if (linkInDB.length > 0) {
         await this.changePasswordLinksModel.updateOne(
-          { _id: requestInfo.linkId },
-          { $set: { valid: requestInfo.valid } },
+          { userId: requestInfo.userId },
+          { $set: { valid: false } },
         );
 
         return {

@@ -26,8 +26,14 @@ export class RegistrationService {
         username: requestInfo.username,
       });
 
+      const emailExistence = await this.userModel.find({
+        email: requestInfo.email,
+      });
+
       if (usernameExistence.length > 0) {
-        throw new HttpException('Username already exists', 400);
+        throw new HttpException('Username is already exist', 400);
+      } else if (emailExistence.length > 0) {
+        throw new HttpException('Email is already exist', 400);
       } else {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(requestInfo.password, salt);

@@ -1,3 +1,3 @@
 export class GetChangePasswordLinkDto {
-  readonly linkId: string;
+  readonly userId: string;
 }
