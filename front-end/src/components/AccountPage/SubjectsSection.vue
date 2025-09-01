@@ -35,15 +35,32 @@
       >
         <h5 class="mb-0">{{ subject }}</h5>
         <hr class="w-100" />
-        <button
-          class="btn btn-danger w-100 mt-1"
-          @click="deleteSubject(subject)"
-          v-if="loading == false"
-        >
+        <button class="btn btn-danger w-100 mt-1" @click="setDeleteSubjectIntention(subject)">
+          Delete
+        </button>
+      </div>
+    </transition-group>
+  </div>
+
+  <transition-group name="slideUp">
+    <div
+      class="toast bg-white d-block position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showDeleteSubjectModal"
+    >
+      <div class="toast-header w-100">
+        <strong class="me-auto h6 mb-0 w-100 text-center">Are You Sure</strong>
+      </div>
+      <div class="toast-body d-flex flex-row justify-content-center align-items-center w-100">
+        <button class="btn btn-dark me-1" @click="cancelDeleteSubjectIntention">Cancel</button>
+        <button class="btn btn-danger" @click="deleteSubject" v-if="loading == false">
           Delete
         </button>
         <button
-          class="btn btn-danger w-100 mt-1 d-flex flex-row justify-content-center align-items-center"
+          class="btn btn-danger d-flex flex-row justify-content-center align-items-center"
           disabled
           v-else
         >
@@ -52,8 +69,8 @@
           </div>
         </button>
       </div>
-    </transition-group>
-  </div>
+    </div>
+  </transition-group>
 </template>
 
 <script setup lang="ts">
@@ -69,6 +86,8 @@ const jwtToken = ref<string | null>(localStorage.getItem('jwtToken'))
 const showDeleteSubjectError = ref<boolean>(false)
 const deleteSubjectError = ref<string>('')
 const searchSubject = ref<string>('')
+const deleteSubjectName = ref<string>('')
+const showDeleteSubjectModal = ref<boolean>(false)
 const loading = ref<boolean>(false)
 
 const userSubjects = computed(() => {
@@ -81,7 +100,7 @@ const searchSubjectResult = computed(() => {
   )
 })
 
-const deleteSubject = async (subject: string): Promise<void> => {
+const deleteSubject = async (): Promise<void> => {
   try {
     const requestOptions: RequestInit = {
       method: 'DELETE',
@@ -89,7 +108,7 @@ const deleteSubject = async (subject: string): Promise<void> => {
       headers: <HeadersInit>{ 'Content-Type': 'application/json', jwt_token: jwtToken.value },
       body: JSON.stringify({
         userId: userId.value,
-        subject: subject,
+        subject: deleteSubjectName.value,
       }),
     }
 
@@ -113,6 +132,16 @@ const deleteSubject = async (subject: string): Promise<void> => {
   } catch (err) {
     console.log(err)
   }
+}
+
+const setDeleteSubjectIntention = (subject: string): void => {
+  deleteSubjectName.value = subject
+  showDeleteSubjectModal.value = true
+}
+
+const cancelDeleteSubjectIntention = (): void => {
+  deleteSubjectName.value = ''
+  showDeleteSubjectModal.value = false
 }
 
 const onBeforeEnter = (el: any) => {

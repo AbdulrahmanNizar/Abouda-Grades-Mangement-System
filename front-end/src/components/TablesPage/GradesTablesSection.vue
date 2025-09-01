@@ -75,10 +75,10 @@
         style="bottom: 3%; right: 1%"
         v-if="showDeleteTableModal"
       >
-        <div class="toast-header">
-          <strong class="me-auto h6 mb-0">Are You Sure</strong>
+        <div class="toast-header w-100">
+          <strong class="me-auto h6 mb-0 w-100 text-center">Are You Sure</strong>
         </div>
-        <div class="toast-body d-flex flex-row justify-content-end align-items-end w-100">
+        <div class="toast-body d-flex flex-row justify-content-center align-items-center w-100">
           <button class="btn btn-dark me-1" @click="cancelDeleteGradesTableIntention">
             Cancel
           </button>

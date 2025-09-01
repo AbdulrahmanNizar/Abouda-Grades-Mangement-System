@@ -615,6 +615,7 @@ const sendEmail = async (): Promise<void> => {
     if (data.statusCode >= 200 && data.statusCode < 300) {
       sendForgetPasswordEmailLoading.value = false
       showSendForgetPasswordEmailModal.value = false
+      formDataForSendForgetPasswordEmail.email = ''
       showSuccessModal.value = true
       setTimeout(() => (showSuccessModal.value = false), 2000)
     } else {
