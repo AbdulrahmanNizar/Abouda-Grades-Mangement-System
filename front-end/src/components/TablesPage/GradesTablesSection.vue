@@ -35,7 +35,7 @@
     id="tables"
   >
     <div
-      class="d-flex flex-column justify-content-center align-items-center p-3 border rounded me-2 ms-2 mt-2"
+      class="d-flex flex-column justify-content-center align-items-center p-3 border rounded bg-white me-2 ms-2 mt-2"
       style="width: 30%"
       id="gradesTable"
       v-motion-pop-visible
@@ -59,14 +59,15 @@
       </button>
     </div>
 
-    <transition-group name="slideUp">
-      <div
-        class="d-flex flex-row justify-content-center align-items-center p-5 mt-2 shadow rounded"
-        v-if="showNotFoundGradesTablesMessage"
-      >
-        <h3 class="text-black">No tables were found</h3>
-      </div>
+    <div
+      class="d-flex flex-row justify-content-center align-items-center p-5 mt-2 shadow rounded"
+      v-motion-slide-bottom
+      v-if="showNotFoundGradesTablesMessage"
+    >
+      <h3 class="text-black">No tables were found</h3>
+    </div>
 
+    <transition-group name="slideUp">
       <div
         class="toast bg-white d-block position-fixed"
         role="alert"
@@ -333,5 +334,9 @@ getTables()
   #gradesTable {
     width: 80% !important;
   }
+}
+
+#gradesTable {
+  transition: all 0.7s ease;
 }
 </style>

@@ -67,7 +67,8 @@
           </div>
           <div class="w-100 d-flex flex-column justify-content-center align-items-center" v-else>
             <h5 class="text-center text-white mt-2">{{ userInfo[0].username }}</h5>
-            <h5 class="text-center text-white mt-2">{{ userInfo[0].email }}</h5>
+            <h6 class="text-center text-white mt-2">{{ userInfo[0].email }}</h6>
+            <hr class="w-100 text-white" />
           </div>
         </div>
 

@@ -303,8 +303,9 @@
         v-if="showSendForgetPasswordEmailModal"
       >
         <div
-          class="w-50 d-flex flex-column justify-content-center align-items-center p-3 top-25 rounded shadow bg-white position-fixed"
+          class="d-flex flex-column justify-content-center align-items-center p-3 top-25 rounded shadow bg-white position-fixed sendForgetPasswordEmailModal"
           ref="sendForgetPasswordEmailModal"
+          style="width: 50%"
         >
           <div class="w-100 d-flex flex-row justify-content-center align-items-center p-3">
             <h3>Forget Password</h3>
@@ -574,10 +575,6 @@ onClickOutside(
   () => (showSendForgetPasswordEmailModal.value = !showSendForgetPasswordEmailModal.value),
 )
 
-const showSendForgetPasswordEmailModalMethod = (): void => {
-  showSendForgetPasswordEmailModal.value = !showSendForgetPasswordEmailModal.value
-}
-
 const formDataForSendForgetPasswordEmail = reactive({
   email: '',
 })
@@ -592,6 +589,11 @@ const v$ForSendForgetPasswordEmail = useVuelidate(
   formRulesForSendForgetPasswordEmail,
   formDataForSendForgetPasswordEmail,
 )
+
+const showSendForgetPasswordEmailModalMethod = (): void => {
+  showSendForgetPasswordEmailModal.value = !showSendForgetPasswordEmailModal.value
+  formDataForSendForgetPasswordEmail.email = ''
+}
 
 const sendEmail = async (): Promise<void> => {
   const validationResult = await v$ForSendForgetPasswordEmail.value.$validate()
@@ -636,6 +638,10 @@ const sendEmail = async (): Promise<void> => {
 @media only screen and (max-width: 991px) {
   .successAndErrorModals {
     width: 80% !important;
+  }
+
+  .sendForgetPasswordEmailModal {
+    width: 90% !important;
   }
 }
 

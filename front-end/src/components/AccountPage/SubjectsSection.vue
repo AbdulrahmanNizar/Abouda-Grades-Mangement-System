@@ -176,4 +176,8 @@ userSubjectsStore.getSubjects()
     width: 80% !important;
   }
 }
+
+#subjectCard {
+  transition: all 0.15s ease;
+}
 </style>
