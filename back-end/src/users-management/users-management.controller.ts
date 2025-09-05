@@ -26,14 +26,14 @@ export class UsersManagementController {
   @UseGuards(AuthGuard)
   @Post('/changeAccountPicture')
   async changeAccountPicture(
-    @Body() changeUserAccountPictureDto: ChangeUserAccountPictureDto,
+    @Body() changeaccountPictureDto: ChangeUserAccountPictureDto,
     @Res() res,
   ): Promise<SuccessResponseObjectDto | void> {
     res
       .status(200)
       .json(
         await this.usersManagementService.changeAccountPicture(
-          changeUserAccountPictureDto,
+          changeaccountPictureDto,
         ),
       );
   }

@@ -10,11 +10,13 @@ import { LogoutUserDto } from './dto/Logout.dto';
 import { VerifyTokenDto } from './dto/VerifyToken.dto';
 import { GoogleLoginDto } from './dto/GoogleLogin.dto';
 import * as bcrypt from 'bcrypt';
+import { Subjects } from 'src/subjects-management/subjects-management.model';
 
 @Injectable()
 export class RegistrationService {
   constructor(
     @InjectModel('User') private readonly userModel: Model<User>,
+    @InjectModel('Subjects') private readonly subjectsModel: Model<Subjects>,
     private jwtService: JwtService,
   ) {}
 
@@ -42,8 +44,14 @@ export class RegistrationService {
           username: requestInfo.username,
           email: requestInfo.email,
           password: hashedPassword,
+          accountPicture: '',
           logged: true,
-          userSubjects: [
+        });
+        await newUser.save();
+
+        const newUserSubjects = new this.subjectsModel({
+          userId: newUser._id,
+          subjects: [
             'English',
             'Math',
             'Chemistry',
@@ -54,9 +62,8 @@ export class RegistrationService {
             'Social Studies',
             'Computer Studies',
           ],
-          userAccountPicture: '',
         });
-        await newUser.save();
+        await newUserSubjects.save();
 
         const jwtToken = this.jwtService.sign({ id: newUser._id });
 
@@ -158,9 +165,14 @@ export class RegistrationService {
         username: googleUser.firstName,
         email: googleUser.email,
         password: googleUser.password,
-        userAccountPicture: googleUser.avatarUrl,
+        accountPicture: googleUser.avatarUrl,
         logged: true,
-        userSubjects: [
+      });
+      await newUser.save();
+
+      const newUserSubjects = new this.subjectsModel({
+        userId: newUser._id,
+        subjects: [
           'English',
           'Math',
           'Chemistry',
@@ -172,7 +184,8 @@ export class RegistrationService {
           'Computer Studies',
         ],
       });
-      await newUser.save();
+      await newUserSubjects.save();
+
       return newUser;
     }
   }

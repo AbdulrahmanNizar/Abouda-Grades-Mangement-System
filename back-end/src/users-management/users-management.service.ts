@@ -36,8 +36,7 @@ export class UsersManagementService {
           const userData = {
             username: user[0].username,
             email: user[0].email,
-            userSubjects: user[0].userSubjects,
-            userAccountPicture: user[0].userAccountPicture,
+            accountPicture: user[0].accountPicture,
           };
 
           await this.cacheManager.set(
@@ -65,7 +64,7 @@ export class UsersManagementService {
     try {
       await this.userModel.updateOne(
         { _id: requestInfo.userId },
-        { $set: { userAccountPicture: requestInfo.fileBase64 } },
+        { $set: { accountPicture: requestInfo.fileBase64 } },
       );
 
       return {
