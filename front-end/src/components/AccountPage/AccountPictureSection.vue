@@ -1,13 +1,13 @@
 <template>
   <div class="w-100 d-flex flex-column justify-content-center align-items-center">
-    <div class="w-100 d-flex flex-column justify-content-center align-items-center mb-1">
-      <label for="changeYourAccountPictureInput" class="form-label"
+    <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+      <label for="changeYourAccountPictureInput" class="form-label btn btn-dark w-50"
         >Change Your Account Picture</label
       >
       <input
         type="file"
         id="changeYourAccountPictureInput"
-        class="form-control w-50"
+        class="form-control w-50 d-none"
         placeholder="Change Your Account Picture"
         @change="uploadFile"
       />
@@ -15,15 +15,15 @@
     <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-1">
       <button
         class="btn btn-dark w-50"
+        :disabled="disableChangeAndResetButtons"
         @click="changeAccountPicture"
-        :disabled="disableChangeButton"
         v-if="loading == false"
       >
         Change
       </button>
 
       <button
-        class="btn btn-dark w-50 mt-1 d-flex flex-row justify-content-center align-items-center"
+        class="btn btn-dark w-50 d-flex flex-row justify-content-center align-items-center"
         disabled
         v-else
       >
@@ -32,23 +32,31 @@
         </div>
       </button>
 
-      <transition-group name="slideUp">
-        <div
-          class="toast bg-white d-block position-fixed"
-          role="alert"
-          aria-live="assertive"
-          aria-atomic="true"
-          style="bottom: 3%; right: 1%"
-          v-if="showSuccessModal"
-        >
-          <div class="toast-header">
-            <strong class="me-auto">Success</strong>
-          </div>
-          <div class="toast-body">✅ Operation Completed</div>
-        </div>
-      </transition-group>
+      <button
+        class="btn btn-dark w-50 mt-1"
+        :disabled="disableChangeAndResetButtons"
+        @click="resetUploadedFileBase64"
+      >
+        Reset
+      </button>
     </div>
   </div>
+
+  <transition-group name="slideUp">
+    <div
+      class="toast bg-white d-block position-fixed"
+      role="alert"
+      aria-live="assertive"
+      aria-atomic="true"
+      style="bottom: 3%; right: 1%"
+      v-if="showSuccessModal"
+    >
+      <div class="toast-header">
+        <strong class="me-auto">Success</strong>
+      </div>
+      <div class="toast-body">✅ Operation Completed</div>
+    </div>
+  </transition-group>
 </template>
 
 <script setup lang="ts">
@@ -62,13 +70,17 @@ const uploadedFileBase64 = ref<ArrayBuffer | string | null>('')
 const loading = ref<boolean>(false)
 const showSuccessModal = ref<boolean>(false)
 
-const disableChangeButton = computed(() => {
+const disableChangeAndResetButtons = computed(() => {
   if (uploadedFileBase64.value == '') {
     return true
   } else {
     return false
   }
 })
+
+const resetUploadedFileBase64 = (): void => {
+  uploadedFileBase64.value = ''
+}
 
 const uploadFile = (event: any): void => {
   const file = event.target.files[0]

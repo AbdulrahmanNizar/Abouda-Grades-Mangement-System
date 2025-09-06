@@ -55,10 +55,10 @@
         <div class="w-100 d-flex flex-column justify-content-center align-items-center mb-3">
           <div
             class="w-100 d-flex flex-column justify-content-center align-items-center"
-            v-if="userInfo[0].userAccountPicture"
+            v-if="userInfo[0].accountPicture"
           >
             <img
-              :src="userInfo[0].userAccountPicture"
+              :src="userInfo[0].accountPicture"
               alt="profile-photo"
               class="img-fluid"
               style="width: 41%; height: 97%; border-radius: 50%"

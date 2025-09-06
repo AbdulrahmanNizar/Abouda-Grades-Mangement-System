@@ -335,8 +335,4 @@ getTables()
     width: 80% !important;
   }
 }
-
-#gradesTable {
-  transition: all 0.7s ease;
-}
 </style>

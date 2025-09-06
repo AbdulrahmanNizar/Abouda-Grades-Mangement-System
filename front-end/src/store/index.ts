@@ -181,7 +181,7 @@ export interface userInfoInterface {
   username: string
   email: string
   userSubjects: string[]
-  userAccountPicture: string
+  accountPicture: string
 }
 
 export interface gradesTableInterface {
