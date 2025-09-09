@@ -1,6 +1,6 @@
 <template>
   <div class="w-100 d-flex flex-column justify-content-center align-items-start">
-    <h3 class="ms-5 mt-5">Grades Tables</h3>
+    <h3 class="ms-5 mt-5">Grades Tables ({{ userGradesTables.length }})</h3>
     <p class="h5 ms-5">Manage Your Grades Tables</p>
     <hr class="w-100" />
   </div>

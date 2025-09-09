@@ -1,5 +1,11 @@
 <template>
-  <div class="w-100 d-flex flex-column justify-content-center align-items-center">
+  <div class="w-100 d-flex flex-column justify-content-center align-items-center mb-1">
+    <h3 class="mb-1">Subjects ({{ searchSubjectResult.length }})</h3>
+    <p class="mb-0">Manage Your Subjects</p>
+    <hr class="w-100" />
+  </div>
+
+  <div class="w-100 d-flex flex-column justify-content-center align-items-center mt-1">
     <button
       class="btn btn-dark w-50 mb-1"
       data-bs-toggle="modal"

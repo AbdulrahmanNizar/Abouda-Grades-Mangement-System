@@ -66,8 +66,13 @@
             <h6 class="text-center text-white mt-2">{{ userInfo[0].username }}</h6>
           </div>
           <div class="w-100 d-flex flex-column justify-content-center align-items-center" v-else>
-            <h5 class="text-center text-white mt-2">{{ userInfo[0].username }}</h5>
-            <h6 class="text-center text-white mt-2">{{ userInfo[0].email }}</h6>
+            <img
+              src="../images/DefaultUserPicture.jpg"
+              alt="profile-photo text-white"
+              class="img-fluid"
+              style="width: 41%; height: 97%; border-radius: 50%; mix-blend-mode: multiply"
+            />
+            <h6 class="text-center text-white mt-2">{{ userInfo[0].username }}</h6>
             <hr class="w-100 text-white" />
           </div>
         </div>
